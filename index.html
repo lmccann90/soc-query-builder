@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XQL Query Builder — SOC Dashboard</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#0e0f11;--bg2:#15171a;--bg3:#1c1f24;--bg4:#23272e;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);
+  --text:#e8eaed;--text2:#9aa0ab;--text3:#5c6370;
+  --accent:#4f8ef7;--accent2:#2d5fc4;
+  --green:#3ecf8e;--amber:#f5a623;--red:#e05252;--purple:#a78bfa;
+  --mono:'JetBrains Mono','Fira Code','Cascadia Code',monospace;
+  --sans:'IBM Plex Sans',system-ui,sans-serif;
+}
+html{font-size:14px;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;}
+
+.topbar{position:sticky;top:0;z-index:100;background:rgba(14,15,17,0.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:52px;}
+.topbar-left{display:flex;align-items:center;gap:16px;}
+.logo{font-size:13px;font-weight:600;letter-spacing:0.08em;color:var(--text);text-transform:uppercase;}
+.logo span{color:var(--accent);}
+.ver{font-size:10px;color:var(--text3);background:var(--bg3);padding:2px 7px;border-radius:4px;border:1px solid var(--border);}
+.topbar-right{display:flex;align-items:center;gap:8px;}
+
+.btn{font-family:var(--sans);font-size:12px;font-weight:500;padding:6px 14px;border-radius:6px;border:1px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer;transition:all 0.15s;display:inline-flex;align-items:center;gap:6px;}
+.btn:hover{background:var(--bg3);color:var(--text);border-color:rgba(255,255,255,0.2);}
+.btn:active{transform:scale(0.97);}
+.btn-primary{background:var(--accent2);color:#fff;border-color:var(--accent);}
+.btn-primary:hover{background:var(--accent);}
+.btn-danger{color:#e05252;border-color:rgba(224,82,82,0.3);}
+.btn-danger:hover{background:rgba(224,82,82,0.08);}
+
+.platform-tabs{display:flex;align-items:center;border-bottom:1px solid var(--border);background:var(--bg2);padding:0 24px;}
+.ptab{font-size:12px;font-weight:500;padding:10px 18px;border-bottom:2px solid transparent;color:var(--text3);cursor:pointer;transition:all 0.15s;background:none;border-top:none;border-left:none;border-right:none;font-family:var(--sans);}
+.ptab:hover{color:var(--text2);}
+.ptab.active{color:var(--accent);border-bottom-color:var(--accent);}
+
+.aql-timebar{display:flex;align-items:center;gap:8px;padding:10px 24px;border-bottom:1px solid var(--border);background:var(--bg);flex-wrap:wrap;}
+.aql-timebar-label{font-size:10.5px;color:var(--text3);font-weight:600;letter-spacing:0.06em;text-transform:uppercase;margin-right:4px;}
+.tf-btn{font-size:11.5px;padding:4px 10px;border-radius:5px;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;font-family:var(--sans);transition:all 0.1s;}
+.tf-btn:hover{background:var(--bg3);color:var(--text);}
+.tf-btn.active{background:rgba(79,142,247,0.12);color:var(--accent);border-color:rgba(79,142,247,0.3);}
+.tf-custom{display:flex;align-items:center;gap:6px;margin-left:4px;}
+.tf-custom-label{font-size:11px;color:var(--text3);}
+.tf-custom input{background:var(--bg3);border:1px solid var(--border);border-radius:5px;color:var(--text);font-family:var(--mono);font-size:11.5px;height:26px;padding:0 8px;outline:none;width:80px;}
+.tf-custom input:focus{border-color:var(--accent);}
+.tf-preview{font-size:11px;color:var(--text3);font-family:var(--mono);margin-left:8px;padding:2px 8px;background:var(--bg3);border-radius:4px;border:1px solid var(--border);}
+
+.layout{display:flex;height:calc(100vh - 89px);}
+.layout-aql-with-bar{display:flex;height:calc(100vh - 89px - 41px);}
+
+.sidebar{width:224px;min-width:224px;border-right:1px solid var(--border);padding:14px 0;overflow-y:auto;background:var(--bg);}
+.sidebar-label{font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);padding:8px 16px 5px;}
+.sidebar-item{display:flex;align-items:center;gap:8px;padding:7px 16px;font-size:12.5px;color:var(--text2);cursor:pointer;border-left:2px solid transparent;transition:all 0.1s;user-select:none;}
+.sidebar-item:hover{color:var(--text);background:var(--bg2);}
+.sidebar-item.active{color:var(--accent);border-left-color:var(--accent);background:rgba(79,142,247,0.06);}
+.sidebar-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.sidebar-count{margin-left:auto;font-size:10px;color:var(--text3);background:var(--bg3);padding:1px 6px;border-radius:10px;}
+
+.main{flex:1;overflow-y:auto;padding:24px 28px;}
+.platform-content{display:none;}
+.platform-content.active{display:block;}
+.section{display:none;}
+.section.active{display:block;}
+.section-header{margin-bottom:20px;}
+.section-header h2{font-size:15px;font-weight:600;color:var(--text);margin-bottom:4px;}
+.section-header p{font-size:12px;color:var(--text2);line-height:1.5;}
+.cards-grid{display:grid;grid-template-columns:1fr;gap:12px;}
+
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:border-color 0.15s;}
+.card:hover{border-color:var(--border2);}
+.card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:14px 16px 10px;}
+.card-title{font-size:13px;font-weight:500;color:var(--text);margin-bottom:3px;}
+.card-desc{font-size:11.5px;color:var(--text2);line-height:1.5;}
+.tag{font-size:10px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;padding:3px 8px;border-radius:4px;white-space:nowrap;flex-shrink:0;}
+.tag-cloud{background:rgba(79,142,247,0.12);color:#4f8ef7;}
+.tag-fw{background:rgba(245,166,35,0.12);color:#f5a623;}
+.tag-ep{background:rgba(62,207,142,0.12);color:#3ecf8e;}
+.tag-browser{background:rgba(167,139,250,0.12);color:#a78bfa;}
+.tag-threat{background:rgba(224,82,82,0.12);color:#e05252;}
+.tag-lateral{background:rgba(248,113,113,0.12);color:#f87171;}
+.tag-id{background:rgba(167,139,250,0.12);color:#c4b5fd;}
+.tag-email{background:rgba(79,142,247,0.12);color:#93c5fd;}
+.tag-user{background:rgba(62,207,142,0.12);color:#6ee7b7;}
+.tag-admin{background:rgba(224,82,82,0.12);color:#fca5a5;}
+.tag-persist{background:rgba(245,166,35,0.12);color:#fcd34d;}
+.tag-priv{background:rgba(224,82,82,0.12);color:#fca5a5;}
+.tag-aql{background:rgba(245,166,35,0.12);color:#f5a623;}
+
+.card-fields{display:flex;flex-wrap:wrap;gap:10px;padding:0 16px 12px;}
+.field-group{display:flex;flex-direction:column;gap:4px;flex:1;min-width:150px;}
+.field-group.narrow{max-width:100px;min-width:80px;flex:0 0 auto;}
+.field-group.wide{min-width:280px;}
+.field-label{font-size:10.5px;font-weight:500;color:var(--text3);letter-spacing:0.04em;}
+.field-group input,.field-group select{background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--mono);font-size:12px;height:32px;padding:0 10px;outline:none;transition:border-color 0.15s;width:100%;}
+.field-group input:focus,.field-group select:focus{border-color:var(--accent);background:var(--bg4);}
+.field-group input::placeholder{color:var(--text3);}
+
+.card-query{background:var(--bg);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.query-pre{font-family:var(--mono);font-size:11.5px;color:var(--text2);padding:12px 16px;white-space:pre;overflow-x:auto;line-height:1.7;max-height:200px;overflow-y:auto;}
+.hl-kw{color:#a78bfa;}
+.hl-str{color:#3ecf8e;}
+.hl-var{color:#4f8ef7;font-weight:600;}
+.hl-op{color:#f5a623;}
+.hl-cmt{color:#4a5568;font-style:italic;}
+
+.card-footer{display:flex;align-items:center;gap:8px;padding:10px 16px;}
+.copy-status{font-size:11.5px;color:var(--green);opacity:0;transition:opacity 0.2s;}
+.copy-status.show{opacity:1;}
+
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:3px;}
+
+.toast{position:fixed;bottom:24px;right:24px;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:10px 16px;font-size:13px;color:var(--text);display:flex;align-items:center;gap:8px;transform:translateY(12px);opacity:0;transition:all 0.2s;z-index:999;pointer-events:none;}
+.toast.show{opacity:1;transform:translateY(0);}
+.toast-dot{width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="logo">XQL <span>//</span> AQL <span>//</span> Query Builder</div>
+    <span class="ver">v3.0</span>
+  </div>
+  <div class="topbar-right">
+    <button class="btn btn-danger" onclick="resetAll()">&#8635; Reset all</button>
+    <button class="btn btn-primary" onclick="exportHTML()">&#11015; Save as file</button>
+  </div>
+</div>
+
+<div class="platform-tabs">
+  <button class="ptab active" onclick="showPlatform('xql',this)">Palo Alto XSIAM — XQL</button>
+  <button class="ptab" onclick="showPlatform('aql',this)">IBM QRadar — AQL</button>
+</div>
+
+<!-- AQL TIMEBAR (hidden until AQL tab active) -->
+<div class="aql-timebar" id="aql-timebar" style="display:none">
+  <span class="aql-timebar-label">Timeframe</span>
+  <button class="tf-btn" onclick="setTF(15,this)">15m</button>
+  <button class="tf-btn" onclick="setTF(30,this)">30m</button>
+  <button class="tf-btn active" onclick="setTF(60,this)">1h</button>
+  <button class="tf-btn" onclick="setTF(120,this)">2h</button>
+  <button class="tf-btn" onclick="setTF(480,this)">8h</button>
+  <button class="tf-btn" onclick="setTF(1440,this)">24h</button>
+  <div class="tf-custom">
+    <span class="tf-custom-label">or</span>
+    <input type="number" id="tf-custom-val" placeholder="mins" min="1" oninput="setCustomTF(this)"/>
+  </div>
+  <span class="tf-preview" id="tf-preview">LAST 60 MINUTES</span>
+</div>
+
+<div class="layout" id="xql-layout">
+  <nav class="sidebar" id="sidebar-xql">
+    <div class="sidebar-label">XQL queries</div>
+    <div class="sidebar-item active" onclick="showSection('xql','cloud',this)"><span class="sidebar-dot" style="background:#4f8ef7"></span>Cloud &amp; identity<span class="sidebar-count">1</span></div>
+    <div class="sidebar-item" onclick="showSection('xql','identity',this)"><span class="sidebar-dot" style="background:#c4b5fd"></span>User &amp; host activity<span class="sidebar-count">4</span></div>
+    <div class="sidebar-item" onclick="showSection('xql','firewall',this)"><span class="sidebar-dot" style="background:#f5a623"></span>Firewall<span class="sidebar-count">2</span></div>
+    <div class="sidebar-item" onclick="showSection('xql','endpoint',this)"><span class="sidebar-dot" style="background:#3ecf8e"></span>Endpoint<span class="sidebar-count">7</span></div>
+    <div class="sidebar-item" onclick="showSection('xql','browser',this)"><span class="sidebar-dot" style="background:#a78bfa"></span>Browser network<span class="sidebar-count">2</span></div>
+    <div class="sidebar-item" onclick="showSection('xql','threat',this)"><span class="sidebar-dot" style="background:#e05252"></span>Threat intel / IOC<span class="sidebar-count">3</span></div>
+    <div class="sidebar-item" onclick="showSection('xql','lateral',this)"><span class="sidebar-dot" style="background:#f87171"></span>Lateral movement<span class="sidebar-count">2</span></div>
+    <div class="sidebar-item" onclick="showSection('xql','persist',this)"><span class="sidebar-dot" style="background:#fcd34d"></span>Persistence<span class="sidebar-count">3</span></div>
+    <div class="sidebar-item" onclick="showSection('xql','priv',this)"><span class="sidebar-dot" style="background:#fca5a5"></span>Privilege escalation<span class="sidebar-count">3</span></div>
+    <div class="sidebar-item" onclick="showSection('xql','process',this)"><span class="sidebar-dot" style="background:#6ee7b7"></span>Process execution<span class="sidebar-count">3</span></div>
+    <div class="sidebar-item" onclick="showSection('xql','admin',this)"><span class="sidebar-dot" style="background:#fca5a5"></span>Admin &amp; privileged<span class="sidebar-count">1</span></div>
+  </nav>
+  <main class="main" id="main-xql">
+    <div class="platform-content active" id="pc-xql">
+
+      <!-- CLOUD -->
+      <div class="section active" id="xql-sec-cloud">
+        <div class="section-header"><h2>Cloud &amp; identity</h2><p>Azure AD, cloud audit logs, service principal and Graph API activity.</p></div>
+        <div class="cards-grid">
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">Cloud audit logs — search by app ID</div><div class="card-desc">Raw log string match against an application GUID. Use when appId or servicePrincipalId are not directly queryable.</div></div><span class="tag tag-cloud">cloud</span></div>
+            <div class="card-fields">
+              <div class="field-group wide"><span class="field-label">App / service principal GUID</span><input type="text" id="c0-guid" placeholder="ce311824-ce5d-4ea6-8435-6d3eb5852285" oninput="rc('c0')"/></div>
+              <div class="field-group narrow"><span class="field-label">Limit</span><input type="text" id="c0-limit" placeholder="50" oninput="rc('c0')"/></div>
+            </div>
+            <div class="card-query"><pre class="query-pre" id="out-c0"></pre></div>
+            <div class="card-footer"><button class="btn" onclick="cc('c0')">&#8669; Copy query</button><span class="copy-status" id="cs-c0">Copied</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- USER & HOST -->
+      <div class="section" id="xql-sec-identity">
+        <div class="section-header"><h2>User &amp; host activity</h2><p>Windows login events, email activity, URL browsing logs.</p></div>
+        <div class="cards-grid">
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">Host login activity (event 4624)</div><div class="card-desc">Windows logon events filtered by target hostname. Extracts username, SID, logon type, source IP and workstation.</div></div><span class="tag tag-id">identity</span></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">Hostname (partial match)</span><input type="text" id="i0-host" placeholder="L2345" oninput="rc('i0')"/></div></div>
+            <div class="card-query"><pre class="query-pre" id="out-i0"></pre></div>
+            <div class="card-footer"><button class="btn" onclick="cc('i0')">&#8669; Copy query</button><span class="copy-status" id="cs-i0">Copied</span></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">User login activity (event 4624)</div><div class="card-desc">Windows logon events filtered by target username. Use to trace where a specific account has authenticated across the estate.</div></div><span class="tag tag-user">user</span></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">Username (partial match)</span><input type="text" id="i1-user" placeholder="jsmith" oninput="rc('i1')"/></div></div>
+            <div class="card-query"><pre class="query-pre" id="out-i1"></pre></div>
+            <div class="card-footer"><button class="btn" onclick="cc('i1')">&#8669; Copy query</button><span class="copy-status" id="cs-i1">Copied</span></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">User email activity</div><div class="card-desc">Email events for a specific mailbox owner. Returns sent/received times, from, recipients, attachments, sender IP and auth results.</div></div><span class="tag tag-email">email</span></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">Mailbox owner / username (partial match)</span><input type="text" id="i2-user" placeholder="jsmith" oninput="rc('i2')"/></div></div>
+            <div class="card-query"><pre class="query-pre" id="out-i2"></pre></div>
+            <div class="card-footer"><button class="btn" onclick="cc('i2')">&#8669; Copy query</button><span class="copy-status" id="cs-i2">Copied</span></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">User URL activity</div><div class="card-desc">Firewall URL log entries for a specific user. Returns URI, URL category, source/dest IPs and port.</div></div><span class="tag tag-user">user</span></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">Username (partial match)</span><input type="text" id="i3-user" placeholder="jsmith" oninput="rc('i3')"/></div></div>
+            <div class="card-query"><pre class="query-pre" id="out-i3"></pre></div>
+            <div class="card-footer"><button class="btn" onclick="cc('i3')">&#8669; Copy query</button><span class="copy-status" id="cs-i3">Copied</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FIREWALL -->
+      <div class="section" id="xql-sec-firewall">
+        <div class="section-header"><h2>Firewall</h2><p>Palo Alto NGFW traffic and threat logs.</p></div>
+        <div class="cards-grid">
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">Firewall traffic by destination IP</div><div class="card-desc">Traffic log entries for a specific destination IP. Shows app identification, action, protocol, and session end reason.</div></div><span class="tag tag-fw">firewall</span></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">Destination IP</span><input type="text" id="f0-destip" placeholder="10.0.0.1" oninput="rc('f0')"/></div></div>
+            <div class="card-query"><pre class="query-pre" id="out-f0"></pre></div>
+            <div class="card-footer"><button class="btn" onclick="cc('f0')">&#8669; Copy query</button><span class="copy-status" id="cs-f0">Copied</span></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">Threat log — file verdict by filename</div><div class="card-desc">Searches NGFW threat logs for a specific filename. Returns Wildfire verdict, threat category, source/dest IPs, user, and partial hash.</div></div><span class="tag tag-fw">firewall</span></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">File name (partial match)</span><input type="text" id="f1-fname" placeholder="Cover Page.pdf" oninput="rc('f1')"/></div></div>
+            <div class="card-query"><pre class="query-pre" id="out-f1"></pre></div>
+            <div class="card-footer"><button class="btn" onclick="cc('f1')">&#8669; Copy query</button><span class="copy-status" id="cs-f1">Copied</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ENDPOINT -->
+      <div class="section" id="xql-sec-endpoint">
+        <div class="section-header"><h2>Endpoint</h2><p>Agent status, process activity, file events, and network connections from XDR data.</p></div>
+        <div class="cards-grid">
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">Endpoint agent status and details</div><div class="card-desc">Basic agent info — online status, last seen, version, install date. Run at the start of every investigation for asset context.</div></div><span class="tag tag-ep">endpoint</span></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">Hostname</span><input type="text" id="e0-host" placeholder="L2345" oninput="rc('e0')"/></div></div>
+            <div class="card-query"><pre class="query-pre" id="out-e0"></pre></div>
+            <div class="card-footer"><button class="btn" onclick="cc('e0')">&#8669; Copy query</button><span class="copy-status" id="cs-e0">Copied</span></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">Edge connections — specific remote IP (strict)</div><div class="card-desc">Strictly filters msedge.exe network events on a host to a single remote IP. Use for targeted confirmation against a known-bad IP.</div></div><span class="tag tag-ep">endpoint</span></div>
+            <div class="card-fields">
+              <div class="field-group"><span class="field-label">Hostname</span><input type="text" id="e1-host" placeholder="L2345" oninput="rc('e1')"/></div>
+              <div class="field-group"><span class="field-label">Remote IP</span><input type="text" id="e1-ip" placeholder="10.0.0.1" oninput="rc('e1')"/></div>
+            </div>
+            <div class="card-query"><pre class="query-pre" id="out-e1"></pre></div>
+            <div class="card-footer"><button class="btn" onclick="cc('e1')">&#8669; Copy query</button><span class="copy-status" id="cs-e1">Copied</span></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">Wildfire — file verdict lookup by SHA256</div><div class="card-desc">Pull Wildfire verdict and file metadata for a specific hash. Use to confirm sandbox verdict and delivery context.</div></div><span class="tag tag-ep">endpoint</span></div>
+            <div class="card-fields"><div class="field-group wide"><span class="field-label">SHA256 hash</span><input type="text" id="e2-hash" placeholder="a1b2c3d4e5f6..." oninput="rc('e2')"/></div></div>
+            <div class="card-query"><pre class="query-pre" id="out-e2"></pre></div>
+            <div class="card-footer"><button class="btn" onclick="cc('e2')">&#8669; Copy query</button><span class="copy-status" id="cs-e2">Copied</span></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">Child processes spawned by parent process</div><div class="card-desc">Returns all child processes under a parent process on a given host. Critical for post-execution analysis — e.g. PDF reader or Office app spawning shells.</div></div><span class="tag tag-ep">endpoint</span></div>
+            <div class="card-fields">
+              <div class="field-group"><span class="field-label">Hostname</span><input type="text" id="e3-host" placeholder="L2345" oninput="rc('e3')"/></div>
+              <div class="field-group"><span class="field-label">Parent process name</span><input type="text" id="e3-proc" placeholder="AcroRd32.exe" oninput="rc('e3')"/></div>
+            </div>
+            <div class="card-query"><pre class="query-pre" id="out-e3"></pre></div>
+            <div class="card-footer"><button class="btn" onclick="cc('e3')">&#8669; Copy query</button><span class="copy-status" id="cs-e3">Copied</span></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">File — seen on other hosts (dedup by hostname)</div><div class="card-desc">Check how many endpoints have seen a specific filename. Use to scope potential spread of a suspicious file across the fleet. Deduplicates by hostname so each host appears once.</div></div><span class="tag tag-ep">endpoint</span></div>
+            <div class="card-fields">
+              <div class="field-group wide"><span class="field-label">File name</span><input type="text" id="fw0-fname" placeholder="wzipse40.exe" oninput="rc('fw0')"/></div>
+              <div class="field-group narrow"><span class="field-label">Limit</span><input type="text" id="fw0-limit" placeholder="100" oninput="rc('fw0')"/></div>
+            </div>
+            <div class="card-query"><pre class="query-pre" id="out-fw0"></pre></div>
+            <div class="card-footer"><button class="btn" onclick="cc('fw0')">&#8669; Copy query</button><span class="copy-status" id="cs-fw0">Copied</span></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">File — check if directly executed as actor process</div><div class="card-desc">Checks whether a suspicious file has been executed as a running process anywhere on the fleet. No results means the file has not been directly launched — does not rule out indirect execution.</div></div><span class="tag tag-ep">endpoint</span></div>
+            <div class="card-fields">
+              <div class="field-group wide"><span class="field-label">File name</span><input type="text" id="fw1-fname" placeholder="wzipse40.exe" oninput="rc('fw1')"/></div>
+            </div>
+            <div class="card-query"><pre class="query-pre" id="out-fw1"></pre></div>
+            <div class="card-footer"><button class="btn" onclick="cc('fw1')">&#8669; Copy query</button><span class="copy-status" id="cs-fw1">Copied</span></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">Process — child processes from directory (excluding svchost)</div><div class="card-desc">Finds processes spawned from a specific folder path and filters out svchost to surface meaningful child activity. Use to check what an application directory is actually executing.</div></div><span class="tag tag-ep">endpoint</span></div>
+            <div class="card-fields">
+              <div class="field-group wide"><span class="field-label">Directory path (partial match)</span><input type="text" id="fw2-dir" placeholder="WinZip" oninput="rc('fw2')"/></div>
+              <div class="field-group narrow"><span class="field-label">Limit</span><input type="text" id="fw2-limit" placeholder="500" oninput="rc('fw2')"/></div>
+            </div>
+            <div class="card-query"><pre class="query-pre" id="out-fw2"></pre></div>
+            <div class="card-footer"><button class="btn" onclick="cc('fw2')">&#8669; Copy query</button><span class="copy-status" id="cs-fw2">Copied</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BROWSER -->
+      <div class="section" id="xql-sec-browser">
+        <div class="section-header"><h2>Browser network</h2><p>Edge and Chrome outbound connection events from xdr_data.</p></div>
+        <div class="cards-grid">
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">Edge connections — remote IP or port</div><div class="card-desc">Edge network events matching a remote IP or port. Use when pivoting on a suspicious IP or port from a phishing or malware investigation.</div></div><span class="tag tag-browser">browser</span></div>
+            <div class="card-fields">
+              <div class="field-group"><span class="field-label">Hostname</span><input type="text" id="b0-host" placeholder="T79751" oninput="rc('b0')"/></div>
+              <div class="field-group"><span class="field-label">Remote IP</span><input type="text" id="b0-ip" placeholder="104.18.160.117" oninput="rc('b0')"/></div>
+              <div class="field-group narrow"><span class="field-label">Port</span><input type="text" id="b0-port" placeholder="443" oninput="rc('b0')"/></div>
+            </div>
+            <div class="card-query"><pre class="query-pre" id="out-b0"></pre></div>
+            <div class="card-footer"><button class="btn" onclick="cc('b0')">&#8669; Copy query</button><span class="copy-status" id="cs-b0">Copied</span></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">Browser network connections — Edge &amp; Chrome (all)</div><div class="card-desc">All outbound connections from Edge or Chrome on a given host. Use for broad browser traffic review during web-based threat investigations.</div></div><span class="tag tag-browser">browser</span></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">Hostname</span><input type="text" id="b1-host" placeholder="T79751" oninput="rc('b1')"/></div></div>
+            <div class="card-query"><pre class="query-pre" id="out-b1"></pre></div>
+            <div class="card-footer"><button class="btn" onclick="cc('b1')">&#8669; Copy query</button><span class="copy-status" id="cs-b1">Copied</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- THREAT INTEL -->
+      <div class="section" id="xql-sec-threat">
+        <div class="section-header"><h2>Threat intel / IOC</h2><p>IP, domain, and hash sweeps across network and endpoint telemetry.</p></div>
+        <div class="cards-grid">
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">All endpoint connections to external IP (fleet sweep)</div><div class="card-desc">All XDR network events where remote IP matches across any process and any host. Use when you have a confirmed bad IP and want to check fleet-wide exposure.</div></div><span class="tag tag-threat">threat</span></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">Remote IP (IOC)</span><input type="text" id="t0-ip" placeholder="185.234.0.1" oninput="rc('t0')"/></div></div>
+            <div class="card-query"><pre class="query-pre" id="out-t0"></pre></div>
+            <div class="card-footer"><button class="btn" onclick="cc('t0')">&#8669; Copy query</button><span class="copy-status" id="cs-t0">Copied</span></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">DNS / hostname lookups for domain IOC</div><div class="card-desc">Network events where external hostname matches a domain. Use to identify which hosts contacted or resolved a suspicious domain.</div></div><span class="tag tag-threat">threat</span></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">Domain (partial match)</span><input type="text" id="t1-domain" placeholder="malicious-domain.com" oninput="rc('t1')"/></div></div>
+            <div class="card-query"><pre class="query-pre" id="out-t1"></pre></div>
+            <div class="card-footer"><button class="btn" onclick="cc('t1')">&#8669; Copy query</button><span class="copy-status" id="cs-t1">Copied</span></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">File hash sweep — all endpoints</div><div class="card-desc">All file events across the fleet for a specific SHA256. Use to determine spread of a malicious file following a Wildfire or VirusTotal hit.</div></div><span class="tag tag-threat">threat</span></div>
+            <div class="card-fields"><div class="field-group wide"><span class="field-label">SHA256 hash</span><input type="text" id="t2-hash" placeholder="a1b2c3d4e5f6..." oninput="rc('t2')"/></div></div>
+            <div class="card-query"><pre class="query-pre" id="out-t2"></pre></div>
+            <div class="card-footer"><button class="btn" onclick="cc('t2')">&#8669; Copy query</button><span class="copy-status" id="cs-t2">Copied</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LATERAL MOVEMENT -->
+      <div class="section" id="xql-sec-lateral">
+        <div class="section-header"><h2>Lateral movement</h2><p>RDP and remote access patterns — including anomalous source hosts like WSUS servers.</p></div>
+        <div class="cards-grid">
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">RDP connections from a specific source host</div><div class="card-desc">All RDP (port 3389) connections originating from a given hostname. Use when a host with no legitimate reason to RDP is seen initiating connections.</div></div><span class="tag tag-lateral">lateral</span></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">Source hostname</span><input type="text" id="l0-src" placeholder="WSUS-SERVER01" oninput="rc('l0')"/></div></div>
+            <div class="card-query"><pre class="query-pre" id="out-l0"></pre></div>
+            <div class="card-footer"><button class="btn" onclick="cc('l0')">&#8669; Copy query</button><span class="copy-status" id="cs-l0">Copied</span></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">RDP connections — one source to multiple destinations</div><div class="card-desc">Groups RDP connections from a source host by destination to show spread. A high destination count from one source is a strong escalation indicator.</div></div><span class="tag tag-lateral">lateral</span></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">Source hostname</span><input type="text" id="l1-src" placeholder="WSUS-SERVER01" oninput="rc('l1')"/></div></div>
+            <div class="card-query"><pre class="query-pre" id="out-l1"></pre></div>
+            <div class="card-footer"><button class="btn" onclick="cc('l1')">&#8669; Copy query</button><span class="copy-status" id="cs-l1">Copied</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PERSISTENCE -->
+      <div class="section" id="xql-sec-persist">
+        <div class="section-header"><h2>Persistence</h2><p>Scheduled tasks, startup locations, and suspicious file drops.</p></div>
+        <div class="cards-grid">
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">Scheduled task creation (event 4698)</div><div class="card-desc">Windows scheduled task creation events. High-value persistence indicator — attacker may be creating tasks for execution on reboot or at intervals.</div></div><span class="tag tag-persist">persist</span></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">Hostname (leave blank for fleet-wide)</span><input type="text" id="p0-host" placeholder="" oninput="rc('p0')"/></div></div>
+            <div class="card-query"><pre class="query-pre" id="out-p0"></pre></div>
+            <div class="card-footer"><button class="btn" onclick="cc('p0')">&#8669; Copy query</button><span class="copy-status" id="cs-p0">Copied</span></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">File written to temp / appdata / startup locations</div><div class="card-desc">File events where the path includes common malware drop locations. Use after a malware alert to identify what was written and where.</div></div><span class="tag tag-persist">persist</span></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">Hostname</span><input type="text" id="p1-host" placeholder="L2345" oninput="rc('p1')"/></div></div>
+            <div class="card-query"><pre class="query-pre" id="out-p1"></pre></div>
+            <div class="card-footer"><button class="btn" onclick="cc('p1')">&#8669; Copy query</button><span class="copy-status" id="cs-p1">Copied</span></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">DNS queries to suspicious TLDs from endpoint</div><div class="card-desc">Network events where external hostname resolves to an uncommon TLD (.xyz, .top, .ru, .cn etc). Use for C2 beacon detection or post-phishing callback hunting.</div></div><span class="tag tag-persist">persist</span></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">Hostname</span><input type="text" id="p2-host" placeholder="L2345" oninput="rc('p2')"/></div></div>
+            <div class="card-query"><pre class="query-pre" id="out-p2"></pre></div>
+            <div class="card-footer"><button class="btn" onclick="cc('p2')">&#8669; Copy query</button><span class="copy-status" id="cs-p2">Copied</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PRIVILEGE ESCALATION -->
+      <div class="section" id="xql-sec-priv">
+        <div class="section-header"><h2>Privilege escalation</h2><p>Account creation, group membership changes, and account re-enablement.</p></div>
+        <div class="cards-grid">
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">New local user created (event 4720)</div><div class="card-desc">Windows account creation events. Use to detect attacker-created backdoor accounts post-compromise.</div></div><span class="tag tag-priv">priv esc</span></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">Hostname (leave blank for fleet-wide)</span><input type="text" id="v0-host" placeholder="" oninput="rc('v0')"/></div></div>
+            <div class="card-query"><pre class="query-pre" id="out-v0"></pre></div>
+            <div class="card-footer"><button class="btn" onclick="cc('v0')">&#8669; Copy query</button><span class="copy-status" id="cs-v0">Copied</span></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">User added to local admins group (event 4732)</div><div class="card-desc">Fires when a user is added to the local Administrators group (SID S-1-5-32-544). Strong indicator of privilege escalation or persistence.</div></div><span class="tag tag-priv">priv esc</span></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">Hostname (leave blank for fleet-wide)</span><input type="text" id="v1-host" placeholder="" oninput="rc('v1')"/></div></div>
+            <div class="card-query"><pre class="query-pre" id="out-v1"></pre></div>
+            <div class="card-footer"><button class="btn" onclick="cc('v1')">&#8669; Copy query</button><span class="copy-status" id="cs-v1">Copied</span></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">Local user account enabled (event 4722)</div><div class="card-desc">Fires when a disabled account is re-enabled. Attacker tactic — re-enabling dormant accounts to avoid triggering new account creation alerts.</div></div><span class="tag tag-priv">priv esc</span></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">Hostname (leave blank for fleet-wide)</span><input type="text" id="v2-host" placeholder="" oninput="rc('v2')"/></div></div>
+            <div class="card-query"><pre class="query-pre" id="out-v2"></pre></div>
+            <div class="card-footer"><button class="btn" onclick="cc('v2')">&#8669; Copy query</button><span class="copy-status" id="cs-v2">Copied</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROCESS EXECUTION -->
+      <div class="section" id="xql-sec-process">
+        <div class="section-header"><h2>Process execution</h2><p>Suspicious interpreter spawning, PowerShell logging, and fleet-wide process network activity.</p></div>
+        <div class="cards-grid">
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">Suspicious shell / interpreter spawned on host</div><div class="card-desc">Catches cmd, powershell, wscript, cscript, mshta, rundll32 being executed. Good for post-phishing triage — run after a malicious document or PDF alert.</div></div><span class="tag tag-ep">endpoint</span></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">Hostname</span><input type="text" id="x0-host" placeholder="L2345" oninput="rc('x0')"/></div></div>
+            <div class="card-query"><pre class="query-pre" id="out-x0"></pre></div>
+            <div class="card-footer"><button class="btn" onclick="cc('x0')">&#8669; Copy query</button><span class="copy-status" id="cs-x0">Copied</span></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">PowerShell script block logging (event 4104)</div><div class="card-desc">Captures actual PowerShell content being executed via Windows script block logging. Shows decoded/deobfuscated PS content. Requires script block logging enabled on client.</div></div><span class="tag tag-ep">endpoint</span></div>
+            <div class="card-fields">
+              <div class="field-group"><span class="field-label">Hostname (leave blank for fleet-wide)</span><input type="text" id="x1-host" placeholder="" oninput="rc('x1')"/></div>
+              <div class="field-group narrow"><span class="field-label">Limit</span><input type="text" id="x1-limit" placeholder="50" oninput="rc('x1')"/></div>
+            </div>
+            <div class="card-query"><pre class="query-pre" id="out-x1"></pre></div>
+            <div class="card-footer"><button class="btn" onclick="cc('x1')">&#8669; Copy query</button><span class="copy-status" id="cs-x1">Copied</span></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">Network connections by process name — fleet-wide</div><div class="card-desc">All network connections made by a named process across all hosts. Use when you have a suspicious process from one alert and want to check if it is active elsewhere.</div></div><span class="tag tag-threat">threat</span></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">Process name (partial match)</span><input type="text" id="x2-proc" placeholder="malware.exe" oninput="rc('x2')"/></div></div>
+            <div class="card-query"><pre class="query-pre" id="out-x2"></pre></div>
+            <div class="card-footer"><button class="btn" onclick="cc('x2')">&#8669; Copy query</button><span class="copy-status" id="cs-x2">Copied</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADMIN -->
+      <div class="section" id="xql-sec-admin">
+        <div class="section-header"><h2>Admin &amp; privileged accounts</h2><p>Privileged account enumeration.</p></div>
+        <div class="cards-grid">
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">Admin account list (pan_dss_raw)</div><div class="card-desc">All unique accounts flagged with admin_count = 1 from the DSS dataset. No variables needed — run as-is to get a current list of privileged accounts for a client tenant.</div></div><span class="tag tag-admin">admin</span></div>
+            <div class="card-query"><pre class="query-pre" id="out-a0"></pre></div>
+            <div class="card-footer"><button class="btn" onclick="cc('a0')">&#8669; Copy query</button><span class="copy-status" id="cs-a0">Copied</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- AQL LAYOUT -->
+<div class="layout-aql-with-bar" id="aql-layout" style="display:none">
+  <nav class="sidebar" id="sidebar-aql">
+    <div class="sidebar-label">AQL queries</div>
+    <div class="sidebar-item active" onclick="showSection('aql','aql-src',this)"><span class="sidebar-dot" style="background:#f5a623"></span>By source<span class="sidebar-count">2</span></div>
+    <div class="sidebar-item" onclick="showSection('aql','aql-dst',this)"><span class="sidebar-dot" style="background:#4f8ef7"></span>By destination<span class="sidebar-count">1</span></div>
+    <div class="sidebar-item" onclick="showSection('aql','aql-user',this)"><span class="sidebar-dot" style="background:#6ee7b7"></span>By user<span class="sidebar-count">2</span></div>
+    <div class="sidebar-item" onclick="showSection('aql','aql-host',this)"><span class="sidebar-dot" style="background:#c4b5fd"></span>By hostname<span class="sidebar-count">1</span></div>
+    <div class="sidebar-item" onclick="showSection('aql','aql-offense',this)"><span class="sidebar-dot" style="background:#e05252"></span>Offense investigation<span class="sidebar-count">2</span></div>
+    <div class="sidebar-item" onclick="showSection('aql','aql-event',this)"><span class="sidebar-dot" style="background:#fcd34d"></span>By event type<span class="sidebar-count">2</span></div>
+  </nav>
+  <main class="main" id="main-aql">
+    <div class="platform-content active" id="pc-aql">
+
+      <!-- BY SOURCE -->
+      <div class="section active" id="aql-sec-aql-src">
+        <div class="section-header"><h2>By source</h2><p>All events or failed logins originating from a specific source IP.</p></div>
+        <div class="cards-grid">
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">All events from source IP</div><div class="card-desc">All log events sourced from a specific IP across all log sources. Use early in triage to get a broad picture of what a host has been doing.</div></div><span class="tag tag-aql">AQL</span></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">Source IP</span><input type="text" id="aq0-srcip" placeholder="10.0.0.1" oninput="rc('aq0')"/></div></div>
+            <div class="card-query"><pre class="query-pre" id="out-aq0"></pre></div>
+            <div class="card-footer"><button class="btn" onclick="cc('aq0')">&#8669; Copy query</button><span class="copy-status" id="cs-aq0">Copied</span></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">Failed logins by source IP</div><div class="card-desc">Authentication failure events (category 5002) from a specific source IP. Use to identify brute force or credential stuffing activity.</div></div><span class="tag tag-aql">AQL</span></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">Source IP</span><input type="text" id="aq1-ip" placeholder="10.0.0.1" oninput="rc('aq1')"/></div></div>
+            <div class="card-query"><pre class="query-pre" id="out-aq1"></pre></div>
+            <div class="card-footer"><button class="btn" onclick="cc('aq1')">&#8669; Copy query</button><span class="copy-status" id="cs-aq1">Copied</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BY DESTINATION -->
+      <div class="section" id="aql-sec-aql-dst">
+        <div class="section-header"><h2>By destination</h2><p>All events targeting a specific destination IP.</p></div>
+        <div class="cards-grid">
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">All events to destination IP</div><div class="card-desc">All log events targeting a specific destination IP. Use to confirm whether traffic reached a host and identify what protocols and sources were involved.</div></div><span class="tag tag-aql">AQL</span></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">Destination IP</span><input type="text" id="aq2-destip" placeholder="10.0.0.1" oninput="rc('aq2')"/></div></div>
+            <div class="card-query"><pre class="query-pre" id="out-aq2"></pre></div>
+            <div class="card-footer"><button class="btn" onclick="cc('aq2')">&#8669; Copy query</button><span class="copy-status" id="cs-aq2">Copied</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BY USER -->
+      <div class="section" id="aql-sec-aql-user">
+        <div class="section-header"><h2>By user</h2><p>Authentication and all-source activity for a specific username.</p></div>
+        <div class="cards-grid">
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">Authentication events by username</div><div class="card-desc">Authentication log events (category 5000-5002) for a specific username. Use to build a login timeline and identify anomalous source IPs or failures.</div></div><span class="tag tag-aql">AQL</span></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">Username (partial match)</span><input type="text" id="aq3-user" placeholder="jsmith" oninput="rc('aq3')"/></div></div>
+            <div class="card-query"><pre class="query-pre" id="out-aq3"></pre></div>
+            <div class="card-footer"><button class="btn" onclick="cc('aq3')">&#8669; Copy query</button><span class="copy-status" id="cs-aq3">Copied</span></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">All events for username — all log sources</div><div class="card-desc">Broader than the auth-only query — returns all events where username matches across every log source. Use for a full activity picture on a user.</div></div><span class="tag tag-aql">AQL</span></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">Username (partial match)</span><input type="text" id="aq4-user" placeholder="jsmith" oninput="rc('aq4')"/></div></div>
+            <div class="card-query"><pre class="query-pre" id="out-aq4"></pre></div>
+            <div class="card-footer"><button class="btn" onclick="cc('aq4')">&#8669; Copy query</button><span class="copy-status" id="cs-aq4">Copied</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BY HOSTNAME -->
+      <div class="section" id="aql-sec-aql-host">
+        <div class="section-header"><h2>By hostname</h2><p>All events associated with a specific hostname across log sources.</p></div>
+        <div class="cards-grid">
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">All events by hostname</div><div class="card-desc">All events where the log source name matches a hostname. Use at the start of an investigation to get a broad picture of activity across all log sources for a specific machine.</div></div><span class="tag tag-aql">AQL</span></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">Hostname (partial match)</span><input type="text" id="aq5-host" placeholder="L2345" oninput="rc('aq5')"/></div></div>
+            <div class="card-query"><pre class="query-pre" id="out-aq5"></pre></div>
+            <div class="card-footer"><button class="btn" onclick="cc('aq5')">&#8669; Copy query</button><span class="copy-status" id="cs-aq5">Copied</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- OFFENSE -->
+      <div class="section" id="aql-sec-aql-offense">
+        <div class="section-header"><h2>Offense investigation</h2><p>Pull contributing events for a specific offense ID or its source IP.</p></div>
+        <div class="cards-grid">
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">All events contributing to an offense</div><div class="card-desc">All log events associated with a specific QRadar offense ID. Use to pull the raw contributing events behind an offense for manual review.</div></div><span class="tag tag-aql">AQL</span></div>
+            <div class="card-fields"><div class="field-group narrow"><span class="field-label">Offense ID</span><input type="text" id="aq6-oid" placeholder="12345" oninput="rc('aq6')"/></div></div>
+            <div class="card-query"><pre class="query-pre" id="out-aq6"></pre></div>
+            <div class="card-footer"><button class="btn" onclick="cc('aq6')">&#8669; Copy query</button><span class="copy-status" id="cs-aq6">Copied</span></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">Events by offense source IP</div><div class="card-desc">All events from the offense source IP within the selected timeframe. Use to build a timeline around the offense trigger and identify precursor or follow-on activity.</div></div><span class="tag tag-aql">AQL</span></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">Source IP</span><input type="text" id="aq7-ip" placeholder="10.0.0.1" oninput="rc('aq7')"/></div></div>
+            <div class="card-query"><pre class="query-pre" id="out-aq7"></pre></div>
+            <div class="card-footer"><button class="btn" onclick="cc('aq7')">&#8669; Copy query</button><span class="copy-status" id="cs-aq7">Copied</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BY EVENT TYPE -->
+      <div class="section" id="aql-sec-aql-event">
+        <div class="section-header"><h2>By event type</h2><p>Search by QID event name or filter by magnitude threshold.</p></div>
+        <div class="cards-grid">
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">Events by QID name</div><div class="card-desc">Returns all events matching a specific QRadar event name. Use when you know the rule or event type firing and want to see all occurrences across the estate.</div></div><span class="tag tag-aql">AQL</span></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">Event name (partial match)</span><input type="text" id="aq8-qid" placeholder="Windows Login" oninput="rc('aq8')"/></div></div>
+            <div class="card-query"><pre class="query-pre" id="out-aq8"></pre></div>
+            <div class="card-footer"><button class="btn" onclick="cc('aq8')">&#8669; Copy query</button><span class="copy-status" id="cs-aq8">Copied</span></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">High magnitude events — priority sweep</div><div class="card-desc">All events above a specified magnitude threshold. Use for a quick priority sweep across all log sources — useful at the start of a shift or when triaging a busy queue.</div></div><span class="tag tag-aql">AQL</span></div>
+            <div class="card-fields"><div class="field-group narrow"><span class="field-label">Min magnitude (1-10)</span><input type="text" id="aq9-mag" placeholder="7" oninput="rc('aq9')"/></div></div>
+            <div class="card-query"><pre class="query-pre" id="out-aq9"></pre></div>
+            <div class="card-footer"><button class="btn" onclick="cc('aq9')">&#8669; Copy query</button><span class="copy-status" id="cs-aq9">Copied</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<div class="toast" id="toast"><span class="toast-dot"></span><span id="toast-msg">Done</span></div>
+
+<script>
+var aqlMins = 60;
+
+function getTF(){return 'LAST '+aqlMins+' MINUTES';}
+
+function setTF(mins, el){
+  aqlMins = mins;
+  document.getElementById('tf-custom-val').value='';
+  document.querySelectorAll('.tf-btn').forEach(function(b){b.classList.remove('active');});
+  el.classList.add('active');
+  document.getElementById('tf-preview').textContent = getTF();
+  renderAQL();
+}
+
+function setCustomTF(el){
+  var v = parseInt(el.value);
+  if(!v||v<1) return;
+  aqlMins = v;
+  document.querySelectorAll('.tf-btn').forEach(function(b){b.classList.remove('active');});
+  document.getElementById('tf-preview').textContent = getTF();
+  renderAQL();
+}
+
+function gv(id,fb){var e=document.getElementById(id);return(e&&e.value.trim())?e.value.trim():fb;}
+
+var aqlBase = function(where){
+  return 'SELECT DATEFORMAT(devicetime,\'yyyy-MM-dd HH:mm:ss\') as time,\n       logsourcename(logsourceid) as log_source,\n       sourceip, destinationip, username,\n       QIDNAME(qid) as event_name, magnitude\nFROM events\nWHERE '+where+'\n'+getTF();
+};
+
+var B={
+  'c0':function(){return 'dataset = cloud_audit_logs\n| filter raw_log ~= "'+gv('c0-guid','PASTE-APP-GUID')+'"\n| fields _time, identity_name, identity_uuid, operation_name,\n         caller_ip, referenced_resource, referenced_resource_name,\n         resource_type, state_changing_event, raw_log\n| sort desc _time\n| limit '+gv('c0-limit','50');},
+  'i0':function(){return 'config case_sensitive = false\n| dataset = microsoft_windows_raw\n| filter event_id = 4624\n| alter raw_target_username = json_extract_scalar(event_data, "$.TargetUserName")\n| alter target_username = lowercase(arrayindex(regextract(raw_target_username,"^[^@]+"),0))\n| alter targetusersid = json_extract_scalar(event_data, "$.TargetSid")\n| alter source_username = json_extract_scalar(event_data, "$.SubjectUserName")\n| alter source_ip_address = json_extract_scalar(event_data, "$.IpAddress")\n| alter source_workstation_name = lowercase(json_extract_scalar(event_data, "$.WorkstationName"))\n| alter logon_type = json_extract_scalar(event_data, "$.LogonType")\n| alter target_domain_name = event_data -> TargetDomainName\n| filter host_name contains "'+gv('i0-host','HOSTNAME')+'"\n| fields _time, event_id, logon_type, source_username, source_ip_address,\n         source_workstation_name, target_username,\n         host_name as target_workstation_name, target_domain_name, message, event_data';},
+  'i1':function(){return 'config case_sensitive = false\n| dataset = microsoft_windows_raw\n| filter event_id = 4624\n| alter raw_target_username = json_extract_scalar(event_data, "$.TargetUserName")\n| alter target_username = lowercase(arrayindex(regextract(raw_target_username,"^[^@]+"),0))\n| alter targetusersid = json_extract_scalar(event_data, "$.TargetSid")\n| alter source_username = json_extract_scalar(event_data, "$.SubjectUserName")\n| alter source_ip_address = json_extract_scalar(event_data, "$.IpAddress")\n| alter source_workstation_name = lowercase(json_extract_scalar(event_data, "$.WorkstationName"))\n| alter logon_type = json_extract_scalar(event_data, "$.LogonType")\n| alter target_domain_name = event_data -> TargetDomainName\n| filter target_username contains "'+gv('i1-user','USERNAME')+'"\n| fields _time, event_id, logon_type, source_username, source_ip_address,\n         source_workstation_name, target_username,\n         host_name as target_workstation_name, target_domain_name, message, event_data';},
+  'i2':function(){return 'config case_sensitive = false\n| dataset = email_data\n| filter mailbox_owner contains "'+gv('i2-user','USERNAME')+'"\n| fields sent_time, received_time, mailbox_owner, from, recipients,\n         cc_recipients, bcc_recipients, authentication_results,\n         sender_ip_location, attachments';},
+  'i3':function(){return 'config case_sensitive = false\n| dataset = panw_ngfw_url_raw\n| filter uri != null and source_user not in (null,"")\n| filter source_user contains "'+gv('i3-user','USERNAME')+'"\n| fields _time, uri, url_category, source_user, source_ip, dest_ip, dest_port';},
+  'f0':function(){return 'dataset = panw_ngfw_traffic_raw\n| filter dest_ip = "'+gv('f0-destip','DEST-IP')+'"\n| fields _time, dest_ip, dest_port, source_ip, app,\n         action, protocol, session_end_reason\n| sort asc _time';},
+  'f1':function(){return 'dataset = panw_ngfw_threat_raw\n| filter file_name contains "'+gv('f1-fname','FILENAME')+'"\n| fields _time, file_name, sub_type, verdict, source_ip, dest_ip,\n         source_user, partial_hash, app, threat_category,\n         threat_name_firewall, _reporting_device_name';},
+  'e0':function(){return 'dataset = endpoints\n| filter endpoint_name = "'+gv('e0-host','HOSTNAME')+'"\n| fields endpoint_name, endpoint_status, last_seen, agent_version, install_date';},
+  'e1':function(){return 'dataset = xdr_data\n| filter agent_hostname = "'+gv('e1-host','HOSTNAME')+'"\n| filter event_type = ENUM.NETWORK\n| filter actor_process_image_name ~= "(?i)msedge.exe"\n| filter action_remote_ip = "'+gv('e1-ip','REMOTE-IP')+'"\n| fields _time, agent_hostname, actor_process_image_name,\n         action_local_ip, action_local_port,\n         action_remote_ip, action_remote_port, action_external_hostname\n| sort asc _time';},
+  'e2':function(){return 'dataset = xdr_data\n| filter action_file_sha256 = "'+gv('e2-hash','SHA256-HASH')+'"\n| fields _time, agent_hostname, actor_process_image_name,\n         action_file_name, action_file_path,\n         action_file_sha256, action_file_wildfire_verdict\n| sort desc _time';},
+  'e3':function(){return 'dataset = xdr_data\n| filter agent_hostname = "'+gv('e3-host','HOSTNAME')+'"\n| filter event_type = ENUM.PROCESS\n| filter causality_actor_process_image_name ~= "(?i)'+gv('e3-proc','PARENT-PROCESS.exe')+'"\n| fields _time, agent_hostname,\n         causality_actor_process_image_name,\n         actor_process_image_name, actor_process_command_line,\n         actor_process_image_sha256\n| sort asc _time';},
+  'fw0':function(){return 'dataset = xdr_data\n| filter action_file_name = "'+gv('fw0-fname','FILENAME')+'"\n| fields _time, agent_hostname, actor_process_image_name,\n         action_file_name, action_file_path,\n         action_file_sha256\n| dedup agent_hostname\n| sort desc _time\n| limit '+gv('fw0-limit','100');},
+  'fw1':function(){return 'dataset = xdr_data\n| filter action_file_name = "'+gv('fw1-fname','FILENAME')+'"\n    or actor_process_image_name = "'+gv('fw1-fname','FILENAME')+'"\n| fields _time, agent_hostname, actor_process_image_name,\n         action_process_image_name,\n         action_process_image_command_line,\n         action_file_name, action_file_path\n| sort desc _time\n| limit 200';},
+  'fw2':function(){return 'dataset = xdr_data\n| filter actor_process_image_path contains "'+gv('fw2-dir','DIRECTORY')+'"\n    and action_process_image_name != "svchost.exe"\n| fields _time, agent_hostname, actor_process_image_name,\n         actor_process_image_path,\n         action_process_image_name,\n         action_process_image_command_line\n| sort desc _time\n| limit '+gv('fw2-limit','500');},
+  'b0':function(){return 'dataset = xdr_data\n| filter agent_hostname = "'+gv('b0-host','HOSTNAME')+'"\n| filter event_type = ENUM.NETWORK\n| filter actor_process_image_name ~= "(?i)msedge.exe"\n| filter action_remote_ip = "'+gv('b0-ip','REMOTE-IP')+'"\n    or action_remote_port = '+gv('b0-port','443')+'\n| fields _time, agent_hostname, actor_process_image_name,\n         action_local_ip, action_local_port,\n         action_remote_ip, action_remote_port, action_external_hostname\n| sort asc _time';},
+  'b1':function(){return 'dataset = xdr_data\n| filter agent_hostname = "'+gv('b1-host','HOSTNAME')+'"\n| filter event_type = ENUM.NETWORK\n| filter actor_process_image_name ~= "(?i)msedge.exe"\n    or actor_process_image_name ~= "(?i)chrome.exe"\n| fields _time, agent_hostname, actor_process_image_name,\n         action_local_ip, action_local_port,\n         action_remote_ip, action_remote_port, action_external_hostname\n| sort asc _time';},
+  't0':function(){return 'dataset = xdr_data\n| filter event_type = ENUM.NETWORK\n| filter action_remote_ip = "'+gv('t0-ip','IOC-IP')+'"\n| fields _time, agent_hostname, actor_process_image_name,\n         action_local_ip, action_local_port,\n         action_remote_ip, action_remote_port, action_external_hostname\n| sort desc _time\n| limit 200';},
+  't1':function(){return 'dataset = xdr_data\n| filter event_type = ENUM.NETWORK\n| filter action_external_hostname ~= "(?i)'+gv('t1-domain','DOMAIN.COM')+'"\n| fields _time, agent_hostname, actor_process_image_name,\n         action_external_hostname, action_remote_ip, action_remote_port\n| sort desc _time\n| limit 200';},
+  't2':function(){return 'dataset = xdr_data\n| filter action_file_sha256 = "'+gv('t2-hash','SHA256-HASH')+'"\n| fields _time, agent_hostname, actor_process_image_name,\n         action_file_name, action_file_path,\n         action_file_sha256, action_file_wildfire_verdict\n| sort desc _time\n| limit 200';},
+  'l0':function(){return 'dataset = xdr_data\n| filter event_type = ENUM.NETWORK\n| filter agent_hostname = "'+gv('l0-src','SOURCE-HOSTNAME')+'"\n| filter action_remote_port = 3389\n| fields _time, agent_hostname, actor_process_image_name,\n         action_local_ip, action_remote_ip, action_remote_port\n| sort asc _time';},
+  'l1':function(){return 'dataset = xdr_data\n| filter event_type = ENUM.NETWORK\n| filter agent_hostname = "'+gv('l1-src','SOURCE-HOSTNAME')+'"\n| filter action_remote_port = 3389\n| fields _time, agent_hostname, action_remote_ip\n| comp count(action_remote_ip) as connection_count by action_remote_ip\n| sort desc connection_count';},
+  'p0':function(){
+    var h=gv('p0-host','');
+    var hf=h?'| filter agent_hostname = "'+h+'"\n':'';
+    return 'dataset = xdr_data\n'+hf+'| filter event_type = EVENT_LOG and action_evtlog_event_id = 4698\n| alter TaskName = action_evtlog_data_fields -> TaskName\n| alter SubjectUser = action_evtlog_data_fields -> SubjectUserName\n| alter TaskContent = action_evtlog_data_fields -> TaskContent\n| fields _time, agent_hostname, SubjectUser, TaskName, TaskContent\n| sort desc _time';},
+  'p1':function(){return 'dataset = xdr_data\n| filter agent_hostname = "'+gv('p1-host','HOSTNAME')+'"\n| filter event_type = ENUM.FILE\n| filter action_file_path ~= "(?i)(\\\\\\\\temp\\\\\\\\|\\\\\\\\appdata\\\\\\\\|\\\\\\\\startup\\\\\\\\|\\\\\\\\roaming\\\\\\\\microsoft\\\\\\\\windows\\\\\\\\start menu)"\n| fields _time, agent_hostname, actor_process_image_name,\n         action_file_name, action_file_path, action_file_sha256\n| sort asc _time';},
+  'p2':function(){return 'dataset = xdr_data\n| filter agent_hostname = "'+gv('p2-host','HOSTNAME')+'"\n| filter event_type = ENUM.NETWORK\n| filter action_external_hostname ~= "(?i)\\\\.(xyz|top|ru|cn|tk|pw|cc|su|onion)$"\n| fields _time, agent_hostname, actor_process_image_name,\n         action_external_hostname, action_remote_ip, action_remote_port\n| sort asc _time';},
+  'v0':function(){
+    var h=gv('v0-host','');
+    var hf=h?'| filter agent_hostname = "'+h+'"\n':'';
+    return 'dataset = xdr_data\n'+hf+'| filter event_type = EVENT_LOG and action_evtlog_event_id = 4720\n| fields action_evtlog_data_fields as aedf, agent_hostname\n| filter aedf != null\n| alter UserName = replace(json_extract(aedf, "$.TargetUserName"), "\\"","")\n| alter DomainName = replace(json_extract(aedf, "$.TargetDomainName"), "\\"","")\n| alter WhoDid = replace(json_extract(aedf, "$.SubjectUserName"), "\\"","")\n| fields _time, agent_hostname, UserName, DomainName, WhoDid\n| sort desc _time';},
+  'v1':function(){
+    var h=gv('v1-host','');
+    var hf=h?'| filter agent_hostname = "'+h+'"\n':'';
+    return 'dataset = xdr_data\n'+hf+'| filter event_type = EVENT_LOG and action_evtlog_event_id = 4732\n| alter WhoDid = action_evtlog_data_fields -> SubjectUserName\n| alter DomainName = action_evtlog_data_fields -> SubjectDomainName\n| alter GroupSID = action_evtlog_data_fields -> TargetSid\n| alter MemberSID = action_evtlog_data_fields -> MemberSid\n| alter GroupName = action_evtlog_data_fields -> TargetUserName\n| filter GroupSID = "S-1-5-32-544"\n| filter WhoDid not contains "$"\n| fields _time, agent_hostname, WhoDid, DomainName, GroupName, MemberSID\n| sort desc _time';},
+  'v2':function(){
+    var h=gv('v2-host','');
+    var hf=h?'| filter agent_hostname = "'+h+'"\n':'';
+    return 'dataset = xdr_data\n'+hf+'| filter event_type = EVENT_LOG and action_evtlog_event_id = 4722\n| fields action_evtlog_data_fields as aedf, agent_hostname\n| filter aedf != null\n| alter UserName = json_extract(aedf, "$.TargetUserName")\n| alter DomainName = json_extract(aedf, "$.TargetDomainName")\n| alter WhoDid = json_extract(aedf, "$.SubjectUserName")\n| fields _time, agent_hostname, UserName, DomainName, WhoDid\n| sort desc _time';},
+  'x0':function(){return 'dataset = xdr_data\n| filter agent_hostname = "'+gv('x0-host','HOSTNAME')+'"\n| filter event_type = ENUM.PROCESS\n| filter actor_process_image_name ~= "(?i)(cmd\\\\.exe|powershell\\\\.exe|wscript\\\\.exe|cscript\\\\.exe|mshta\\\\.exe|rundll32\\\\.exe)"\n| fields _time, agent_hostname, actor_process_image_name,\n         actor_process_command_line, causality_actor_process_image_name,\n         actor_process_image_sha256\n| sort asc _time';},
+  'x1':function(){
+    var h=gv('x1-host','');
+    var hf=h?'| filter agent_hostname = "'+h+'"\n':'';
+    return 'dataset = xdr_data\n'+hf+'| filter event_type = EVENT_LOG and action_evtlog_event_id = 4104\n| alter ScriptBlock = action_evtlog_data_fields -> ScriptBlockText\n| alter UserName = action_evtlog_data_fields -> UserName\n| filter ScriptBlock != null\n| fields _time, agent_hostname, UserName, ScriptBlock\n| sort desc _time\n| limit '+gv('x1-limit','50');},
+  'x2':function(){return 'dataset = xdr_data\n| filter event_type = ENUM.NETWORK\n| filter actor_process_image_name ~= "(?i)'+gv('x2-proc','PROCESS-NAME')+'"\n| fields _time, agent_hostname, actor_process_image_name,\n         action_remote_ip, action_remote_port, action_external_hostname\n| sort desc _time\n| limit 200';},
+  'a0':function(){return 'dataset = pan_dss_raw\n| filter admin_count = "1"\n| dedup sam_account_name\n| view column order = populated';},
+  'aq0':function(){return aqlBase('sourceip = \''+gv('aq0-srcip','SOURCE-IP')+'\'');},
+  'aq1':function(){return aqlBase('sourceip = \''+gv('aq1-ip','SOURCE-IP')+'\'\nAND category = 5002');},
+  'aq2':function(){return aqlBase('destinationip = \''+gv('aq2-destip','DEST-IP')+'\'');},
+  'aq3':function(){return aqlBase('username ILIKE \'%'+gv('aq3-user','USERNAME')+'%\'\nAND category IN (5000, 5001, 5002)');},
+  'aq4':function(){return aqlBase('username ILIKE \'%'+gv('aq4-user','USERNAME')+'%\'');},
+  'aq5':function(){return aqlBase('LOGSOURCENAME(logsourceid) ILIKE \'%'+gv('aq5-host','HOSTNAME')+'%\'');},
+  'aq6':function(){return aqlBase('INOFFENSE('+gv('aq6-oid','OFFENSE-ID')+')');},
+  'aq7':function(){return aqlBase('sourceip = \''+gv('aq7-ip','SOURCE-IP')+'\'');},
+  'aq8':function(){return aqlBase('QIDNAME(qid) ILIKE \'%'+gv('aq8-qid','EVENT-NAME')+'%\'');},
+  'aq9':function(){return aqlBase('magnitude >= '+gv('aq9-mag','7'));}
+};
+
+var cache={};
+
+function hl(q){
+  return q
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/^(\/\/.*)$/gm,'<span class="hl-cmt">$1</span>')
+    .replace(/\b(dataset|filter|fields|sort|limit|alter|dedup|view|comp|config|contains|not|and|or|by|as|SELECT|FROM|WHERE|AND|IN|ILIKE|INOFFENSE|LAST|MINUTES|category|magnitude)\b/g,'<span class="hl-kw">$1</span>')
+    .replace(/("([^"\\]*)")/g,'<span class="hl-str">$1</span>')
+    .replace(/('[^']*')/g,'<span class="hl-str">$1</span>')
+    .replace(/\b(ENUM\.[A-Z_]+|EVENT_LOG)\b/g,'<span class="hl-op">$1</span>')
+    .replace(/\b(HOSTNAME|DEST-IP|REMOTE-IP|PASTE-APP-GUID|SHA256-HASH|DOMAIN\.COM|IOC-IP|PARENT-PROCESS\.exe|SOURCE-HOSTNAME|SOURCE-IP|USERNAME|FILENAME|OFFENSE-ID|PROCESS-NAME|EVENT-NAME|DIRECTORY)\b/g,'<span class="hl-var">$1</span>');
+}
+
+function rc(id){
+  var fn=B[id]; if(!fn) return;
+  var q=fn(); cache[id]=q;
+  var el=document.getElementById('out-'+id); if(!el) return;
+  el.innerHTML=hl(q);
+}
+
+function renderAll(){Object.keys(B).forEach(rc);}
+function renderAQL(){
+  ['aq0','aq1','aq2','aq3','aq4','aq5','aq6','aq7','aq8','aq9'].forEach(rc);
+}
+
+function cc(id){
+  var q=cache[id]||(B[id]&&B[id]());
+  if(!q) return;
+  navigator.clipboard.writeText(q).then(function(){
+    var cs=document.getElementById('cs-'+id);
+    if(cs){cs.classList.add('show');setTimeout(function(){cs.classList.remove('show');},2000);}
+    showToast('Query copied to clipboard');
+  });
+}
+
+function showToast(msg){
+  var t=document.getElementById('toast');
+  document.getElementById('toast-msg').textContent=msg;
+  t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show');},2200);
+}
+
+var currentPlatform='xql';
+
+function showPlatform(p,el){
+  currentPlatform=p;
+  document.getElementById('xql-layout').style.display=p==='xql'?'flex':'none';
+  document.getElementById('aql-layout').style.display=p==='aql'?'flex':'none';
+  document.getElementById('aql-timebar').style.display=p==='aql'?'flex':'none';
+  document.querySelectorAll('.ptab').forEach(function(t){t.classList.remove('active');});
+  el.classList.add('active');
+}
+
+function showSection(platform,id,el){
+  var prefix=platform==='aql'?'aql':'xql';
+  var allSections=document.querySelectorAll('#pc-'+platform+' .section');
+  allSections.forEach(function(s){s.classList.remove('active');});
+  var target=document.getElementById(prefix+'-sec-'+id);
+  if(target) target.classList.add('active');
+  var sidebar=document.getElementById('sidebar-'+platform);
+  sidebar.querySelectorAll('.sidebar-item').forEach(function(s){s.classList.remove('active');});
+  el.classList.add('active');
+}
+
+function resetAll(){
+  document.querySelectorAll('input[type=text], input[type=number]').forEach(function(i){i.value='';});
+  aqlMins=60;
+  document.querySelectorAll('.tf-btn').forEach(function(b){b.classList.remove('active');});
+  document.querySelector('.tf-btn[onclick*="setTF(60"]').classList.add('active');
+  document.getElementById('tf-preview').textContent='LAST 60 MINUTES';
+  renderAll();
+  showToast('All fields reset');
+}
+
+function exportHTML(){
+  var blob=new Blob([document.documentElement.outerHTML],{type:'text/html'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='xql-query-builder-v3.html';
+  a.click();
+  showToast('Saved — open in any browser');
+}
+
+renderAll();
+</script>
+</body>
+</html>
