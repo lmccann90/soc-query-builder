@@ -124,7 +124,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 
 <div class="topbar">
   <div class="topbar-left">
-    <div class="logo">XQL <span>//</span> AQL <span>//</span> Query Builder</div>
+    <div class="logo">XQL <span>//</span> Query Builder</div>
     <span class="ver">v3.0</span>
   </div>
   <div class="topbar-right">
@@ -162,11 +162,11 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
     <div class="sidebar-item" onclick="showSection('xql','firewall',this)"><span class="sidebar-dot" style="background:#f5a623"></span>Firewall<span class="sidebar-count">2</span></div>
     <div class="sidebar-item" onclick="showSection('xql','endpoint',this)"><span class="sidebar-dot" style="background:#3ecf8e"></span>Endpoint<span class="sidebar-count">7</span></div>
     <div class="sidebar-item" onclick="showSection('xql','browser',this)"><span class="sidebar-dot" style="background:#a78bfa"></span>Browser network<span class="sidebar-count">2</span></div>
-    <div class="sidebar-item" onclick="showSection('xql','threat',this)"><span class="sidebar-dot" style="background:#e05252"></span>Threat intel / IOC<span class="sidebar-count">3</span></div>
+    <div class="sidebar-item" onclick="showSection('xql','threat',this)"><span class="sidebar-dot" style="background:#e05252"></span>Threat intel / IOC<span class="sidebar-count">4</span></div>
     <div class="sidebar-item" onclick="showSection('xql','lateral',this)"><span class="sidebar-dot" style="background:#f87171"></span>Lateral movement<span class="sidebar-count">2</span></div>
     <div class="sidebar-item" onclick="showSection('xql','persist',this)"><span class="sidebar-dot" style="background:#fcd34d"></span>Persistence<span class="sidebar-count">3</span></div>
     <div class="sidebar-item" onclick="showSection('xql','priv',this)"><span class="sidebar-dot" style="background:#fca5a5"></span>Privilege escalation<span class="sidebar-count">3</span></div>
-    <div class="sidebar-item" onclick="showSection('xql','process',this)"><span class="sidebar-dot" style="background:#6ee7b7"></span>Process execution<span class="sidebar-count">3</span></div>
+    <div class="sidebar-item" onclick="showSection('xql','process',this)"><span class="sidebar-dot" style="background:#6ee7b7"></span>Process execution<span class="sidebar-count">4</span></div>
     <div class="sidebar-item" onclick="showSection('xql','admin',this)"><span class="sidebar-dot" style="background:#fca5a5"></span>Admin &amp; privileged<span class="sidebar-count">1</span></div>
   </nav>
   <main class="main" id="main-xql">
@@ -179,8 +179,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
           <div class="card">
             <div class="card-header"><div><div class="card-title">Cloud audit logs — search by app ID</div><div class="card-desc">Raw log string match against an application GUID. Use when appId or servicePrincipalId are not directly queryable.</div></div><span class="tag tag-cloud">cloud</span></div>
             <div class="card-fields">
-              <div class="field-group wide"><span class="field-label">App / service principal GUID</span><input type="text" id="c0-guid" placeholder="" oninput="rc('c0')"/></div>
-              <div class="field-group narrow"><span class="field-label">Limit</span><input type="text" id="c0-limit" placeholder="" oninput="rc('c0')"/></div>
+              <div class="field-group wide"><span class="field-label">App / service principal GUID</span><input type="text" id="c0-guid" placeholder="ce311824-ce5d-4ea6-8435-6d3eb5852285" oninput="rc('c0')"/></div>
+              <div class="field-group narrow"><span class="field-label">Limit</span><input type="text" id="c0-limit" placeholder="50" oninput="rc('c0')"/></div>
             </div>
             <div class="card-query"><pre class="query-pre" id="out-c0"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('c0')">&#8669; Copy query</button><span class="copy-status" id="cs-c0">Copied</span></div>
@@ -194,25 +194,25 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
         <div class="cards-grid">
           <div class="card">
             <div class="card-header"><div><div class="card-title">Host login activity (event 4624)</div><div class="card-desc">Windows logon events filtered by target hostname. Extracts username, SID, logon type, source IP and workstation.</div></div><span class="tag tag-id">identity</span></div>
-            <div class="card-fields"><div class="field-group"><span class="field-label">Hostname (partial match)</span><input type="text" id="i0-host" placeholder="" oninput="rc('i0')"/></div></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">Hostname (partial match)</span><input type="text" id="i0-host" placeholder="L2345" oninput="rc('i0')"/></div></div>
             <div class="card-query"><pre class="query-pre" id="out-i0"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('i0')">&#8669; Copy query</button><span class="copy-status" id="cs-i0">Copied</span></div>
           </div>
           <div class="card">
             <div class="card-header"><div><div class="card-title">User login activity (event 4624)</div><div class="card-desc">Windows logon events filtered by target username. Use to trace where a specific account has authenticated across the estate.</div></div><span class="tag tag-user">user</span></div>
-            <div class="card-fields"><div class="field-group"><span class="field-label">Username (partial match)</span><input type="text" id="i1-user" placeholder="" oninput="rc('i1')"/></div></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">Username (partial match)</span><input type="text" id="i1-user" placeholder="jsmith" oninput="rc('i1')"/></div></div>
             <div class="card-query"><pre class="query-pre" id="out-i1"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('i1')">&#8669; Copy query</button><span class="copy-status" id="cs-i1">Copied</span></div>
           </div>
           <div class="card">
             <div class="card-header"><div><div class="card-title">User email activity</div><div class="card-desc">Email events for a specific mailbox owner. Returns sent/received times, from, recipients, attachments, sender IP and auth results.</div></div><span class="tag tag-email">email</span></div>
-            <div class="card-fields"><div class="field-group"><span class="field-label">Mailbox owner / username (partial match)</span><input type="text" id="i2-user" placeholder="" oninput="rc('i2')"/></div></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">Mailbox owner / username (partial match)</span><input type="text" id="i2-user" placeholder="jsmith" oninput="rc('i2')"/></div></div>
             <div class="card-query"><pre class="query-pre" id="out-i2"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('i2')">&#8669; Copy query</button><span class="copy-status" id="cs-i2">Copied</span></div>
           </div>
           <div class="card">
             <div class="card-header"><div><div class="card-title">User URL activity</div><div class="card-desc">Firewall URL log entries for a specific user. Returns URI, URL category, source/dest IPs and port.</div></div><span class="tag tag-user">user</span></div>
-            <div class="card-fields"><div class="field-group"><span class="field-label">Username (partial match)</span><input type="text" id="i3-user" placeholder="" oninput="rc('i3')"/></div></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">Username (partial match)</span><input type="text" id="i3-user" placeholder="jsmith" oninput="rc('i3')"/></div></div>
             <div class="card-query"><pre class="query-pre" id="out-i3"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('i3')">&#8669; Copy query</button><span class="copy-status" id="cs-i3">Copied</span></div>
           </div>
@@ -225,13 +225,13 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
         <div class="cards-grid">
           <div class="card">
             <div class="card-header"><div><div class="card-title">Firewall traffic by destination IP</div><div class="card-desc">Traffic log entries for a specific destination IP. Shows app identification, action, protocol, and session end reason.</div></div><span class="tag tag-fw">firewall</span></div>
-            <div class="card-fields"><div class="field-group"><span class="field-label">Destination IP</span><input type="text" id="f0-destip" placeholder="" oninput="rc('f0')"/></div></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">Destination IP</span><input type="text" id="f0-destip" placeholder="10.0.0.1" oninput="rc('f0')"/></div></div>
             <div class="card-query"><pre class="query-pre" id="out-f0"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('f0')">&#8669; Copy query</button><span class="copy-status" id="cs-f0">Copied</span></div>
           </div>
           <div class="card">
             <div class="card-header"><div><div class="card-title">Threat log — file verdict by filename</div><div class="card-desc">Searches NGFW threat logs for a specific filename. Returns Wildfire verdict, threat category, source/dest IPs, user, and partial hash.</div></div><span class="tag tag-fw">firewall</span></div>
-            <div class="card-fields"><div class="field-group"><span class="field-label">File name (partial match)</span><input type="text" id="f1-fname" placeholder="" oninput="rc('f1')"/></div></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">File name (partial match)</span><input type="text" id="f1-fname" placeholder="Cover Page.pdf" oninput="rc('f1')"/></div></div>
             <div class="card-query"><pre class="query-pre" id="out-f1"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('f1')">&#8669; Copy query</button><span class="copy-status" id="cs-f1">Copied</span></div>
           </div>
@@ -244,60 +244,64 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
         <div class="cards-grid">
           <div class="card">
             <div class="card-header"><div><div class="card-title">Endpoint agent status and details</div><div class="card-desc">Basic agent info — online status, last seen, version, install date. Run at the start of every investigation for asset context.</div></div><span class="tag tag-ep">endpoint</span></div>
-            <div class="card-fields"><div class="field-group"><span class="field-label">Hostname</span><input type="text" id="e0-host" placeholder="" oninput="rc('e0')"/></div></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">Hostname</span><input type="text" id="e0-host" placeholder="L2345" oninput="rc('e0')"/></div></div>
             <div class="card-query"><pre class="query-pre" id="out-e0"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('e0')">&#8669; Copy query</button><span class="copy-status" id="cs-e0">Copied</span></div>
           </div>
           <div class="card">
             <div class="card-header"><div><div class="card-title">Edge connections — specific remote IP (strict)</div><div class="card-desc">Strictly filters msedge.exe network events on a host to a single remote IP. Use for targeted confirmation against a known-bad IP.</div></div><span class="tag tag-ep">endpoint</span></div>
             <div class="card-fields">
-              <div class="field-group"><span class="field-label">Hostname</span><input type="text" id="e1-host" placeholder="" oninput="rc('e1')"/></div>
-              <div class="field-group"><span class="field-label">Remote IP</span><input type="text" id="e1-ip" placeholder="" oninput="rc('e1')"/></div>
+              <div class="field-group"><span class="field-label">Hostname</span><input type="text" id="e1-host" placeholder="L2345" oninput="rc('e1')"/></div>
+              <div class="field-group"><span class="field-label">Remote IP</span><input type="text" id="e1-ip" placeholder="10.0.0.1" oninput="rc('e1')"/></div>
             </div>
             <div class="card-query"><pre class="query-pre" id="out-e1"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('e1')">&#8669; Copy query</button><span class="copy-status" id="cs-e1">Copied</span></div>
           </div>
           <div class="card">
             <div class="card-header"><div><div class="card-title">Wildfire — file verdict lookup by SHA256</div><div class="card-desc">Pull Wildfire verdict and file metadata for a specific hash. Use to confirm sandbox verdict and delivery context.</div></div><span class="tag tag-ep">endpoint</span></div>
-            <div class="card-fields"><div class="field-group wide"><span class="field-label">SHA256 hash</span><input type="text" id="e2-hash" placeholder="" oninput="rc('e2')"/></div></div>
+            <div class="card-fields"><div class="field-group wide"><span class="field-label">SHA256 hash</span><input type="text" id="e2-hash" placeholder="a1b2c3d4e5f6..." oninput="rc('e2')"/></div></div>
             <div class="card-query"><pre class="query-pre" id="out-e2"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('e2')">&#8669; Copy query</button><span class="copy-status" id="cs-e2">Copied</span></div>
           </div>
           <div class="card">
             <div class="card-header"><div><div class="card-title">Child processes spawned by parent process</div><div class="card-desc">Returns all child processes under a parent process on a given host. Critical for post-execution analysis — e.g. PDF reader or Office app spawning shells.</div></div><span class="tag tag-ep">endpoint</span></div>
             <div class="card-fields">
-              <div class="field-group"><span class="field-label">Hostname</span><input type="text" id="e3-host" placeholder="" oninput="rc('e3')"/></div>
-              <div class="field-group"><span class="field-label">Parent process name</span><input type="text" id="e3-proc" placeholder="" oninput="rc('e3')"/></div>
+              <div class="field-group"><span class="field-label">Hostname</span><input type="text" id="e3-host" placeholder="L2345" oninput="rc('e3')"/></div>
+              <div class="field-group"><span class="field-label">Parent process name</span><input type="text" id="e3-proc" placeholder="AcroRd32.exe" oninput="rc('e3')"/></div>
             </div>
             <div class="card-query"><pre class="query-pre" id="out-e3"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('e3')">&#8669; Copy query</button><span class="copy-status" id="cs-e3">Copied</span></div>
           </div>
+
           <div class="card">
             <div class="card-header"><div><div class="card-title">File — seen on other hosts (dedup by hostname)</div><div class="card-desc">Check how many endpoints have seen a specific filename. Use to scope potential spread of a suspicious file across the fleet. Deduplicates by hostname so each host appears once.</div></div><span class="tag tag-ep">endpoint</span></div>
             <div class="card-fields">
-              <div class="field-group wide"><span class="field-label">File name</span><input type="text" id="fw0-fname" placeholder="" oninput="rc('fw0')"/></div>
-              <div class="field-group narrow"><span class="field-label">Limit</span><input type="text" id="fw0-limit" placeholder="" oninput="rc('fw0')"/></div>
+              <div class="field-group wide"><span class="field-label">File name</span><input type="text" id="fw0-fname" placeholder="Cover Page.pdf" oninput="rc('fw0')"/></div>
+              <div class="field-group narrow"><span class="field-label">Limit</span><input type="text" id="fw0-limit" placeholder="100" oninput="rc('fw0')"/></div>
             </div>
             <div class="card-query"><pre class="query-pre" id="out-fw0"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('fw0')">&#8669; Copy query</button><span class="copy-status" id="cs-fw0">Copied</span></div>
           </div>
+
           <div class="card">
             <div class="card-header"><div><div class="card-title">File — check if directly executed as actor process</div><div class="card-desc">Checks whether a suspicious file has been executed as a running process anywhere on the fleet. No results means the file has not been directly launched — does not rule out indirect execution.</div></div><span class="tag tag-ep">endpoint</span></div>
             <div class="card-fields">
-              <div class="field-group wide"><span class="field-label">File name</span><input type="text" id="fw1-fname" placeholder="" oninput="rc('fw1')"/></div>
+              <div class="field-group wide"><span class="field-label">File name</span><input type="text" id="fw1-fname" placeholder="suspicious.exe" oninput="rc('fw1')"/></div>
             </div>
             <div class="card-query"><pre class="query-pre" id="out-fw1"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('fw1')">&#8669; Copy query</button><span class="copy-status" id="cs-fw1">Copied</span></div>
           </div>
+
           <div class="card">
             <div class="card-header"><div><div class="card-title">Process — child processes from directory (excluding svchost)</div><div class="card-desc">Finds processes spawned from a specific folder path and filters out svchost to surface meaningful child activity. Use to check what an application directory is actually executing.</div></div><span class="tag tag-ep">endpoint</span></div>
             <div class="card-fields">
-              <div class="field-group wide"><span class="field-label">Directory path (partial match)</span><input type="text" id="fw2-dir" placeholder="" oninput="rc('fw2')"/></div>
-              <div class="field-group narrow"><span class="field-label">Limit</span><input type="text" id="fw2-limit" placeholder="" oninput="rc('fw2')"/></div>
+              <div class="field-group wide"><span class="field-label">Directory path (partial match)</span><input type="text" id="fw2-dir" placeholder="C:\Users\Public\" oninput="rc('fw2')"/></div>
+              <div class="field-group narrow"><span class="field-label">Limit</span><input type="text" id="fw2-limit" placeholder="500" oninput="rc('fw2')"/></div>
             </div>
             <div class="card-query"><pre class="query-pre" id="out-fw2"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('fw2')">&#8669; Copy query</button><span class="copy-status" id="cs-fw2">Copied</span></div>
           </div>
+
         </div>
       </div>
 
@@ -308,16 +312,16 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
           <div class="card">
             <div class="card-header"><div><div class="card-title">Edge connections — remote IP or port</div><div class="card-desc">Edge network events matching a remote IP or port. Use when pivoting on a suspicious IP or port from a phishing or malware investigation.</div></div><span class="tag tag-browser">browser</span></div>
             <div class="card-fields">
-              <div class="field-group"><span class="field-label">Hostname</span><input type="text" id="b0-host" placeholder="" oninput="rc('b0')"/></div>
-              <div class="field-group"><span class="field-label">Remote IP</span><input type="text" id="b0-ip" placeholder="" oninput="rc('b0')"/></div>
-              <div class="field-group narrow"><span class="field-label">Port</span><input type="text" id="b0-port" placeholder="" oninput="rc('b0')"/></div>
+              <div class="field-group"><span class="field-label">Hostname</span><input type="text" id="b0-host" placeholder="T79751" oninput="rc('b0')"/></div>
+              <div class="field-group"><span class="field-label">Remote IP</span><input type="text" id="b0-ip" placeholder="104.18.160.117" oninput="rc('b0')"/></div>
+              <div class="field-group narrow"><span class="field-label">Port</span><input type="text" id="b0-port" placeholder="443" oninput="rc('b0')"/></div>
             </div>
             <div class="card-query"><pre class="query-pre" id="out-b0"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('b0')">&#8669; Copy query</button><span class="copy-status" id="cs-b0">Copied</span></div>
           </div>
           <div class="card">
             <div class="card-header"><div><div class="card-title">Browser network connections — Edge &amp; Chrome (all)</div><div class="card-desc">All outbound connections from Edge or Chrome on a given host. Use for broad browser traffic review during web-based threat investigations.</div></div><span class="tag tag-browser">browser</span></div>
-            <div class="card-fields"><div class="field-group"><span class="field-label">Hostname</span><input type="text" id="b1-host" placeholder="" oninput="rc('b1')"/></div></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">Hostname</span><input type="text" id="b1-host" placeholder="T79751" oninput="rc('b1')"/></div></div>
             <div class="card-query"><pre class="query-pre" id="out-b1"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('b1')">&#8669; Copy query</button><span class="copy-status" id="cs-b1">Copied</span></div>
           </div>
@@ -330,21 +334,28 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
         <div class="cards-grid">
           <div class="card">
             <div class="card-header"><div><div class="card-title">All endpoint connections to external IP (fleet sweep)</div><div class="card-desc">All XDR network events where remote IP matches across any process and any host. Use when you have a confirmed bad IP and want to check fleet-wide exposure.</div></div><span class="tag tag-threat">threat</span></div>
-            <div class="card-fields"><div class="field-group"><span class="field-label">Remote IP (IOC)</span><input type="text" id="t0-ip" placeholder="" oninput="rc('t0')"/></div></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">Remote IP (IOC)</span><input type="text" id="t0-ip" placeholder="185.234.0.1" oninput="rc('t0')"/></div></div>
             <div class="card-query"><pre class="query-pre" id="out-t0"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('t0')">&#8669; Copy query</button><span class="copy-status" id="cs-t0">Copied</span></div>
           </div>
           <div class="card">
             <div class="card-header"><div><div class="card-title">DNS / hostname lookups for domain IOC</div><div class="card-desc">Network events where external hostname matches a domain. Use to identify which hosts contacted or resolved a suspicious domain.</div></div><span class="tag tag-threat">threat</span></div>
-            <div class="card-fields"><div class="field-group"><span class="field-label">Domain (partial match)</span><input type="text" id="t1-domain" placeholder="" oninput="rc('t1')"/></div></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">Domain (partial match)</span><input type="text" id="t1-domain" placeholder="malicious-domain.com" oninput="rc('t1')"/></div></div>
             <div class="card-query"><pre class="query-pre" id="out-t1"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('t1')">&#8669; Copy query</button><span class="copy-status" id="cs-t1">Copied</span></div>
           </div>
           <div class="card">
             <div class="card-header"><div><div class="card-title">File hash sweep — all endpoints</div><div class="card-desc">All file events across the fleet for a specific SHA256. Use to determine spread of a malicious file following a Wildfire or VirusTotal hit.</div></div><span class="tag tag-threat">threat</span></div>
-            <div class="card-fields"><div class="field-group wide"><span class="field-label">SHA256 hash</span><input type="text" id="t2-hash" placeholder="" oninput="rc('t2')"/></div></div>
+            <div class="card-fields"><div class="field-group wide"><span class="field-label">SHA256 hash</span><input type="text" id="t2-hash" placeholder="a1b2c3d4e5f6..." oninput="rc('t2')"/></div></div>
             <div class="card-query"><pre class="query-pre" id="out-t2"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('t2')">&#8669; Copy query</button><span class="copy-status" id="cs-t2">Copied</span></div>
+          </div>
+
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">DNS query lookup by domain name (port 53)</div><div class="card-desc">Filters on DNS traffic (port 53) and matches against the dns_query_name field. More precise than the external hostname match — use when you have a specific malicious domain and want to confirm which hosts queried it.</div></div><span class="tag tag-threat">threat</span></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">Domain (exact or partial match)</span><input type="text" id="t3-domain" placeholder="xcss.me" oninput="rc('t3')"/></div></div>
+            <div class="card-query"><pre class="query-pre" id="out-t3"></pre></div>
+            <div class="card-footer"><button class="btn" onclick="cc('t3')">&#8669; Copy query</button><span class="copy-status" id="cs-t3">Copied</span></div>
           </div>
         </div>
       </div>
@@ -355,13 +366,13 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
         <div class="cards-grid">
           <div class="card">
             <div class="card-header"><div><div class="card-title">RDP connections from a specific source host</div><div class="card-desc">All RDP (port 3389) connections originating from a given hostname. Use when a host with no legitimate reason to RDP is seen initiating connections.</div></div><span class="tag tag-lateral">lateral</span></div>
-            <div class="card-fields"><div class="field-group"><span class="field-label">Source hostname</span><input type="text" id="l0-src" placeholder="" oninput="rc('l0')"/></div></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">Source hostname</span><input type="text" id="l0-src" placeholder="WSUS-SERVER01" oninput="rc('l0')"/></div></div>
             <div class="card-query"><pre class="query-pre" id="out-l0"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('l0')">&#8669; Copy query</button><span class="copy-status" id="cs-l0">Copied</span></div>
           </div>
           <div class="card">
             <div class="card-header"><div><div class="card-title">RDP connections — one source to multiple destinations</div><div class="card-desc">Groups RDP connections from a source host by destination to show spread. A high destination count from one source is a strong escalation indicator.</div></div><span class="tag tag-lateral">lateral</span></div>
-            <div class="card-fields"><div class="field-group"><span class="field-label">Source hostname</span><input type="text" id="l1-src" placeholder="" oninput="rc('l1')"/></div></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">Source hostname</span><input type="text" id="l1-src" placeholder="WSUS-SERVER01" oninput="rc('l1')"/></div></div>
             <div class="card-query"><pre class="query-pre" id="out-l1"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('l1')">&#8669; Copy query</button><span class="copy-status" id="cs-l1">Copied</span></div>
           </div>
@@ -380,13 +391,13 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
           </div>
           <div class="card">
             <div class="card-header"><div><div class="card-title">File written to temp / appdata / startup locations</div><div class="card-desc">File events where the path includes common malware drop locations. Use after a malware alert to identify what was written and where.</div></div><span class="tag tag-persist">persist</span></div>
-            <div class="card-fields"><div class="field-group"><span class="field-label">Hostname</span><input type="text" id="p1-host" placeholder="" oninput="rc('p1')"/></div></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">Hostname</span><input type="text" id="p1-host" placeholder="L2345" oninput="rc('p1')"/></div></div>
             <div class="card-query"><pre class="query-pre" id="out-p1"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('p1')">&#8669; Copy query</button><span class="copy-status" id="cs-p1">Copied</span></div>
           </div>
           <div class="card">
             <div class="card-header"><div><div class="card-title">DNS queries to suspicious TLDs from endpoint</div><div class="card-desc">Network events where external hostname resolves to an uncommon TLD (.xyz, .top, .ru, .cn etc). Use for C2 beacon detection or post-phishing callback hunting.</div></div><span class="tag tag-persist">persist</span></div>
-            <div class="card-fields"><div class="field-group"><span class="field-label">Hostname</span><input type="text" id="p2-host" placeholder="" oninput="rc('p2')"/></div></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">Hostname</span><input type="text" id="p2-host" placeholder="L2345" oninput="rc('p2')"/></div></div>
             <div class="card-query"><pre class="query-pre" id="out-p2"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('p2')">&#8669; Copy query</button><span class="copy-status" id="cs-p2">Copied</span></div>
           </div>
@@ -424,7 +435,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
         <div class="cards-grid">
           <div class="card">
             <div class="card-header"><div><div class="card-title">Suspicious shell / interpreter spawned on host</div><div class="card-desc">Catches cmd, powershell, wscript, cscript, mshta, rundll32 being executed. Good for post-phishing triage — run after a malicious document or PDF alert.</div></div><span class="tag tag-ep">endpoint</span></div>
-            <div class="card-fields"><div class="field-group"><span class="field-label">Hostname</span><input type="text" id="x0-host" placeholder="" oninput="rc('x0')"/></div></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">Hostname</span><input type="text" id="x0-host" placeholder="L2345" oninput="rc('x0')"/></div></div>
             <div class="card-query"><pre class="query-pre" id="out-x0"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('x0')">&#8669; Copy query</button><span class="copy-status" id="cs-x0">Copied</span></div>
           </div>
@@ -432,16 +443,32 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
             <div class="card-header"><div><div class="card-title">PowerShell script block logging (event 4104)</div><div class="card-desc">Captures actual PowerShell content being executed via Windows script block logging. Shows decoded/deobfuscated PS content. Requires script block logging enabled on client.</div></div><span class="tag tag-ep">endpoint</span></div>
             <div class="card-fields">
               <div class="field-group"><span class="field-label">Hostname (leave blank for fleet-wide)</span><input type="text" id="x1-host" placeholder="" oninput="rc('x1')"/></div>
-              <div class="field-group narrow"><span class="field-label">Limit</span><input type="text" id="x1-limit" placeholder="" oninput="rc('x1')"/></div>
+              <div class="field-group narrow"><span class="field-label">Limit</span><input type="text" id="x1-limit" placeholder="50" oninput="rc('x1')"/></div>
             </div>
             <div class="card-query"><pre class="query-pre" id="out-x1"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('x1')">&#8669; Copy query</button><span class="copy-status" id="cs-x1">Copied</span></div>
           </div>
           <div class="card">
             <div class="card-header"><div><div class="card-title">Network connections by process name — fleet-wide</div><div class="card-desc">All network connections made by a named process across all hosts. Use when you have a suspicious process from one alert and want to check if it is active elsewhere.</div></div><span class="tag tag-threat">threat</span></div>
-            <div class="card-fields"><div class="field-group"><span class="field-label">Process name (partial match)</span><input type="text" id="x2-proc" placeholder="" oninput="rc('x2')"/></div></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">Process name (partial match)</span><input type="text" id="x2-proc" placeholder="malware.exe" oninput="rc('x2')"/></div></div>
             <div class="card-query"><pre class="query-pre" id="out-x2"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('x2')">&#8669; Copy query</button><span class="copy-status" id="cs-x2">Copied</span></div>
+          </div>
+
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">Suspicious processes by name list — on host</div><div class="card-desc">Checks for specific process names being executed on a host using an exact match list. Add as many process names as needed — use when you have a known list of malicious or suspicious executables from an investigation or threat intel report.</div></div><span class="tag tag-ep">endpoint</span></div>
+            <div class="card-fields">
+              <div class="field-group"><span class="field-label">Hostname</span><input type="text" id="x3-host" placeholder="L2345" oninput="rc('x3')"/></div>
+            </div>
+            <div id="x3-proc-list" class="card-fields" style="padding-top:0">
+              <div class="field-group" id="x3-proc-0-group"><span class="field-label">Process name 1</span><input type="text" id="x3-proc-0" placeholder="TSI_FMS_V43_setup.exe" oninput="rc('x3')"/></div>
+            </div>
+            <div style="padding: 0 16px 12px; display:flex; gap:8px;">
+              <button class="btn" onclick="addProc()" style="font-size:11px; padding:4px 10px;">+ Add process</button>
+              <button class="btn btn-danger" onclick="removeProc()" id="x3-remove-btn" style="font-size:11px; padding:4px 10px; display:none;">− Remove last</button>
+            </div>
+            <div class="card-query"><pre class="query-pre" id="out-x3"></pre></div>
+            <div class="card-footer"><button class="btn" onclick="cc('x3')">&#8669; Copy query</button><span class="copy-status" id="cs-x3">Copied</span></div>
           </div>
         </div>
       </div>
@@ -482,13 +509,13 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
         <div class="cards-grid">
           <div class="card">
             <div class="card-header"><div><div class="card-title">All events from source IP</div><div class="card-desc">All log events sourced from a specific IP across all log sources. Use early in triage to get a broad picture of what a host has been doing.</div></div><span class="tag tag-aql">AQL</span></div>
-            <div class="card-fields"><div class="field-group"><span class="field-label">Source IP</span><input type="text" id="aq0-srcip" placeholder="" oninput="rc('aq0')"/></div></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">Source IP</span><input type="text" id="aq0-srcip" placeholder="10.0.0.1" oninput="rc('aq0')"/></div></div>
             <div class="card-query"><pre class="query-pre" id="out-aq0"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('aq0')">&#8669; Copy query</button><span class="copy-status" id="cs-aq0">Copied</span></div>
           </div>
           <div class="card">
             <div class="card-header"><div><div class="card-title">Failed logins by source IP</div><div class="card-desc">Authentication failure events (category 5002) from a specific source IP. Use to identify brute force or credential stuffing activity.</div></div><span class="tag tag-aql">AQL</span></div>
-            <div class="card-fields"><div class="field-group"><span class="field-label">Source IP</span><input type="text" id="aq1-ip" placeholder="" oninput="rc('aq1')"/></div></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">Source IP</span><input type="text" id="aq1-ip" placeholder="10.0.0.1" oninput="rc('aq1')"/></div></div>
             <div class="card-query"><pre class="query-pre" id="out-aq1"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('aq1')">&#8669; Copy query</button><span class="copy-status" id="cs-aq1">Copied</span></div>
           </div>
@@ -501,7 +528,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
         <div class="cards-grid">
           <div class="card">
             <div class="card-header"><div><div class="card-title">All events to destination IP</div><div class="card-desc">All log events targeting a specific destination IP. Use to confirm whether traffic reached a host and identify what protocols and sources were involved.</div></div><span class="tag tag-aql">AQL</span></div>
-            <div class="card-fields"><div class="field-group"><span class="field-label">Destination IP</span><input type="text" id="aq2-destip" placeholder="" oninput="rc('aq2')"/></div></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">Destination IP</span><input type="text" id="aq2-destip" placeholder="10.0.0.1" oninput="rc('aq2')"/></div></div>
             <div class="card-query"><pre class="query-pre" id="out-aq2"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('aq2')">&#8669; Copy query</button><span class="copy-status" id="cs-aq2">Copied</span></div>
           </div>
@@ -514,13 +541,13 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
         <div class="cards-grid">
           <div class="card">
             <div class="card-header"><div><div class="card-title">Authentication events by username</div><div class="card-desc">Authentication log events (category 5000-5002) for a specific username. Use to build a login timeline and identify anomalous source IPs or failures.</div></div><span class="tag tag-aql">AQL</span></div>
-            <div class="card-fields"><div class="field-group"><span class="field-label">Username (partial match)</span><input type="text" id="aq3-user" placeholder="" oninput="rc('aq3')"/></div></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">Username (partial match)</span><input type="text" id="aq3-user" placeholder="jsmith" oninput="rc('aq3')"/></div></div>
             <div class="card-query"><pre class="query-pre" id="out-aq3"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('aq3')">&#8669; Copy query</button><span class="copy-status" id="cs-aq3">Copied</span></div>
           </div>
           <div class="card">
             <div class="card-header"><div><div class="card-title">All events for username — all log sources</div><div class="card-desc">Broader than the auth-only query — returns all events where username matches across every log source. Use for a full activity picture on a user.</div></div><span class="tag tag-aql">AQL</span></div>
-            <div class="card-fields"><div class="field-group"><span class="field-label">Username (partial match)</span><input type="text" id="aq4-user" placeholder="" oninput="rc('aq4')"/></div></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">Username (partial match)</span><input type="text" id="aq4-user" placeholder="jsmith" oninput="rc('aq4')"/></div></div>
             <div class="card-query"><pre class="query-pre" id="out-aq4"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('aq4')">&#8669; Copy query</button><span class="copy-status" id="cs-aq4">Copied</span></div>
           </div>
@@ -533,7 +560,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
         <div class="cards-grid">
           <div class="card">
             <div class="card-header"><div><div class="card-title">All events by hostname</div><div class="card-desc">All events where the log source name matches a hostname. Use at the start of an investigation to get a broad picture of activity across all log sources for a specific machine.</div></div><span class="tag tag-aql">AQL</span></div>
-            <div class="card-fields"><div class="field-group"><span class="field-label">Hostname (partial match)</span><input type="text" id="aq5-host" placeholder="" oninput="rc('aq5')"/></div></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">Hostname (partial match)</span><input type="text" id="aq5-host" placeholder="L2345" oninput="rc('aq5')"/></div></div>
             <div class="card-query"><pre class="query-pre" id="out-aq5"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('aq5')">&#8669; Copy query</button><span class="copy-status" id="cs-aq5">Copied</span></div>
           </div>
@@ -546,13 +573,13 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
         <div class="cards-grid">
           <div class="card">
             <div class="card-header"><div><div class="card-title">All events contributing to an offense</div><div class="card-desc">All log events associated with a specific QRadar offense ID. Use to pull the raw contributing events behind an offense for manual review.</div></div><span class="tag tag-aql">AQL</span></div>
-            <div class="card-fields"><div class="field-group narrow"><span class="field-label">Offense ID</span><input type="text" id="aq6-oid" placeholder="" oninput="rc('aq6')"/></div></div>
+            <div class="card-fields"><div class="field-group narrow"><span class="field-label">Offense ID</span><input type="text" id="aq6-oid" placeholder="12345" oninput="rc('aq6')"/></div></div>
             <div class="card-query"><pre class="query-pre" id="out-aq6"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('aq6')">&#8669; Copy query</button><span class="copy-status" id="cs-aq6">Copied</span></div>
           </div>
           <div class="card">
             <div class="card-header"><div><div class="card-title">Events by offense source IP</div><div class="card-desc">All events from the offense source IP within the selected timeframe. Use to build a timeline around the offense trigger and identify precursor or follow-on activity.</div></div><span class="tag tag-aql">AQL</span></div>
-            <div class="card-fields"><div class="field-group"><span class="field-label">Source IP</span><input type="text" id="aq7-ip" placeholder="" oninput="rc('aq7')"/></div></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">Source IP</span><input type="text" id="aq7-ip" placeholder="10.0.0.1" oninput="rc('aq7')"/></div></div>
             <div class="card-query"><pre class="query-pre" id="out-aq7"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('aq7')">&#8669; Copy query</button><span class="copy-status" id="cs-aq7">Copied</span></div>
           </div>
@@ -565,13 +592,13 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
         <div class="cards-grid">
           <div class="card">
             <div class="card-header"><div><div class="card-title">Events by QID name</div><div class="card-desc">Returns all events matching a specific QRadar event name. Use when you know the rule or event type firing and want to see all occurrences across the estate.</div></div><span class="tag tag-aql">AQL</span></div>
-            <div class="card-fields"><div class="field-group"><span class="field-label">Event name (partial match)</span><input type="text" id="aq8-qid" placeholder="" oninput="rc('aq8')"/></div></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">Event name (partial match)</span><input type="text" id="aq8-qid" placeholder="Windows Login" oninput="rc('aq8')"/></div></div>
             <div class="card-query"><pre class="query-pre" id="out-aq8"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('aq8')">&#8669; Copy query</button><span class="copy-status" id="cs-aq8">Copied</span></div>
           </div>
           <div class="card">
             <div class="card-header"><div><div class="card-title">High magnitude events — priority sweep</div><div class="card-desc">All events above a specified magnitude threshold. Use for a quick priority sweep across all log sources — useful at the start of a shift or when triaging a busy queue.</div></div><span class="tag tag-aql">AQL</span></div>
-            <div class="card-fields"><div class="field-group narrow"><span class="field-label">Min magnitude (1-10)</span><input type="text" id="aq9-mag" placeholder="" oninput="rc('aq9')"/></div></div>
+            <div class="card-fields"><div class="field-group narrow"><span class="field-label">Min magnitude (1-10)</span><input type="text" id="aq9-mag" placeholder="7" oninput="rc('aq9')"/></div></div>
             <div class="card-query"><pre class="query-pre" id="out-aq9"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('aq9')">&#8669; Copy query</button><span class="copy-status" id="cs-aq9">Copied</span></div>
           </div>
@@ -625,9 +652,6 @@ var B={
   'e1':function(){return 'dataset = xdr_data\n| filter agent_hostname = "'+gv('e1-host','HOSTNAME')+'"\n| filter event_type = ENUM.NETWORK\n| filter actor_process_image_name ~= "(?i)msedge.exe"\n| filter action_remote_ip = "'+gv('e1-ip','REMOTE-IP')+'"\n| fields _time, agent_hostname, actor_process_image_name,\n         action_local_ip, action_local_port,\n         action_remote_ip, action_remote_port, action_external_hostname\n| sort asc _time';},
   'e2':function(){return 'dataset = xdr_data\n| filter action_file_sha256 = "'+gv('e2-hash','SHA256-HASH')+'"\n| fields _time, agent_hostname, actor_process_image_name,\n         action_file_name, action_file_path,\n         action_file_sha256, action_file_wildfire_verdict\n| sort desc _time';},
   'e3':function(){return 'dataset = xdr_data\n| filter agent_hostname = "'+gv('e3-host','HOSTNAME')+'"\n| filter event_type = ENUM.PROCESS\n| filter causality_actor_process_image_name ~= "(?i)'+gv('e3-proc','PARENT-PROCESS.exe')+'"\n| fields _time, agent_hostname,\n         causality_actor_process_image_name,\n         actor_process_image_name, actor_process_command_line,\n         actor_process_image_sha256\n| sort asc _time';},
-  'fw0':function(){return 'dataset = xdr_data\n| filter action_file_name = "'+gv('fw0-fname','FILENAME')+'"\n| fields _time, agent_hostname, actor_process_image_name,\n         action_file_name, action_file_path,\n         action_file_sha256\n| dedup agent_hostname\n| sort desc _time\n| limit '+gv('fw0-limit','100');},
-  'fw1':function(){return 'dataset = xdr_data\n| filter action_file_name = "'+gv('fw1-fname','FILENAME')+'"\n    or actor_process_image_name = "'+gv('fw1-fname','FILENAME')+'"\n| fields _time, agent_hostname, actor_process_image_name,\n         action_process_image_name,\n         action_process_image_command_line,\n         action_file_name, action_file_path\n| sort desc _time\n| limit 200';},
-  'fw2':function(){return 'dataset = xdr_data\n| filter actor_process_image_path contains "'+gv('fw2-dir','DIRECTORY')+'"\n    and action_process_image_name != "svchost.exe"\n| fields _time, agent_hostname, actor_process_image_name,\n         actor_process_image_path,\n         action_process_image_name,\n         action_process_image_command_line\n| sort desc _time\n| limit '+gv('fw2-limit','500');},
   'b0':function(){return 'dataset = xdr_data\n| filter agent_hostname = "'+gv('b0-host','HOSTNAME')+'"\n| filter event_type = ENUM.NETWORK\n| filter actor_process_image_name ~= "(?i)msedge.exe"\n| filter action_remote_ip = "'+gv('b0-ip','REMOTE-IP')+'"\n    or action_remote_port = '+gv('b0-port','443')+'\n| fields _time, agent_hostname, actor_process_image_name,\n         action_local_ip, action_local_port,\n         action_remote_ip, action_remote_port, action_external_hostname\n| sort asc _time';},
   'b1':function(){return 'dataset = xdr_data\n| filter agent_hostname = "'+gv('b1-host','HOSTNAME')+'"\n| filter event_type = ENUM.NETWORK\n| filter actor_process_image_name ~= "(?i)msedge.exe"\n    or actor_process_image_name ~= "(?i)chrome.exe"\n| fields _time, agent_hostname, actor_process_image_name,\n         action_local_ip, action_local_port,\n         action_remote_ip, action_remote_port, action_external_hostname\n| sort asc _time';},
   't0':function(){return 'dataset = xdr_data\n| filter event_type = ENUM.NETWORK\n| filter action_remote_ip = "'+gv('t0-ip','IOC-IP')+'"\n| fields _time, agent_hostname, actor_process_image_name,\n         action_local_ip, action_local_port,\n         action_remote_ip, action_remote_port, action_external_hostname\n| sort desc _time\n| limit 200';},
@@ -660,6 +684,21 @@ var B={
     return 'dataset = xdr_data\n'+hf+'| filter event_type = EVENT_LOG and action_evtlog_event_id = 4104\n| alter ScriptBlock = action_evtlog_data_fields -> ScriptBlockText\n| alter UserName = action_evtlog_data_fields -> UserName\n| filter ScriptBlock != null\n| fields _time, agent_hostname, UserName, ScriptBlock\n| sort desc _time\n| limit '+gv('x1-limit','50');},
   'x2':function(){return 'dataset = xdr_data\n| filter event_type = ENUM.NETWORK\n| filter actor_process_image_name ~= "(?i)'+gv('x2-proc','PROCESS-NAME')+'"\n| fields _time, agent_hostname, actor_process_image_name,\n         action_remote_ip, action_remote_port, action_external_hostname\n| sort desc _time\n| limit 200';},
   'a0':function(){return 'dataset = pan_dss_raw\n| filter admin_count = "1"\n| dedup sam_account_name\n| view column order = populated';},
+  'fw0':function(){return 'dataset = xdr_data\n| filter action_file_name = "'+gv('fw0-fname','FILENAME')+'"\n| fields _time, agent_hostname, actor_process_image_name,\n         action_file_name, action_file_path,\n         action_file_sha256\n| dedup agent_hostname\n| sort desc _time\n| limit '+gv('fw0-limit','100');},
+  'fw1':function(){return 'dataset = xdr_data\n| filter action_file_name = "'+gv('fw1-fname','FILENAME')+'"\n    or actor_process_image_name = "'+gv('fw1-fname','FILENAME')+'"\n| fields _time, agent_hostname, actor_process_image_name,\n         action_process_image_name,\n         action_process_image_command_line,\n         action_file_name, action_file_path\n| sort desc _time\n| limit 200';},
+  'fw2':function(){return 'dataset = xdr_data\n| filter actor_process_image_path contains "'+gv('fw2-dir','DIRECTORY')+'"\n    and action_process_image_name != "svchost.exe"\n| fields _time, agent_hostname, actor_process_image_name,\n         actor_process_image_path,\n         action_process_image_name,\n         action_process_image_command_line\n| sort desc _time\n| limit '+gv('fw2-limit','500');},
+  't3':function(){return 'dataset = xdr_data\n| filter event_type = ENUM.NETWORK\n| filter action_local_port = 53\n    OR action_remote_port = 53\n| filter dns_query_name ~= "'+gv('t3-domain','DOMAIN.COM')+'"\n| fields _time, agent_hostname, actor_process_image_name,\n         actor_process_image_path, dns_query_name\n| sort asc _time';},
+  'x3':function(){
+    var h=gv('x3-host','HOSTNAME');
+    var procs=[];
+    var i=0;
+    while(document.getElementById('x3-proc-'+i)){
+      var v=gv('x3-proc-'+i,'');
+      if(v) procs.push('    "'+v+'"');
+      i++;
+    }
+    if(procs.length===0) procs.push('    "PROCESS-NAME.exe"');
+    return 'dataset = xdr_data\n| filter agent_hostname = "'+h+'"\n| filter event_type = ENUM.PROCESS\n| filter action_process_image_name in (\n'+procs.join(',\n')+'\n  )\n| fields _time, agent_hostname, actor_process_image_name,\n         action_process_image_name, action_process_image_path,\n         action_process_instance_id\n| sort asc _time';},
   'aq0':function(){return aqlBase('sourceip = \''+gv('aq0-srcip','SOURCE-IP')+'\'');},
   'aq1':function(){return aqlBase('sourceip = \''+gv('aq1-ip','SOURCE-IP')+'\'\nAND category = 5002');},
   'aq2':function(){return aqlBase('destinationip = \''+gv('aq2-destip','DEST-IP')+'\'');},
@@ -682,7 +721,7 @@ function hl(q){
     .replace(/("([^"\\]*)")/g,'<span class="hl-str">$1</span>')
     .replace(/('[^']*')/g,'<span class="hl-str">$1</span>')
     .replace(/\b(ENUM\.[A-Z_]+|EVENT_LOG)\b/g,'<span class="hl-op">$1</span>')
-    .replace(/\b(HOSTNAME|DEST-IP|REMOTE-IP|PASTE-APP-GUID|SHA256-HASH|DOMAIN\.COM|IOC-IP|PARENT-PROCESS\.exe|SOURCE-HOSTNAME|SOURCE-IP|USERNAME|FILENAME|OFFENSE-ID|PROCESS-NAME|EVENT-NAME|DIRECTORY)\b/g,'<span class="hl-var">$1</span>');
+    .replace(/\b(HOSTNAME|DEST-IP|REMOTE-IP|PASTE-APP-GUID|SHA256-HASH|DOMAIN\.COM|IOC-IP|PARENT-PROCESS\.exe|SOURCE-HOSTNAME|SOURCE-IP|USERNAME|FILENAME|OFFENSE-ID|PROCESS-NAME|EVENT-NAME)\b/g,'<span class="hl-var">$1</span>');
 }
 
 function rc(id){
@@ -690,6 +729,30 @@ function rc(id){
   var q=fn(); cache[id]=q;
   var el=document.getElementById('out-'+id); if(!el) return;
   el.innerHTML=hl(q);
+}
+
+var x3ProcCount = 1;
+
+function addProc() {
+  var idx = x3ProcCount;
+  var list = document.getElementById('x3-proc-list');
+  var div = document.createElement('div');
+  div.className = 'field-group';
+  div.id = 'x3-proc-'+idx+'-group';
+  div.innerHTML = '<span class="field-label">Process name '+(idx+1)+'</span><input type="text" id="x3-proc-'+idx+'" placeholder="process.exe" oninput="rc(\'x3\')"/>';
+  list.appendChild(div);
+  x3ProcCount++;
+  document.getElementById('x3-remove-btn').style.display = x3ProcCount > 1 ? 'inline-flex' : 'none';
+  rc('x3');
+}
+
+function removeProc() {
+  if(x3ProcCount <= 1) return;
+  x3ProcCount--;
+  var el = document.getElementById('x3-proc-'+x3ProcCount+'-group');
+  if(el) el.remove();
+  document.getElementById('x3-remove-btn').style.display = x3ProcCount > 1 ? 'inline-flex' : 'none';
+  rc('x3');
 }
 
 function renderAll(){Object.keys(B).forEach(rc);}
