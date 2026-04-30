@@ -150,6 +150,14 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 .step-query-ref:hover{border-color:var(--accent);color:var(--accent);}
 .flow-step.done .step-title{color:var(--text3);text-decoration:line-through;}
 .no-results{font-size:13px;color:var(--text3);padding:20px 0;}
+/* PER-STEP FINDINGS */
+.step-finding{margin-top:8px;}
+.step-finding textarea{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:5px;color:var(--text);font-family:var(--sans);font-size:11.5px;padding:7px 10px;outline:none;resize:none;height:52px;line-height:1.5;transition:border-color 0.15s;}
+.step-finding textarea:focus{border-color:var(--accent);background:var(--bg3);height:80px;}
+.step-finding textarea::placeholder{color:var(--text3);}
+.compile-findings-btn{font-family:var(--sans);font-size:11.5px;font-weight:500;padding:5px 12px;border-radius:6px;border:1px solid rgba(167,139,250,0.3);background:rgba(167,139,250,0.08);color:var(--purple);cursor:pointer;transition:all 0.15s;display:inline-flex;align-items:center;gap:5px;}
+.compile-findings-btn:hover{background:rgba(167,139,250,0.15);}
+
 /* SEVERITY BADGES */
 .sev-critical{font-size:9px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;padding:2px 6px;border-radius:3px;background:rgba(224,82,82,0.15);color:#e05252;flex-shrink:0;}
 .sev-high{font-size:9px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;padding:2px 6px;border-radius:3px;background:rgba(245,166,35,0.15);color:#f5a623;flex-shrink:0;}
@@ -269,7 +277,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 <div class="topbar">
   <div class="topbar-left">
     <div class="logo">XQL <span>//</span> Query Builder</div>
-    <span class="ver">v4.1</span>
+    <span class="ver">v4.2</span>
   </div>
   <div class="topbar-right">
     <button class="btn" onclick="toggleSettings()" id="settings-btn">&#9881; Settings</button>
@@ -916,7 +924,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
       <div class="flow-header">
         <h2>Persistence — startup &amp; scheduled tasks</h2>
         <p>Matching alerts: <em>An executable or script was added to the startup folder · An uncommon file added to startup-related Registry keys · Uncommon local scheduled task creation via schtasks.exe</em></p>
-        <div style="display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;"><span class="sev-critical">Critical</span><button class="btn-copy-all" onclick="copyAllFlow('persist')">&#8669; Copy all queries</button></div>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;"><span class="sev-critical">Critical</span><button class="btn-copy-all" onclick="copyAllFlow('persist')">&#8669; Copy all queries</button><button class="compile-findings-btn" onclick="compileFindings('persist')">&#128221; Compile findings</button></div>
         <div class="flow-progress">Progress: <span id="prog-persist">0</span> / 5 steps complete</div>
       </div>
       <div class="flow-steps">
@@ -929,7 +937,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-desc">Verify the endpoint has an active XDR agent before investing time in deeper queries.</div>
               <div class="step-lookfor"><strong>Look for:</strong> endpoint_status = Online, recent last_seen timestamp. If agent is missing or stale, raise with client before proceeding.</div>
               <button class="step-query-ref" onclick="goToQueryCard('e0')">&#8669; Endpoint agent status</button>
-            </div>
+            <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('persist',0,this.value)" id="finding-persist-0"></textarea></div>
+</div>
           </div>
         </div>
         <div class="flow-step" id="step-persist-1">
@@ -941,7 +950,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-desc">Query for Windows event 4698 — scheduled task created. Run fleet-wide first to see if this is isolated or widespread.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Unexpected task names, tasks pointing to temp/appdata paths, tasks created by non-admin users or unusual accounts.</div>
               <button class="step-query-ref" onclick="goToQueryCard('p0')">&#8669; Scheduled task creation (4698)</button>
-            </div>
+            <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('persist',1,this.value)" id="finding-persist-1"></textarea></div>
+</div>
           </div>
         </div>
         <div class="flow-step" id="step-persist-2">
@@ -953,7 +963,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-desc">Look for files dropped into temp, appdata, or startup folders around the time of the alert.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Executables or scripts (.exe, .ps1, .bat, .vbs) written to startup paths. Note the process that wrote them — that's your likely initial access vector.</div>
               <button class="step-query-ref" onclick="goToQueryCard('p1')">&#8669; File written to temp/appdata/startup</button>
-            </div>
+            <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('persist',2,this.value)" id="finding-persist-2"></textarea></div>
+</div>
           </div>
         </div>
         <div class="flow-step" id="step-persist-3">
@@ -966,7 +977,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-lookfor"><strong>Look for:</strong> cmd.exe, powershell.exe, or network-connected processes spawned from the suspicious parent. Any results here = likely True Positive, escalate.</div>
               <button class="step-query-ref" onclick="goToQueryCard('e3')">&#8669; Child processes by parent</button>
               <button class="step-query-ref" onclick="goToQueryCard('fw1')" style="margin-left:6px">&#8669; File directly executed check</button>
-            </div>
+            <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('persist',3,this.value)" id="finding-persist-3"></textarea></div>
+</div>
           </div>
         </div>
         <div class="flow-step" id="step-persist-4">
@@ -994,7 +1006,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
       <div class="flow-header">
         <h2>Lateral movement / RDP anomaly</h2>
         <p>Matching alerts: <em>Rare RDP session to a remote host · Suspicious SMB connection from domain controller</em></p>
-        <div style="display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;"><span class="sev-high">High</span><button class="btn-copy-all" onclick="copyAllFlow('lateral')">&#8669; Copy all queries</button></div>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;"><span class="sev-high">High</span><button class="btn-copy-all" onclick="copyAllFlow('lateral')">&#8669; Copy all queries</button><button class="compile-findings-btn" onclick="compileFindings('lateral')">&#128221; Compile findings</button></div>
         <div class="flow-progress">Progress: <span id="prog-lateral">0</span> / 5 steps complete</div>
       </div>
       <div class="flow-steps">
@@ -1007,7 +1019,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-desc">Verify the host initiating the RDP/SMB connection has an active agent and is a known asset.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Is this a server, workstation, or service host? A WSUS server, print server, or DC initiating RDP to workstations is immediately suspicious.</div>
               <button class="step-query-ref" onclick="goToQueryCard('e0')">&#8669; Endpoint agent status</button>
-            </div>
+            <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('lateral',0,this.value)" id="finding-lateral-0"></textarea></div>
+</div>
           </div>
         </div>
         <div class="flow-step" id="step-lateral-1">
@@ -1019,7 +1032,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-desc">Get the full picture of RDP activity originating from this host — not just the single connection that triggered the alert.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Multiple destination IPs, connections outside business hours, or RDP from a process with no legitimate reason to initiate remote desktop sessions.</div>
               <button class="step-query-ref" onclick="goToQueryCard('l0')">&#8669; RDP connections from source host</button>
-            </div>
+            <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('lateral',1,this.value)" id="finding-lateral-1"></textarea></div>
+</div>
           </div>
         </div>
         <div class="flow-step" id="step-lateral-2">
@@ -1031,7 +1045,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-desc">Aggregate RDP destinations to assess spread — a single host RDP'ing to many others is a strong lateral movement indicator.</div>
               <div class="step-lookfor"><strong>Look for:</strong> High connection_count to multiple unique IPs. 3+ unique destinations from a non-admin host = escalate immediately.</div>
               <button class="step-query-ref" onclick="goToQueryCard('l1')">&#8669; RDP — one source to multiple destinations</button>
-            </div>
+            <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('lateral',2,this.value)" id="finding-lateral-2"></textarea></div>
+</div>
           </div>
         </div>
         <div class="flow-step" id="step-lateral-3">
@@ -1043,7 +1058,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-desc">Establish what user account was active on the source host around the time of the RDP activity.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Service accounts logging in interactively, accounts that don't belong on that host, or logins from unusual source IPs preceding the RDP activity.</div>
               <button class="step-query-ref" onclick="goToQueryCard('i0')">&#8669; Host login activity</button>
-            </div>
+            <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('lateral',3,this.value)" id="finding-lateral-3"></textarea></div>
+</div>
           </div>
         </div>
         <div class="flow-step" id="step-lateral-4">
@@ -1071,7 +1087,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
       <div class="flow-header">
         <h2>Malware / local analysis / file threat</h2>
         <p>Matching alerts: <em>Local Analysis Malware · An uncommon executable was remotely written over SMB · Wildfire malicious verdict</em></p>
-        <div style="display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;"><span class="sev-critical">Critical</span><button class="btn-copy-all" onclick="copyAllFlow('malware')">&#8669; Copy all queries</button></div>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;"><span class="sev-critical">Critical</span><button class="btn-copy-all" onclick="copyAllFlow('malware')">&#8669; Copy all queries</button><button class="compile-findings-btn" onclick="compileFindings('malware')">&#128221; Compile findings</button></div>
         <div class="flow-progress">Progress: <span id="prog-malware">0</span> / 6 steps complete</div>
       </div>
       <div class="flow-steps">
@@ -1084,7 +1100,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-desc">Confirm the sandbox verdict for the file hash associated with the alert.</div>
               <div class="step-lookfor"><strong>Look for:</strong> action_file_wildfire_verdict — malicious/grayware = investigate further. Benign = likely FP but still check for unusual delivery context. No verdict = file hasn't been submitted to Wildfire yet.</div>
               <button class="step-query-ref" onclick="goToQueryCard('e2')">&#8669; Wildfire verdict by SHA256</button>
-            </div>
+            <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('malware',0,this.value)" id="finding-malware-0"></textarea></div>
+</div>
           </div>
         </div>
         <div class="flow-step" id="step-malware-1">
@@ -1096,7 +1113,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-desc">See if the file was caught at the perimeter by the NGFW threat engine.</div>
               <div class="step-lookfor"><strong>Look for:</strong> verdict field — malicious confirms the file. sub_type and threat_name_firewall give context on the threat category. source_user tells you who downloaded it.</div>
               <button class="step-query-ref" onclick="goToQueryCard('f1')">&#8669; Threat log by filename</button>
-            </div>
+            <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('malware',1,this.value)" id="finding-malware-1"></textarea></div>
+</div>
           </div>
         </div>
         <div class="flow-step" id="step-malware-2">
@@ -1108,7 +1126,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-desc">Scope the potential spread — how many endpoints have a file event for this filename.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Multiple hostnames = widespread delivery, possibly a phishing campaign or network share infection. Single host = contained, but still needs full investigation.</div>
               <button class="step-query-ref" onclick="goToQueryCard('fw0')">&#8669; File seen on other hosts</button>
-            </div>
+            <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('malware',2,this.value)" id="finding-malware-2"></textarea></div>
+</div>
           </div>
         </div>
         <div class="flow-step" id="step-malware-3">
@@ -1120,7 +1139,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-desc">Determine whether the file has been launched as a process — this changes severity significantly.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Any results = file was executed, escalate. No results = file present but not yet run. Note: absence of results does not rule out indirect execution (e.g. DLL sideloading).</div>
               <button class="step-query-ref" onclick="goToQueryCard('fw1')">&#8669; File directly executed check</button>
-            </div>
+            <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('malware',3,this.value)" id="finding-malware-3"></textarea></div>
+</div>
           </div>
         </div>
         <div class="flow-step" id="step-malware-4">
@@ -1133,7 +1153,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-lookfor"><strong>Look for:</strong> cmd.exe, powershell.exe, wscript.exe, or any network-connected child processes. Shell spawning = code execution confirmed, escalate immediately.</div>
               <button class="step-query-ref" onclick="goToQueryCard('e3')">&#8669; Child processes by parent</button>
               <button class="step-query-ref" onclick="goToQueryCard('x0')" style="margin-left:6px">&#8669; Suspicious shell spawned</button>
-            </div>
+            <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('malware',4,this.value)" id="finding-malware-4"></textarea></div>
+</div>
           </div>
         </div>
         <div class="flow-step" id="step-malware-5">
@@ -1162,7 +1183,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
       <div class="flow-header">
         <h2>Suspicious process / LOLBIN / PowerShell</h2>
         <p>Matching alerts: <em>Suspicious PowerShell Command Line · LOLBIN process executed with a high integrity level · Notepad process makes a network connection · Execution of an uncommon process at an early startup stage</em></p>
-        <div style="display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;"><span class="sev-high">High</span><button class="btn-copy-all" onclick="copyAllFlow('process')">&#8669; Copy all queries</button></div>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;"><span class="sev-high">High</span><button class="btn-copy-all" onclick="copyAllFlow('process')">&#8669; Copy all queries</button><button class="compile-findings-btn" onclick="compileFindings('process')">&#128221; Compile findings</button></div>
         <div class="flow-progress">Progress: <span id="prog-process">0</span> / 5 steps complete</div>
       </div>
       <div class="flow-steps">
@@ -1175,7 +1196,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-desc">If the alert involves PowerShell, pull the actual script content from event 4104 logging.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Base64 encoded strings, IEX (Invoke-Expression), DownloadString, WebClient, or references to known C2 frameworks (Cobalt Strike, Metasploit, Empire). Encoded content = almost always malicious.</div>
               <button class="step-query-ref" onclick="goToQueryCard('x1')">&#8669; PowerShell script block (4104)</button>
-            </div>
+            <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('process',0,this.value)" id="finding-process-0"></textarea></div>
+</div>
           </div>
         </div>
         <div class="flow-step" id="step-process-1">
@@ -1188,7 +1210,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-lookfor"><strong>Look for:</strong> Office apps (winword, excel), PDF readers, browsers spawning PowerShell or cmd = likely phishing/malicious document. explorer.exe or unusual parents are also worth escalating.</div>
               <button class="step-query-ref" onclick="goToQueryCard('e3')">&#8669; Child processes by parent</button>
               <button class="step-query-ref" onclick="goToQueryCard('x0')" style="margin-left:6px">&#8669; Suspicious shell spawned</button>
-            </div>
+            <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('process',1,this.value)" id="finding-process-1"></textarea></div>
+</div>
           </div>
         </div>
         <div class="flow-step" id="step-process-2">
@@ -1200,7 +1223,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-desc">Determine whether the process wrote any files to suspicious locations.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Executables, scripts, or DLLs written to temp/appdata/startup. A process dropping files = likely second-stage payload delivery.</div>
               <button class="step-query-ref" onclick="goToQueryCard('p1')">&#8669; File written to temp/appdata/startup</button>
-            </div>
+            <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('process',2,this.value)" id="finding-process-2"></textarea></div>
+</div>
           </div>
         </div>
         <div class="flow-step" id="step-process-3">
@@ -1212,7 +1236,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-desc">Look for the suspicious process making external connections — callback, C2, or data exfil.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Connections to external IPs from notepad.exe, powershell.exe, or other LOLBINs that have no legitimate reason to make network connections. Any result here is a strong True Positive indicator.</div>
               <button class="step-query-ref" onclick="goToQueryCard('x2')">&#8669; Network connections by process</button>
-            </div>
+            <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('process',3,this.value)" id="finding-process-3"></textarea></div>
+</div>
           </div>
         </div>
         <div class="flow-step" id="step-process-4">
@@ -1240,7 +1265,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
       <div class="flow-header">
         <h2>Identity / impossible traveler</h2>
         <p>Matching alerts: <em>Azure Risky Login with Suspicious Characteristics · Impossible traveler - SSO · Rare Country Login - Impossible Traveler (SSO) · User successfully connected from a suspicious country · Interactive login by a service account · Rare Kerberos Traffic from a Process</em></p>
-        <div style="display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;"><span class="sev-high">High</span><button class="btn-copy-all" onclick="copyAllFlow('identity')">&#8669; Copy all queries</button></div>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;"><span class="sev-high">High</span><button class="btn-copy-all" onclick="copyAllFlow('identity')">&#8669; Copy all queries</button><button class="compile-findings-btn" onclick="compileFindings('identity')">&#128221; Compile findings</button></div>
         <div class="flow-progress">Progress: <span id="prog-identity">0</span> / 5 steps complete</div>
       </div>
       <div class="flow-steps">
@@ -1253,7 +1278,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-desc">Pull cloud audit activity for the identity involved in the alert — what operations were performed and from where.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Unusual operation_name values (e.g. bulk downloads, admin operations), caller_ip from unexpected countries, multiple rapid authentications from different geolocations.</div>
               <button class="step-query-ref" onclick="goToQueryCard('c0')">&#8669; Cloud audit logs by app ID</button>
-            </div>
+            <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('identity',0,this.value)" id="finding-identity-0"></textarea></div>
+</div>
           </div>
         </div>
         <div class="flow-step" id="step-identity-1">
@@ -1265,7 +1291,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-desc">Pull Windows authentication events for the affected username to build a login timeline.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Logins from multiple source IPs in a short window, logon_type 10 (remote interactive) from unexpected IPs, or logins outside of normal working hours.</div>
               <button class="step-query-ref" onclick="goToQueryCard('i1')">&#8669; User login activity (4624)</button>
-            </div>
+            <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('identity',1,this.value)" id="finding-identity-1"></textarea></div>
+</div>
           </div>
         </div>
         <div class="flow-step" id="step-identity-2">
@@ -1277,7 +1304,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-desc">Identify which machines the user authenticated to — helps establish scope if the account is compromised.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Logins to servers or sensitive hosts the user doesn't normally access. Multiple host logins in quick succession following an unusual source IP = strong compromise indicator.</div>
               <button class="step-query-ref" onclick="goToQueryCard('i0')">&#8669; Host login activity (4624)</button>
-            </div>
+            <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('identity',2,this.value)" id="finding-identity-2"></textarea></div>
+</div>
           </div>
         </div>
         <div class="flow-step" id="step-identity-3">
@@ -1289,7 +1317,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-desc">Check for suspicious email patterns around the alert time — forwarding rules, unusual recipients, or phishing delivery.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Emails sent to external domains, BCC to personal addresses, authentication_results failures, or sender_ip_location mismatches with the user's normal location.</div>
               <button class="step-query-ref" onclick="goToQueryCard('i2')">&#8669; User email activity</button>
-            </div>
+            <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('identity',3,this.value)" id="finding-identity-3"></textarea></div>
+</div>
           </div>
         </div>
         <div class="flow-step" id="step-identity-4">
@@ -1317,7 +1346,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
       <div class="flow-header">
         <h2>C2 / DNS / beaconing</h2>
         <p>Matching alerts: <em>Abnormal Recurring Communications to a Rare Domain With a Less Common Port · Suspicious DNS Query (generic:...) · generic: alerts</em></p>
-        <div style="display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;"><span class="sev-critical">Critical</span><button class="btn-copy-all" onclick="copyAllFlow('c2')">&#8669; Copy all queries</button></div>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;"><span class="sev-critical">Critical</span><button class="btn-copy-all" onclick="copyAllFlow('c2')">&#8669; Copy all queries</button><button class="compile-findings-btn" onclick="compileFindings('c2')">&#128221; Compile findings</button></div>
         <div class="flow-progress">Progress: <span id="prog-c2">0</span> / 5 steps complete</div>
       </div>
       <div class="flow-steps">
@@ -1331,7 +1360,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-lookfor"><strong>Look for:</strong> Repeated queries to the same domain, queries from multiple hosts (potential fleet-wide C2), or queries at regular intervals (beaconing pattern). Check the domain on VirusTotal.</div>
               <button class="step-query-ref" onclick="goToQueryCard('t3')">&#8669; DNS query by domain name (port 53)</button>
               <button class="step-query-ref" onclick="goToQueryCard('t1')" style="margin-left:6px">&#8669; Hostname lookups for domain IOC</button>
-            </div>
+            <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('c2',0,this.value)" id="finding-c2-0"></textarea></div>
+</div>
           </div>
         </div>
         <div class="flow-step" id="step-c2-1">
@@ -1343,7 +1373,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-desc">Broaden the search — check if the host is connecting to any other uncommon TLDs beyond the one in the alert.</div>
               <div class="step-lookfor"><strong>Look for:</strong> .xyz, .top, .ru, .cn, .tk, .onion domains. Multiple suspicious TLD connections from one host = strong C2 indicator. Note all domains for VirusTotal checks.</div>
               <button class="step-query-ref" onclick="goToQueryCard('p2')">&#8669; DNS to suspicious TLDs</button>
-            </div>
+            <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('c2',1,this.value)" id="finding-c2-1"></textarea></div>
+</div>
           </div>
         </div>
         <div class="flow-step" id="step-c2-2">
@@ -1355,7 +1386,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-desc">Check whether any other hosts on the estate are communicating with the same C2 IP.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Multiple hosts connecting to the same external IP = widespread campaign. Note all affected hostnames for the incident report. Single host = contained but still investigate.</div>
               <button class="step-query-ref" onclick="goToQueryCard('t0')">&#8669; Fleet sweep by IP</button>
-            </div>
+            <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('c2',2,this.value)" id="finding-c2-2"></textarea></div>
+</div>
           </div>
         </div>
         <div class="flow-step" id="step-c2-3">
@@ -1368,7 +1400,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-lookfor"><strong>Look for:</strong> Unexpected processes making external connections (notepad.exe, svchost.exe from wrong path, renamed system binaries). Check actor_process_image_path — legitimate svchost runs from System32 only.</div>
               <button class="step-query-ref" onclick="goToQueryCard('x2')">&#8669; Network connections by process</button>
               <button class="step-query-ref" onclick="goToQueryCard('e1')" style="margin-left:6px">&#8669; Edge connections to specific IP</button>
-            </div>
+            <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('c2',3,this.value)" id="finding-c2-3"></textarea></div>
+</div>
           </div>
         </div>
         <div class="flow-step" id="step-c2-4">
@@ -1396,7 +1429,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
       <div class="flow-header">
         <h2>Recon / scanning</h2>
         <p>Matching alerts: <em>Nmap Scripting Engine Detection · ZGrab Application Layer Scanner Detection · LDAP traffic from non-standard and uncommon process</em></p>
-        <div style="display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;"><span class="sev-medium">Medium</span><button class="btn-copy-all" onclick="copyAllFlow('recon')">&#8669; Copy all queries</button></div>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;"><span class="sev-medium">Medium</span><button class="btn-copy-all" onclick="copyAllFlow('recon')">&#8669; Copy all queries</button><button class="compile-findings-btn" onclick="compileFindings('recon')">&#128221; Compile findings</button></div>
         <div class="flow-progress">Progress: <span id="prog-recon">0</span> / 4 steps complete</div>
       </div>
       <div class="flow-steps">
@@ -1409,7 +1442,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-desc">Pull firewall traffic for the scanning source IP to understand what was being scanned and what ports were targeted.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Broad port ranges, multiple destination IPs, or systematic sweeps. External source IP = inbound scan, check VirusTotal. Internal source IP = compromised internal host or authorised pen test — verify with client.</div>
               <button class="step-query-ref" onclick="goToQueryCard('f0')">&#8669; Firewall traffic by IP</button>
-            </div>
+            <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('recon',0,this.value)" id="finding-recon-0"></textarea></div>
+</div>
           </div>
         </div>
         <div class="flow-step" id="step-recon-1">
@@ -1421,7 +1455,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-desc">Check how many endpoints received traffic from the scanning source.</div>
               <div class="step-lookfor"><strong>Look for:</strong> High number of destination hosts = active scan in progress. Note the scan timing — is it ongoing or a historical event? Ongoing = urgent, contact client immediately.</div>
               <button class="step-query-ref" onclick="goToQueryCard('t0')">&#8669; Fleet sweep by IP</button>
-            </div>
+            <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('recon',1,this.value)" id="finding-recon-1"></textarea></div>
+</div>
           </div>
         </div>
         <div class="flow-step" id="step-recon-2">
@@ -1433,7 +1468,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-desc">For LDAP or internal scanning alerts, identify which process is generating the traffic.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Scanning tools (nmap, netscan, masscan) or unexpected processes making LDAP/network connections. Legitimate LDAP traffic comes from lsass.exe or domain-joined processes — anything else is suspicious.</div>
               <button class="step-query-ref" onclick="goToQueryCard('x2')">&#8669; Network connections by process</button>
-            </div>
+            <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('recon',2,this.value)" id="finding-recon-2"></textarea></div>
+</div>
           </div>
         </div>
         <div class="flow-step" id="step-recon-3">
@@ -1461,7 +1497,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
       <div class="flow-header">
         <h2>Privilege escalation</h2>
         <p>Matching alerts: <em>[MTHOM] New Admin User Found · New local user created · User added to local admins group · Local user account enabled</em></p>
-        <div style="display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;"><span class="sev-high">High</span><button class="btn-copy-all" onclick="copyAllFlow('priv')">&#8669; Copy all queries</button></div>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;"><span class="sev-high">High</span><button class="btn-copy-all" onclick="copyAllFlow('priv')">&#8669; Copy all queries</button><button class="compile-findings-btn" onclick="compileFindings('priv')">&#128221; Compile findings</button></div>
         <div class="flow-progress">Progress: <span id="prog-priv">0</span> / 4 steps complete</div>
       </div>
       <div class="flow-steps">
@@ -1474,7 +1510,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-desc">Query for Windows event 4720 — new local user created. Run fleet-wide to catch any accounts created across the estate.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Account names that don't follow naming conventions, accounts created by unexpected users (WhoDid field), or creation outside business hours. Verify with client whether this is authorised.</div>
               <button class="step-query-ref" onclick="goToQueryCard('v0')">&#8669; New local user created (4720)</button>
-            </div>
+            <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('priv',0,this.value)" id="finding-priv-0"></textarea></div>
+</div>
           </div>
         </div>
         <div class="flow-step" id="step-priv-1">
@@ -1487,7 +1524,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-lookfor"><strong>Look for:</strong> Any account added to local admins that isn't in the authorised admin list. Cross-reference with the admin account list query. Machine accounts (ending in $) can be excluded — focus on user accounts.</div>
               <button class="step-query-ref" onclick="goToQueryCard('v1')">&#8669; User added to local admins (4732)</button>
               <button class="step-query-ref" onclick="goToQueryCard('a0')" style="margin-left:6px">&#8669; Admin account list</button>
-            </div>
+            <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('priv',1,this.value)" id="finding-priv-1"></textarea></div>
+</div>
           </div>
         </div>
         <div class="flow-step" id="step-priv-2">
@@ -1499,7 +1537,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-desc">Query for event 4722 — account re-enabled. This is a stealthier tactic than creating a new account.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Accounts that have been dormant (check last_seen in DSS data), re-enabled outside business hours, or re-enabled by an unexpected user. Attacker may use these to blend in with legitimate account history.</div>
               <button class="step-query-ref" onclick="goToQueryCard('v2')">&#8669; Local user account enabled (4722)</button>
-            </div>
+            <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('priv',2,this.value)" id="finding-priv-2"></textarea></div>
+</div>
           </div>
         </div>
         <div class="flow-step" id="step-priv-3">
@@ -1528,7 +1567,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
       <div class="flow-header">
         <h2>Vulnerability / exploit attempt</h2>
         <p>Matching alerts: <em>Apache HTTP Server Path Traversal Vulnerability · Cisco IOS HTTP Configuration Arbitrary Administrative Access Vulnerability · Vite Arbitrary File Read Vulnerability</em></p>
-        <div style="display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;"><span class="sev-high">High</span><button class="btn-copy-all" onclick="copyAllFlow('vuln')">&#8669; Copy all queries</button></div>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;"><span class="sev-high">High</span><button class="btn-copy-all" onclick="copyAllFlow('vuln')">&#8669; Copy all queries</button><button class="compile-findings-btn" onclick="compileFindings('vuln')">&#128221; Compile findings</button></div>
         <div class="flow-progress">Progress: <span id="prog-vuln">0</span> / 4 steps complete</div>
       </div>
       <div class="flow-steps">
@@ -1542,7 +1581,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-lookfor"><strong>Look for:</strong> threat_name_firewall — does it match the CVE or vulnerability in the alert? sub_type = exploit confirms active exploitation attempt. Check whether action = allow or deny — allowed = needs urgent client notification.</div>
               <button class="step-query-ref" onclick="goToQueryCard('f1')">&#8669; Threat log by filename</button>
               <button class="step-query-ref" onclick="goToQueryCard('f0')" style="margin-left:6px">&#8669; Firewall traffic by IP</button>
-            </div>
+            <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('vuln',0,this.value)" id="finding-vuln-0"></textarea></div>
+</div>
           </div>
         </div>
         <div class="flow-step" id="step-vuln-1">
@@ -1554,7 +1594,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-desc">If the exploit targeted a cloud-connected service, check for any operations performed after the exploit attempt.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Unexpected admin operations, resource access, or configuration changes following the exploit timestamp. Any successful operations after a path traversal or arbitrary read = confirmed exploitation.</div>
               <button class="step-query-ref" onclick="goToQueryCard('c0')">&#8669; Cloud audit logs</button>
-            </div>
+            <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('vuln',1,this.value)" id="finding-vuln-1"></textarea></div>
+</div>
           </div>
         </div>
         <div class="flow-step" id="step-vuln-2">
@@ -1566,7 +1607,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-desc">Check whether the attacking IP targeted other hosts beyond the one in the alert.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Multiple destination hosts from the same source = automated exploit scanning. Single target = targeted attack. Either way, check source IP on VirusTotal for attribution.</div>
               <button class="step-query-ref" onclick="goToQueryCard('t0')">&#8669; Fleet sweep by IP</button>
-            </div>
+            <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('vuln',2,this.value)" id="finding-vuln-2"></textarea></div>
+</div>
           </div>
         </div>
         <div class="flow-step" id="step-vuln-3">
@@ -1595,7 +1637,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
       <div class="flow-header">
         <h2>Threat ID alerts</h2>
         <p>Matching alerts: <em>Threat ID #273511773 · Threat ID #378414516 · Threat ID #9999 and other numeric Threat IDs</em></p>
-        <div style="display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;"><span class="sev-high">High</span><button class="btn-copy-all" onclick="copyAllFlow('threatid')">&#8669; Copy all queries</button></div>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;"><span class="sev-high">High</span><button class="btn-copy-all" onclick="copyAllFlow('threatid')">&#8669; Copy all queries</button><button class="compile-findings-btn" onclick="compileFindings('threatid')">&#128221; Compile findings</button></div>
         <div class="flow-progress">Progress: <span id="prog-threatid">0</span> / 4 steps complete</div>
       </div>
       <div class="flow-steps">
@@ -1608,7 +1650,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-desc">Threat ID alerts can vary widely — start by confirming the host has an active agent and get basic asset context before investigating further.</div>
               <div class="step-lookfor"><strong>Look for:</strong> endpoint_status, last_seen, agent_version. Look up the Threat ID number in the XSIAM alert details or Cortex documentation to understand exactly what was detected before running further queries.</div>
               <button class="step-query-ref" onclick="goToQueryCard('e0')">&#8669; Endpoint agent status</button>
-            </div>
+            <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('threatid',0,this.value)" id="finding-threatid-0"></textarea></div>
+</div>
           </div>
         </div>
         <div class="flow-step" id="step-threatid-1">
@@ -1620,7 +1663,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-desc">If the Threat ID alert references a file hash, pull the Wildfire verdict to confirm maliciousness.</div>
               <div class="step-lookfor"><strong>Look for:</strong> action_file_wildfire_verdict = malicious = True Positive, proceed with malware flow. Benign = possible FP, investigate delivery context. No result = file not yet submitted.</div>
               <button class="step-query-ref" onclick="goToQueryCard('e2')">&#8669; Wildfire verdict by SHA256</button>
-            </div>
+            <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('threatid',1,this.value)" id="finding-threatid-1"></textarea></div>
+</div>
           </div>
         </div>
         <div class="flow-step" id="step-threatid-2">
@@ -1633,7 +1677,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-lookfor"><strong>Look for:</strong> Connections to external IPs, unusual ports, or rare domains. Cross-reference any IPs or domains with VirusTotal. C2 connections = escalate immediately.</div>
               <button class="step-query-ref" onclick="goToQueryCard('t0')">&#8669; Fleet sweep by IP</button>
               <button class="step-query-ref" onclick="goToQueryCard('p2')" style="margin-left:6px">&#8669; DNS to suspicious TLDs</button>
-            </div>
+            <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('threatid',2,this.value)" id="finding-threatid-2"></textarea></div>
+</div>
           </div>
         </div>
         <div class="flow-step" id="step-threatid-3">
@@ -1662,7 +1707,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
       <div class="flow-header">
         <h2>Custom rules [MTHOM]</h2>
         <p>Matching alerts: <em>[MTHOM] BrokerVM Has Gone Offline · [MTHOM] Claroty - New Asset(s) detected on the OT network · [MTHOM] Slow Data Ingestion Alert · [mthom] MobilePass Repeated Failed Authentication</em></p>
-        <div style="display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;"><span class="sev-medium">Medium</span><button class="btn-copy-all" onclick="copyAllFlow('custom')">&#8669; Copy all queries</button></div>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;"><span class="sev-medium">Medium</span><button class="btn-copy-all" onclick="copyAllFlow('custom')">&#8669; Copy all queries</button><button class="compile-findings-btn" onclick="compileFindings('custom')">&#128221; Compile findings</button></div>
         <div class="flow-progress">Progress: <span id="prog-custom">0</span> / 4 steps complete</div>
       </div>
       <div class="flow-steps">
@@ -1674,7 +1719,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-title">Review the alert raw details and rule logic</div>
               <div class="step-desc">Custom rules have unique logic — before running queries, understand what the rule is actually detecting by reviewing the alert details in XSIAM.</div>
               <div class="step-lookfor"><strong>Look for:</strong> What entity triggered it (host, user, IP)? What behaviour was detected? For OT/Claroty alerts, these may not map to standard XDR data — client contact may be needed early.</div>
-            </div>
+            <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('custom',0,this.value)" id="finding-custom-0"></textarea></div>
+</div>
           </div>
         </div>
         <div class="flow-step" id="step-custom-1">
@@ -1687,7 +1733,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-lookfor"><strong>Look for:</strong> Is the host online? Is the user active? For MobilePass auth failures, check if the username is a valid account. For BrokerVM/OT alerts, check with client whether the asset going offline was planned maintenance.</div>
               <button class="step-query-ref" onclick="goToQueryCard('e0')">&#8669; Endpoint agent status</button>
               <button class="step-query-ref" onclick="goToQueryCard('i1')" style="margin-left:6px">&#8669; User login activity</button>
-            </div>
+            <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('custom',1,this.value)" id="finding-custom-1"></textarea></div>
+</div>
           </div>
         </div>
         <div class="flow-step" id="step-custom-2">
@@ -1700,7 +1747,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-lookfor"><strong>Look for:</strong> Multiple rapid failed authentications from the same source IP = brute force. Failed auths from multiple IPs = credential stuffing. Successful login immediately after failures = account compromise.</div>
               <button class="step-query-ref" onclick="goToQueryCard('i0')">&#8669; Host login activity</button>
               <button class="step-query-ref" onclick="goToQueryCard('i1')" style="margin-left:6px">&#8669; User login activity</button>
-            </div>
+            <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('custom',2,this.value)" id="finding-custom-2"></textarea></div>
+</div>
           </div>
         </div>
         <div class="flow-step" id="step-custom-3">
@@ -1782,19 +1830,20 @@ var aqlBase = function(where){
 
 var B={
   'c0':function(){return 'dataset = cloud_audit_logs\n| filter raw_log ~= "'+gv('c0-guid','PASTE-APP-GUID')+'"\n| fields _time, identity_name, identity_uuid, operation_name,\n         caller_ip, referenced_resource, referenced_resource_name,\n         resource_type, state_changing_event, raw_log\n| sort desc _time\n| limit '+gv('c0-limit','50');},
-  'i0':function(){return 'config case_sensitive = false\n| dataset = microsoft_windows_raw\n| filter event_id = 4624\n| alter raw_target_username = json_extract_scalar(event_data, "$.TargetUserName")\n| alter target_username = lowercase(arrayindex(regextract(raw_target_username,"^[^@]+"),0))\n| alter targetusersid = json_extract_scalar(event_data, "$.TargetSid")\n| alter source_username = json_extract_scalar(event_data, "$.SubjectUserName")\n| alter source_ip_address = json_extract_scalar(event_data, "$.IpAddress")\n| alter source_workstation_name = lowercase(json_extract_scalar(event_data, "$.WorkstationName"))\n| alter logon_type = json_extract_scalar(event_data, "$.LogonType")\n| alter target_domain_name = event_data -> TargetDomainName\n| filter host_name contains "'+(function(){var _vs=gvMulti('i0-host','HOST');if(_vs.length>1){return _vs[0]+'" or host_name contains "'+_vs.slice(1).join('" or host_name contains "');}return _vs[0];})()+'"\n| fields _time, event_id, logon_type, source_username, source_ip_address,\n         source_workstation_name, target_username,\n         host_name as target_workstation_name, target_domain_name, message, event_data';},
-  'i1':function(){return 'config case_sensitive = false\n| dataset = microsoft_windows_raw\n| filter event_id = 4624\n| alter raw_target_username = json_extract_scalar(event_data, "$.TargetUserName")\n| alter target_username = lowercase(arrayindex(regextract(raw_target_username,"^[^@]+"),0))\n| alter targetusersid = json_extract_scalar(event_data, "$.TargetSid")\n| alter source_username = json_extract_scalar(event_data, "$.SubjectUserName")\n| alter source_ip_address = json_extract_scalar(event_data, "$.IpAddress")\n| alter source_workstation_name = lowercase(json_extract_scalar(event_data, "$.WorkstationName"))\n| alter logon_type = json_extract_scalar(event_data, "$.LogonType")\n| alter target_domain_name = event_data -> TargetDomainName\n| filter target_username contains "'+(function(){var _vs=gvMulti('i1-user','USER');if(_vs.length>1){return _vs[0]+'" or target_username contains "'+_vs.slice(1).join('" or target_username contains "');}return _vs[0];})()+'"\n| fields _time, event_id, logon_type, source_username, source_ip_address,\n         source_workstation_name, target_username,\n         host_name as target_workstation_name, target_domain_name, message, event_data';},
-  'i2':function(){return 'config case_sensitive = false\n| dataset = email_data\n| filter mailbox_owner contains "'+(function(){var _vs=gvMulti('i2-user','USER');if(_vs.length>1){return _vs[0]+'" or mailbox_owner contains "'+_vs.slice(1).join('" or mailbox_owner contains "');}return _vs[0];})()+'"\n| fields sent_time, received_time, mailbox_owner, from, recipients,\n         cc_recipients, bcc_recipients, authentication_results,\n         sender_ip_location, attachments';},
-  'i3':function(){return 'config case_sensitive = false\n| dataset = panw_ngfw_url_raw\n| filter uri != null and source_user not in (null,"")\n| filter source_user contains "'+(function(){var _vs=gvMulti('i3-user','USER');if(_vs.length>1){return _vs[0]+'" or source_user contains "'+_vs.slice(1).join('" or source_user contains "');}return _vs[0];})()+'"\n| fields _time, uri, url_category, source_user, source_ip, dest_ip, dest_port';},
+  'i0':function(){var _vs=gvMulti('i0-host','HOSTNAME');var _f=_vs.map(function(v){return'| filter host_name contains "'+v+'"';}).join('\n');return 'config case_sensitive = false\n| dataset = microsoft_windows_raw\n| filter event_id = 4624\n| alter raw_target_username = json_extract_scalar(event_data, "$.TargetUserName")\n| alter target_username = lowercase(arrayindex(regextract(raw_target_username,"^[^@]+"),0))\n| alter targetusersid = json_extract_scalar(event_data, "$.TargetSid")\n| alter source_username = json_extract_scalar(event_data, "$.SubjectUserName")\n| alter source_ip_address = json_extract_scalar(event_data, "$.IpAddress")\n| alter source_workstation_name = lowercase(json_extract_scalar(event_data, "$.WorkstationName"))\n| alter logon_type = json_extract_scalar(event_data, "$.LogonType")\n| alter target_domain_name = event_data -> TargetDomainName\n'+_f+'\n| fields _time, event_id, logon_type, source_username, source_ip_address,\n         source_workstation_name, target_username,\n         host_name as target_workstation_name, target_domain_name, message, event_data';},
+  'i1':function(){var _vs=gvMulti('i1-user','USERNAME');var _f=_vs.map(function(v){return'| filter target_username contains "'+v+'"';}).join('\n');return 'config case_sensitive = false\n| dataset = microsoft_windows_raw\n| filter event_id = 4624\n| alter raw_target_username = json_extract_scalar(event_data, "$.TargetUserName")\n| alter target_username = lowercase(arrayindex(regextract(raw_target_username,"^[^@]+"),0))\n| alter targetusersid = json_extract_scalar(event_data, "$.TargetSid")\n| alter source_username = json_extract_scalar(event_data, "$.SubjectUserName")\n| alter source_ip_address = json_extract_scalar(event_data, "$.IpAddress")\n| alter source_workstation_name = lowercase(json_extract_scalar(event_data, "$.WorkstationName"))\n| alter logon_type = json_extract_scalar(event_data, "$.LogonType")\n| alter target_domain_name = event_data -> TargetDomainName\n'+_f+'\n| fields _time, event_id, logon_type, source_username, source_ip_address,\n         source_workstation_name, target_username,\n         host_name as target_workstation_name, target_domain_name, message, event_data';},
+  'i2':function(){var _vs=gvMulti('i2-user','USERNAME');var _f=_vs.map(function(v){return'| filter mailbox_owner contains "'+v+'"';}).join('\n');return 'config case_sensitive = false\n| dataset = email_data\n'+_f+'\n| fields sent_time, received_time, mailbox_owner, from, recipients,\n         cc_recipients, bcc_recipients, authentication_results,\n         sender_ip_location, attachments';},
+  'i3':function(){var _vs=gvMulti('i3-user','USERNAME');var _f=_vs.map(function(v){return'| filter source_user contains "'+v+'"';}).join('\n');return 'config case_sensitive = false\n| dataset = panw_ngfw_url_raw\n| filter uri != null and source_user not in (null,"")\n'+_f+'\n| fields _time, uri, url_category, source_user, source_ip, dest_ip, dest_port';},
   'f0':function(){
     var mode=gv('f0-mode','dest');
-    var ip1=gv('f0-ip1','IP-ADDRESS');
+    var ips=gvMulti('f0-ip1','IP-ADDRESS');
     var ip2=gv('f0-ip2','IP-ADDRESS');
     var filterLine;
-    if(mode==='dest') filterLine='| filter dest_ip = "'+ip1+'"';
-    else if(mode==='src') filterLine='| filter source_ip = "'+ip1+'"';
-    else if(mode==='or') filterLine='| filter dest_ip = "'+ip1+'"\n    or source_ip = "'+ip1+'"';
-    else filterLine='| filter dest_ip = "'+ip1+'"\n    and source_ip = "'+ip2+'"';
+    var ipFilter=ips.length>1?'in ('+ips.map(function(v){return'\"'+v+'\"';}).join(', ')+')':'= \"'+ips[0]+'\"';
+    if(mode==='dest') filterLine='| filter dest_ip '+ipFilter;
+    else if(mode==='src') filterLine='| filter source_ip '+ipFilter;
+    else if(mode==='or') filterLine='| filter dest_ip '+ipFilter+'\n    or source_ip '+ipFilter;
+    else filterLine='| filter dest_ip = \"'+ips[0]+'\"\n    and source_ip = \"'+ip2+'\"';
     return 'dataset = panw_ngfw_traffic_raw\n'+filterLine+'\n| fields _time, dest_ip, dest_port, source_ip, app,\n         action, protocol, session_end_reason\n| sort asc _time';},
   'f1':function(){return 'dataset = panw_ngfw_threat_raw\n| filter file_name contains "'+gv('f1-fname','FILENAME')+'"\n| fields _time, file_name, sub_type, verdict, source_ip, dest_ip,\n         source_user, partial_hash, app, threat_category,\n         threat_name_firewall, _reporting_device_name';},
   'e0':function(){var _h=gvMulti('e0-host','HOSTNAME');var _f=_h.length>1?'| filter endpoint_name in ('+_h.map(function(v){return'"'+v+'"';}).join(', ')+')':'| filter endpoint_name = "'+_h[0]+'"';return 'dataset = endpoints\n'+_f+'\n| fields endpoint_name, endpoint_status, last_seen, agent_version, install_date';},
@@ -1805,13 +1854,14 @@ var B={
   'b1':function(){return 'dataset = xdr_data\n| filter agent_hostname = "'+gv('b1-host','HOSTNAME')+'"\n| filter event_type = ENUM.NETWORK\n| filter actor_process_image_name ~= "(?i)msedge.exe"\n    or actor_process_image_name ~= "(?i)chrome.exe"\n| fields _time, agent_hostname, actor_process_image_name,\n         action_local_ip, action_local_port,\n         action_remote_ip, action_remote_port, action_external_hostname\n| sort asc _time';},
   't0':function(){
     var mode=gv('t0-mode','remote');
-    var ip1=gv('t0-ip1','IOC-IP');
+    var ips=gvMulti('t0-ip1','IOC-IP');
     var ip2=gv('t0-ip2','LOCAL-IP');
     var filterLine;
-    if(mode==='remote') filterLine='| filter action_remote_ip = "'+ip1+'"';
-    else if(mode==='local') filterLine='| filter action_local_ip = "'+ip1+'"';
-    else if(mode==='or') filterLine='| filter action_remote_ip = "'+ip1+'"\n    or action_local_ip = "'+ip1+'"';
-    else filterLine='| filter action_remote_ip = "'+ip1+'"\n    and action_local_ip = "'+ip2+'"';
+    var ipFilter=ips.length>1?'in ('+ips.map(function(v){return'\"'+v+'\"';}).join(', ')+')':'= \"'+ips[0]+'\"';
+    if(mode==='remote') filterLine='| filter action_remote_ip '+ipFilter;
+    else if(mode==='local') filterLine='| filter action_local_ip '+ipFilter;
+    else if(mode==='or') filterLine='| filter action_remote_ip '+ipFilter+'\n    or action_local_ip '+ipFilter;
+    else filterLine='| filter action_remote_ip = \"'+ips[0]+'\"\n    and action_local_ip = \"'+ip2+'\"';
     return 'dataset = xdr_data\n| filter event_type = ENUM.NETWORK\n'+filterLine+'\n| fields _time, agent_hostname, actor_process_image_name,\n         action_local_ip, action_local_port,\n         action_remote_ip, action_remote_port, action_external_hostname\n| sort desc _time\n| limit 200';},
   't1':function(){return 'dataset = xdr_data\n| filter event_type = ENUM.NETWORK\n| filter action_external_hostname ~= "(?i)'+gv('t1-domain','DOMAIN.COM')+'"\n| fields _time, agent_hostname, actor_process_image_name,\n         action_external_hostname, action_remote_ip, action_remote_port\n| sort desc _time\n| limit 200';},
   't2':function(){var _h=gvMulti('t2-hash','SHA256-HASH');var _f=_h.length>1?'| filter action_file_sha256 in ('+_h.map(function(v){return'"'+v+'"';}).join(', ')+')':'| filter action_file_sha256 = "'+_h[0]+'"';return 'dataset = xdr_data\n'+_f+'\n| fields _time, agent_hostname, actor_process_image_name,\n         action_file_name, action_file_path,\n         action_file_sha256, action_file_wildfire_verdict\n| sort desc _time\n| limit 200';},
@@ -2439,10 +2489,57 @@ document.addEventListener('keydown',function(e){
   }
 });
 
+function saveStepFinding(flowId,stepIdx,value){
+  try{localStorage.setItem('soc_finding_'+flowId+'_'+stepIdx,value);}catch(e){}
+}
+
+function loadStepFindings(){
+  var steps={persist:5,lateral:5,malware:6,process:5,identity:5,c2:5,recon:4,priv:4,vuln:4,threatid:4,custom:4};
+  Object.keys(steps).forEach(function(flowId){
+    for(var i=0;i<steps[flowId];i++){
+      try{
+        var val=localStorage.getItem('soc_finding_'+flowId+'_'+i);
+        var ta=document.getElementById('finding-'+flowId+'-'+i);
+        if(ta&&val) ta.value=val;
+      }catch(e){}
+    }
+  });
+}
+
+function compileFindings(flowId){
+  var steps={persist:5,lateral:5,malware:6,process:5,identity:5,c2:5,recon:4,priv:4,vuln:4,threatid:4,custom:4};
+  var numSteps=steps[flowId]||5;
+  var lines=['=== Investigation Findings: '+flowId.toUpperCase()+' ===',''];
+  var hasAny=false;
+  for(var i=0;i<numSteps;i++){
+    var ta=document.getElementById('finding-'+flowId+'-'+i);
+    var stepEl=document.getElementById('step-'+flowId+'-'+i);
+    var titleEl=stepEl?stepEl.querySelector('.step-title'):null;
+    var title=titleEl?titleEl.textContent:'Step '+(i+1);
+    var val=ta?ta.value.trim():'';
+    if(val){
+      lines.push('Step '+(i+1)+': '+title);
+      lines.push(val);
+      lines.push('');
+      hasAny=true;
+    }
+  }
+  var notesTA=document.getElementById('flow-notes-'+flowId);
+  if(notesTA&&notesTA.value.trim()){
+    lines.push('--- Additional notes ---');
+    lines.push(notesTA.value.trim());
+  }
+  if(!hasAny){showToast('No findings entered yet');return;}
+  navigator.clipboard.writeText(lines.join('\n')).then(function(){
+    showToast('Findings compiled and copied');
+  });
+}
+
 renderAll();
 loadXsiamUrl();
 loadRecentQueries();
 loadFlowNotes();
+loadStepFindings();
 </script>
 </body>
 </html>
