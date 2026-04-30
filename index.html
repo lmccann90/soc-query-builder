@@ -277,7 +277,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 <div class="topbar">
   <div class="topbar-left">
     <div class="logo">XQL <span>//</span> Query Builder</div>
-    <span class="ver">v4.3</span>
+    <span class="ver">v4.4</span>
   </div>
   <div class="topbar-right">
     <button class="btn" onclick="toggleSettings()" id="settings-btn">&#9881; Settings</button>
@@ -1942,23 +1942,53 @@ function rc(id){
 
 function f0ModeChange(){
   var mode=gv('f0-mode','dest');
-  var ip1label=document.getElementById('f0-ip1-label');
+  var ip1group=document.getElementById('f0-ip1-list').closest('.field-group');
+  var ip1label=ip1group?ip1group.querySelector('.field-label'):null;
   var ip2group=document.getElementById('f0-ip2-group');
-  if(mode==='dest'){ip1label.textContent='Destination IP';ip2group.style.display='none';}
-  else if(mode==='src'){ip1label.textContent='Source IP';ip2group.style.display='none';}
-  else if(mode==='or'){ip1label.textContent='IP (either direction)';ip2group.style.display='none';}
-  else{ip1label.textContent='Remote / Dest IP';ip2group.style.display='flex';}
+  var addbtn=document.querySelector('[onclick*="multiAdd(\'f0-ip1\'"]');
+  if(mode==='dest'){
+    if(ip1label) ip1label.textContent='Destination IP';
+    if(ip2group) ip2group.style.display='none';
+    if(addbtn) addbtn.style.display='inline-flex';
+  } else if(mode==='src'){
+    if(ip1label) ip1label.textContent='Source IP';
+    if(ip2group) ip2group.style.display='none';
+    if(addbtn) addbtn.style.display='inline-flex';
+  } else if(mode==='or'){
+    if(ip1label) ip1label.textContent='IP (either direction)';
+    if(ip2group) ip2group.style.display='none';
+    if(addbtn) addbtn.style.display='inline-flex';
+  } else {
+    if(ip1label) ip1label.textContent='Destination IP';
+    if(ip2group) ip2group.style.display='flex';
+    if(addbtn) addbtn.style.display='none';
+  }
   rc('f0');
 }
 
 function t0ModeChange(){
   var mode=gv('t0-mode','remote');
-  var ip1label=document.getElementById('t0-ip1-label');
+  var ip1group=document.getElementById('t0-ip1-list').closest('.field-group');
+  var ip1label=ip1group?ip1group.querySelector('.field-label'):null;
   var ip2group=document.getElementById('t0-ip2-group');
-  if(mode==='remote'){ip1label.textContent='Remote IP (IOC)';ip2group.style.display='none';}
-  else if(mode==='local'){ip1label.textContent='Local IP';ip2group.style.display='none';}
-  else if(mode==='or'){ip1label.textContent='IP (either direction)';ip2group.style.display='none';}
-  else{ip1label.textContent='Remote IP';ip2group.style.display='flex';}
+  var addbtn=document.querySelector('[onclick*="multiAdd(\'t0-ip1\'"]');
+  if(mode==='remote'){
+    if(ip1label) ip1label.textContent='Remote IP (IOC)';
+    if(ip2group) ip2group.style.display='none';
+    if(addbtn) addbtn.style.display='inline-flex';
+  } else if(mode==='local'){
+    if(ip1label) ip1label.textContent='Local IP';
+    if(ip2group) ip2group.style.display='none';
+    if(addbtn) addbtn.style.display='inline-flex';
+  } else if(mode==='or'){
+    if(ip1label) ip1label.textContent='IP (either direction)';
+    if(ip2group) ip2group.style.display='none';
+    if(addbtn) addbtn.style.display='inline-flex';
+  } else {
+    if(ip1label) ip1label.textContent='Remote IP';
+    if(ip2group) ip2group.style.display='flex';
+    if(addbtn) addbtn.style.display='none';
+  }
   rc('t0');
 }
 
@@ -2348,27 +2378,30 @@ function updateRefreshTime(){
 var multiCounts={};
 
 function multiGetValues(fieldId){
-  var vals=[];var i=0;
-  while(document.getElementById(fieldId+'-'+i)){
-    var v=document.getElementById(fieldId+'-'+i).value.trim();
+  var list=document.getElementById(fieldId+'-list');
+  if(!list) return [];
+  var vals=[];
+  list.querySelectorAll('input[type=text]').forEach(function(inp){
+    var v=inp.value.trim();
     if(v) vals.push(v);
-    i++;
-  }
+  });
   return vals;
 }
 
 function multiAdd(fieldId,cardId,placeholder){
   var list=document.getElementById(fieldId+'-list');
   if(!list) return;
-  if(!multiCounts[fieldId]) multiCounts[fieldId]=1;
-  var idx=multiCounts[fieldId];
+  // Count existing inputs to get next index
+  var existing=list.querySelectorAll('input[type=text]');
+  var idx=existing.length;
+  multiCounts[fieldId]=idx+1;
   var row=document.createElement('div');
   row.className='multi-input-row';
   row.id=fieldId+'-row-'+idx;
   row.innerHTML='<input type="text" id="'+fieldId+'-'+idx+'" placeholder="'+placeholder+'" oninput="rc(\''+cardId+'\')"/>'+
     '<button class="multi-remove-btn" onclick="multiRemove(\''+fieldId+'\','+idx+',\''+cardId+'\')">&#215;</button>';
   list.appendChild(row);
-  multiCounts[fieldId]++;
+  document.getElementById(fieldId+'-'+idx).focus();
   rc(cardId);
 }
 
