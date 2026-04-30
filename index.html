@@ -219,7 +219,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 <div class="topbar">
   <div class="topbar-left">
     <div class="logo">XQL <span>//</span> Query Builder</div>
-    <span class="ver">v3.5</span>
+    <span class="ver">v3.6</span>
   </div>
   <div class="topbar-right">
     <button class="btn" onclick="toggleSettings()" id="settings-btn">&#9881; Settings</button>
@@ -1922,11 +1922,14 @@ document.addEventListener('click',function(){
 // THREAT INTEL FEEDS
 var intelLoaded = false;
 var FEEDS = [
-  { id:'cisa',        name:'CISA Advisories',    desc:'US Cybersecurity & Infrastructure Security Agency', url:'https://www.cisa.gov/cybersecurity-advisories/all.xml',          color:'#4f8ef7' },
-  { id:'bleeping',    name:'BleepingComputer',    desc:'Breaking cybersecurity news & malware',             url:'https://www.bleepingcomputer.com/feed/',                          color:'#3ecf8e' },
-  { id:'dfir',        name:'The DFIR Report',     desc:'Real intrusion cases, TTPs, and IOCs',              url:'https://thedfirreport.com/feed/',                                 color:'#e05252' },
-  { id:'malwarebytes',name:'Malwarebytes Labs',   desc:'Malware analysis and threat research',              url:'https://www.malwarebytes.com/blog/feed/index.xml',                color:'#f5a623' },
-  { id:'krebs',       name:'Krebs on Security',   desc:'In-depth security news and investigation',          url:'https://krebsonsecurity.com/feed/',                               color:'#a78bfa' }
+  { id:'cisa',        name:'CISA Advisories',    desc:'US Cybersecurity & Infrastructure Security Agency', url:'https://www.cisa.gov/cybersecurity-advisories/all.xml',                      color:'#4f8ef7' },
+  { id:'ncsc',        name:'NCSC',                desc:'UK National Cyber Security Centre advisories',      url:'https://www.ncsc.gov.uk/api/1/services/v1/all-rss-feed.xml',              color:'#2dd4bf' },
+  { id:'bleeping',    name:'BleepingComputer',    desc:'Breaking cybersecurity news & malware',             url:'https://www.bleepingcomputer.com/feed/',                                  color:'#3ecf8e' },
+  { id:'dfir',        name:'The DFIR Report',     desc:'Real intrusion cases, TTPs & IOCs — publishes infrequently', url:'https://thedfirreport.com/feed/',                            color:'#e05252' },
+  { id:'unit42',      name:'Unit 42',             desc:'Palo Alto Networks threat intelligence research',   url:'https://unit42.paloaltonetworks.com/feed/',                               color:'#f5a623' },
+  { id:'malwarebytes',name:'Malwarebytes Labs',   desc:'Malware analysis and threat research',              url:'https://www.malwarebytes.com/blog/feed/index.xml',                        color:'#a78bfa' },
+  { id:'krebs',       name:'Krebs on Security',   desc:'In-depth security news and investigation',          url:'https://krebsonsecurity.com/feed/',                                       color:'#e879a0' },
+  { id:'hibp',        name:'Have I Been Pwned',   desc:'Latest data breach notifications',                  url:'https://feeds.feedburner.com/HaveIBeenPwnedLatestBreaches',               color:'#60a5fa' }
 ];
 
 function parseRSS(xml){
