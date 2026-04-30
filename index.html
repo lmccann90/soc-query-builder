@@ -277,13 +277,14 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 <div class="topbar">
   <div class="topbar-left">
     <div class="logo">XQL <span>//</span> Query Builder</div>
-    <span class="ver">v4.2</span>
+    <span class="ver">v4.3</span>
   </div>
   <div class="topbar-right">
     <button class="btn" onclick="toggleSettings()" id="settings-btn">&#9881; Settings</button>
     <a href="#" class="xsiam-link" id="xsiam-link" style="display:none" target="_blank">&#8599; Open XSIAM</a>
     <button class="ru-toggle" onclick="toggleRecentlyUsed()" id="ru-toggle-btn">&#9719; Recent (0)</button>
     <button class="btn btn-danger" onclick="resetAll()">&#8635; Reset all</button>
+    <button class="btn btn-danger" onclick="resetFindings()">&#128465; Clear findings</button>
     <button class="btn btn-primary" onclick="exportHTML()">&#11015; Save as file</button>
   </div>
 </div>
@@ -2045,6 +2046,23 @@ function resetAll(){
   document.getElementById('tf-preview').textContent='LAST 60 MINUTES';
   renderAll();
   showToast('All fields reset');
+}
+
+function resetFindings(){
+  // Clear all step findings textareas and localStorage
+  var steps={persist:5,lateral:5,malware:6,process:5,identity:5,c2:5,recon:4,priv:4,vuln:4,threatid:4,custom:4};
+  Object.keys(steps).forEach(function(flowId){
+    for(var i=0;i<steps[flowId];i++){
+      var ta=document.getElementById('finding-'+flowId+'-'+i);
+      if(ta) ta.value='';
+      try{localStorage.removeItem('soc_finding_'+flowId+'_'+i);}catch(e){}
+    }
+    // Also clear flow notes
+    var notesTA=document.getElementById('flow-notes-'+flowId);
+    if(notesTA) notesTA.value='';
+    try{localStorage.removeItem('soc_note_'+flowId);}catch(e){}
+  });
+  showToast('All findings and notes cleared');
 }
 
 function exportHTML(){
