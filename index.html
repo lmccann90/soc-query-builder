@@ -219,7 +219,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 <div class="topbar">
   <div class="topbar-left">
     <div class="logo">XQL <span>//</span> Query Builder</div>
-    <span class="ver">v3.3</span>
+    <span class="ver">v3.5</span>
   </div>
   <div class="topbar-right">
     <button class="btn" onclick="toggleSettings()" id="settings-btn">&#9881; Settings</button>
@@ -1944,7 +1944,7 @@ function parseRSS(xml){
       var pubDate=(el.querySelector('pubDate')||el.querySelector('published')||el.querySelector('updated')||{}).textContent||'';
       results.push({title:title.trim(),link:link.trim(),pubDate:pubDate.trim()});
     });
-  }catch(e){}
+  }catch(e){ console.error('RSS parse error:',e); }
   return results.slice(0,6);
 }
 
@@ -1963,44 +1963,77 @@ function renderFeedItems(feedId,feedItems,dot,items){
   if(items) items.innerHTML=html||'<div class="feed-empty">No items found</div>';
 }
 
-function fetchViaAllOrigins(feed,dot,items){
-  var url='https://api.allorigins.win/get?url='+encodeURIComponent(feed.url);
-  return fetch(url)
-    .then(function(r){return r.json();})
-    .then(function(data){
-      if(!data.contents) throw new Error('empty');
-      var parsed=parseRSS(data.contents);
-      if(parsed.length>0){
-        renderFeedItems(feed.id,parsed,dot,items);
-      } else {
-        if(dot) dot.className='feed-dot error';
-        if(items) items.innerHTML='<div class="feed-empty">No items found — feed may require direct access</div>';
-      }
-    })
-    .catch(function(){
-      if(dot) dot.className='feed-dot error';
-      if(items) items.innerHTML='<div class="feed-empty">Feed unavailable — check connection</div>';
-    });
-}
-
 function loadFeed(feed){
   var dot=document.getElementById('dot-'+feed.id);
   var items=document.getElementById('items-'+feed.id);
   if(dot) dot.className='feed-dot loading';
   if(items) items.innerHTML='<div class="feed-empty">Fetching...</div>';
 
-  var rss2jsonUrl='https://api.rss2json.com/v1/api.json?rss_url='+encodeURIComponent(feed.url)+'&count=6';
-  fetch(rss2jsonUrl)
-    .then(function(r){return r.json();})
+  // Try allorigins first
+  var allOriginsUrl='https://api.allorigins.win/get?url='+encodeURIComponent(feed.url);
+  fetch(allOriginsUrl)
+    .then(function(r){
+      if(!r.ok) throw new Error('allorigins HTTP '+r.status);
+      return r.json();
+    })
     .then(function(data){
-      if(data.status==='ok'&&data.items&&data.items.length>0){
-        renderFeedItems(feed.id,data.items,dot,items);
+      if(!data.contents) throw new Error('empty response');
+      var parsed=parseRSS(data.contents);
+      if(parsed.length>0){
+        renderFeedItems(feed.id,parsed,dot,items);
       } else {
-        return fetchViaAllOrigins(feed,dot,items);
+        // Try corsproxy.io as second fallback
+        return fetchViaCorsProxy(feed,dot,items);
       }
     })
-    .catch(function(){
-      return fetchViaAllOrigins(feed,dot,items);
+    .catch(function(e){
+      console.warn('allorigins failed for '+feed.id+':',e);
+      fetchViaCorsProxy(feed,dot,items);
+    });
+}
+
+function fetchViaCorsProxy(feed,dot,items){
+  // Try corsproxy.io
+  var corsProxyUrl='https://corsproxy.io/?url='+encodeURIComponent(feed.url);
+  fetch(corsProxyUrl)
+    .then(function(r){
+      if(!r.ok) throw new Error('corsproxy HTTP '+r.status);
+      return r.text();
+    })
+    .then(function(xml){
+      var parsed=parseRSS(xml);
+      if(parsed.length>0){
+        renderFeedItems(feed.id,parsed,dot,items);
+      } else {
+        throw new Error('no items parsed');
+      }
+    })
+    .catch(function(e){
+      console.warn('corsproxy failed for '+feed.id+':',e);
+      fetchViaFeedBurner(feed,dot,items);
+    });
+}
+
+function fetchViaFeedBurner(feed,dot,items){
+  // Third fallback — thingproxy
+  var url='https://thingproxy.freeboard.io/fetch/'+feed.url;
+  fetch(url)
+    .then(function(r){
+      if(!r.ok) throw new Error('thingproxy HTTP '+r.status);
+      return r.text();
+    })
+    .then(function(xml){
+      var parsed=parseRSS(xml);
+      if(parsed.length>0){
+        renderFeedItems(feed.id,parsed,dot,items);
+      } else {
+        throw new Error('no items');
+      }
+    })
+    .catch(function(e){
+      console.error('All proxies failed for '+feed.id+':',e);
+      if(dot) dot.className='feed-dot error';
+      if(items) items.innerHTML='<div class="feed-empty">Feed unavailable — all proxies failed</div>';
     });
 }
 
