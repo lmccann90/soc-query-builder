@@ -70,9 +70,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 .section-header p{font-size:12px;color:var(--text2);line-height:1.5;}
 .cards-grid{display:grid;grid-template-columns:1fr;gap:12px;}
 
-.card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:border-color 0.15s;}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:visible;transition:border-color 0.15s;position:relative;}
 .card:hover{border-color:var(--border2);}
-.card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:14px 16px 10px;}
+.card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:14px 16px 10px;border-radius:10px 10px 0 0;}
 .card-title{font-size:13px;font-weight:500;color:var(--text);margin-bottom:3px;}
 .card-desc{font-size:11.5px;color:var(--text2);line-height:1.5;}
 .tag{font-size:10px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;padding:3px 8px;border-radius:4px;white-space:nowrap;flex-shrink:0;}
@@ -103,7 +103,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 /* PIVOT BUTTON */
 .pivot-btn{font-size:10px;padding:3px 8px;border-radius:4px;border:1px solid rgba(167,139,250,0.3);background:rgba(167,139,250,0.08);color:#a78bfa;cursor:pointer;font-family:var(--sans);font-weight:500;transition:all 0.15s;white-space:nowrap;position:relative;}
 .pivot-btn:hover{background:rgba(167,139,250,0.16);}
-.pivot-menu{position:absolute;top:calc(100% + 4px);right:0;background:var(--bg3);border:1px solid var(--border2);border-radius:6px;padding:4px;z-index:50;min-width:200px;box-shadow:0 4px 16px rgba(0,0,0,0.4);}
+.pivot-menu{position:absolute;top:calc(100% + 4px);right:0;background:var(--bg3);border:1px solid var(--border2);border-radius:6px;padding:4px;z-index:200;min-width:200px;box-shadow:0 4px 16px rgba(0,0,0,0.4);}
 .pivot-menu-item{font-size:12px;padding:6px 10px;border-radius:4px;cursor:pointer;color:var(--text2);white-space:nowrap;}
 .pivot-menu-item:hover{background:var(--bg4);color:var(--text);}
 
@@ -193,7 +193,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 .field-group input:focus,.field-group select:focus{border-color:var(--accent);background:var(--bg4);}
 .field-group input::placeholder{color:var(--text3);}
 
-.card-query{background:var(--bg);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.card-query{background:var(--bg);border-top:1px solid var(--border);border-bottom:1px solid var(--border);overflow:hidden;}
 .query-pre{font-family:var(--mono);font-size:11.5px;color:var(--text2);padding:12px 16px;white-space:pre;overflow-x:auto;line-height:1.7;max-height:200px;overflow-y:auto;}
 .hl-kw{color:#a78bfa;}
 .hl-str{color:#3ecf8e;}
@@ -219,7 +219,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 <div class="topbar">
   <div class="topbar-left">
     <div class="logo">XQL <span>//</span> Query Builder</div>
-    <span class="ver">v3.0</span>
+    <span class="ver">v3.1</span>
   </div>
   <div class="topbar-right">
     <button class="btn" onclick="toggleSettings()" id="settings-btn">&#9881; Settings</button>
