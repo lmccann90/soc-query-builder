@@ -150,6 +150,56 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 .step-query-ref:hover{border-color:var(--accent);color:var(--accent);}
 .flow-step.done .step-title{color:var(--text3);text-decoration:line-through;}
 .no-results{font-size:13px;color:var(--text3);padding:20px 0;}
+/* SEVERITY BADGES */
+.sev-critical{font-size:9px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;padding:2px 6px;border-radius:3px;background:rgba(224,82,82,0.15);color:#e05252;flex-shrink:0;}
+.sev-high{font-size:9px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;padding:2px 6px;border-radius:3px;background:rgba(245,166,35,0.15);color:#f5a623;flex-shrink:0;}
+.sev-medium{font-size:9px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;padding:2px 6px;border-radius:3px;background:rgba(79,142,247,0.15);color:#4f8ef7;flex-shrink:0;}
+.sev-low{font-size:9px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;padding:2px 6px;border-radius:3px;background:rgba(62,207,142,0.15);color:#3ecf8e;flex-shrink:0;}
+
+/* FLOW NOTES */
+.flow-notes{margin-top:16px;}
+.flow-notes-label{font-size:10.5px;font-weight:500;color:var(--text3);letter-spacing:0.04em;margin-bottom:6px;}
+.flow-notes textarea{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--sans);font-size:12px;padding:10px 12px;outline:none;resize:vertical;min-height:80px;line-height:1.5;transition:border-color 0.15s;}
+.flow-notes textarea:focus{border-color:var(--accent);background:var(--bg3);}
+.flow-notes textarea::placeholder{color:var(--text3);}
+.flow-notes-saved{font-size:11px;color:var(--green);opacity:0;transition:opacity 0.3s;margin-left:8px;}
+.flow-notes-saved.show{opacity:1;}
+
+/* COPY ALL QUERIES BUTTON */
+.btn-copy-all{font-family:var(--sans);font-size:11.5px;font-weight:500;padding:5px 12px;border-radius:6px;border:1px solid rgba(62,207,142,0.3);background:rgba(62,207,142,0.08);color:var(--green);cursor:pointer;transition:all 0.15s;display:inline-flex;align-items:center;gap:5px;}
+.btn-copy-all:hover{background:rgba(62,207,142,0.15);}
+
+/* RECENTLY USED PANEL */
+.recently-used{position:fixed;bottom:24px;left:24px;width:300px;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;z-index:500;box-shadow:0 8px 32px rgba(0,0,0,0.5);transform:translateY(16px);opacity:0;pointer-events:none;transition:all 0.2s;}
+.recently-used.show{opacity:1;transform:translateY(0);pointer-events:all;}
+.ru-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--border);}
+.ru-title{font-size:12px;font-weight:500;color:var(--text);}
+.ru-close{font-size:14px;color:var(--text3);cursor:pointer;background:none;border:none;font-family:var(--sans);padding:0 2px;}
+.ru-close:hover{color:var(--text);}
+.ru-empty{font-size:12px;color:var(--text3);padding:16px 14px;text-align:center;}
+.ru-list{max-height:280px;overflow-y:auto;}
+.ru-item{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid var(--border);gap:8px;transition:background 0.1s;}
+.ru-item:last-child{border-bottom:none;}
+.ru-item:hover{background:var(--bg4);}
+.ru-item-info{flex:1;min-width:0;}
+.ru-item-name{font-size:12px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ru-item-time{font-size:10.5px;color:var(--text3);margin-top:1px;}
+.ru-copy-btn{font-size:11px;padding:3px 8px;border-radius:4px;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;font-family:var(--sans);white-space:nowrap;flex-shrink:0;}
+.ru-copy-btn:hover{background:var(--bg2);color:var(--text);}
+.ru-toggle{font-size:11px;padding:4px 10px;border-radius:5px;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);cursor:pointer;font-family:var(--sans);transition:all 0.1s;}
+.ru-toggle:hover{background:var(--bg4);color:var(--text);}
+
+/* MULTI-VALUE INPUTS */
+.multi-input-list{display:flex;flex-direction:column;gap:6px;width:100%;}
+.multi-input-row{display:flex;align-items:center;gap:6px;}
+.multi-input-row input{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--mono);font-size:12px;height:32px;padding:0 10px;outline:none;transition:border-color 0.15s;}
+.multi-input-row input:focus{border-color:var(--accent);background:var(--bg4);}
+.multi-input-row input::placeholder{color:var(--text3);}
+.multi-remove-btn{width:24px;height:24px;border-radius:4px;border:1px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.1s;font-family:var(--sans);}
+.multi-remove-btn:hover{background:rgba(224,82,82,0.1);color:var(--red);border-color:rgba(224,82,82,0.3);}
+.multi-add-btn{font-size:11px;padding:3px 10px;border-radius:4px;border:1px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;font-family:var(--sans);transition:all 0.1s;margin-top:2px;display:inline-flex;align-items:center;gap:4px;}
+.multi-add-btn:hover{background:var(--bg3);color:var(--text);}
+
 
 /* THREAT INTEL TAB */
 .intel-layout{display:none;height:calc(100vh - 89px);overflow-y:auto;padding:24px 28px;}
@@ -219,11 +269,12 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 <div class="topbar">
   <div class="topbar-left">
     <div class="logo">XQL <span>//</span> Query Builder</div>
-    <span class="ver">v3.6</span>
+    <span class="ver">v4.0</span>
   </div>
   <div class="topbar-right">
     <button class="btn" onclick="toggleSettings()" id="settings-btn">&#9881; Settings</button>
     <a href="#" class="xsiam-link" id="xsiam-link" style="display:none" target="_blank">&#8599; Open XSIAM</a>
+    <button class="ru-toggle" onclick="toggleRecentlyUsed()" id="ru-toggle-btn">&#9719; Recent (0)</button>
     <button class="btn btn-danger" onclick="resetAll()">&#8635; Reset all</button>
     <button class="btn btn-primary" onclick="exportHTML()">&#11015; Save as file</button>
   </div>
@@ -298,25 +349,49 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
         <div class="cards-grid">
           <div class="card">
             <div class="card-header"><div><div class="card-title">Host login activity (event 4624)</div><div class="card-desc">Windows logon events filtered by target hostname. Extracts username, SID, logon type, source IP and workstation.</div></div><span class="tag tag-id">identity</span></div>
-            <div class="card-fields"><div class="field-group"><span class="field-label">Hostname (partial match)</span><input type="text" id="i0-host" placeholder="L2345" oninput="rc('i0')"/></div></div>
+            <div class="card-fields"><div class="field-group">
+                <span class="field-label">Hostname (partial match)</span>
+                <div class="multi-input-list" id="i0-host-list">
+                  <div class="multi-input-row"><input type="text" id="i0-host-0" placeholder="L2345" oninput="rc('i0')"/></div>
+                </div>
+                <button class="multi-add-btn" onclick="multiAdd('i0-host','i0','L2345')">+ Add another</button>
+              </div></div>
             <div class="card-query"><pre class="query-pre" id="out-i0"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('i0')">&#8669; Copy query</button><span class="copy-status" id="cs-i0">Copied</span><button class="pivot-btn" onclick="togglePivotMenu(this,event)">&#9654; Flows &#9662;<div class="pivot-menu" style="display:none"><div class="pivot-menu-item" onclick="goToFlow('identity',event)">Identity / Impossible Traveler</div><div class="pivot-menu-item" onclick="goToFlow('lateral',event)">Lateral Movement</div><div class="pivot-menu-item" onclick="goToFlow('custom',event)">Custom Rules</div></div></button></div>
           </div>
           <div class="card">
             <div class="card-header"><div><div class="card-title">User login activity (event 4624)</div><div class="card-desc">Windows logon events filtered by target username. Use to trace where a specific account has authenticated across the estate.</div></div><span class="tag tag-user">user</span></div>
-            <div class="card-fields"><div class="field-group"><span class="field-label">Username (partial match)</span><input type="text" id="i1-user" placeholder="jsmith" oninput="rc('i1')"/></div></div>
+            <div class="card-fields"><div class="field-group">
+                <span class="field-label">Username (partial match)</span>
+                <div class="multi-input-list" id="i1-user-list">
+                  <div class="multi-input-row"><input type="text" id="i1-user-0" placeholder="jsmith" oninput="rc('i1')"/></div>
+                </div>
+                <button class="multi-add-btn" onclick="multiAdd('i1-user','i1','jsmith')">+ Add another</button>
+              </div></div>
             <div class="card-query"><pre class="query-pre" id="out-i1"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('i1')">&#8669; Copy query</button><span class="copy-status" id="cs-i1">Copied</span><button class="pivot-btn" onclick="togglePivotMenu(this,event)">&#9654; Flows &#9662;<div class="pivot-menu" style="display:none"><div class="pivot-menu-item" onclick="goToFlow('identity',event)">Identity / Impossible Traveler</div><div class="pivot-menu-item" onclick="goToFlow('lateral',event)">Lateral Movement</div><div class="pivot-menu-item" onclick="goToFlow('custom',event)">Custom Rules</div></div></button></div>
           </div>
           <div class="card">
             <div class="card-header"><div><div class="card-title">User email activity</div><div class="card-desc">Email events for a specific mailbox owner. Returns sent/received times, from, recipients, attachments, sender IP and auth results.</div></div><span class="tag tag-email">email</span></div>
-            <div class="card-fields"><div class="field-group"><span class="field-label">Mailbox owner / username (partial match)</span><input type="text" id="i2-user" placeholder="jsmith" oninput="rc('i2')"/></div></div>
+            <div class="card-fields"><div class="field-group">
+                <span class="field-label">Mailbox owner / username (partial match)</span>
+                <div class="multi-input-list" id="i2-user-list">
+                  <div class="multi-input-row"><input type="text" id="i2-user-0" placeholder="jsmith" oninput="rc('i2')"/></div>
+                </div>
+                <button class="multi-add-btn" onclick="multiAdd('i2-user','i2','jsmith')">+ Add another</button>
+              </div></div>
             <div class="card-query"><pre class="query-pre" id="out-i2"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('i2')">&#8669; Copy query</button><span class="copy-status" id="cs-i2">Copied</span><button class="pivot-btn" onclick="goToFlow('identity',event)" title="Open investigation flow">&#9654; Identity / Impossible Traveler</button></div>
           </div>
           <div class="card">
             <div class="card-header"><div><div class="card-title">User URL activity</div><div class="card-desc">Firewall URL log entries for a specific user. Returns URI, URL category, source/dest IPs and port.</div></div><span class="tag tag-user">user</span></div>
-            <div class="card-fields"><div class="field-group"><span class="field-label">Username (partial match)</span><input type="text" id="i3-user" placeholder="jsmith" oninput="rc('i3')"/></div></div>
+            <div class="card-fields"><div class="field-group">
+                <span class="field-label">Username (partial match)</span>
+                <div class="multi-input-list" id="i3-user-list">
+                  <div class="multi-input-row"><input type="text" id="i3-user-0" placeholder="jsmith" oninput="rc('i3')"/></div>
+                </div>
+                <button class="multi-add-btn" onclick="multiAdd('i3-user','i3','jsmith')">+ Add another</button>
+              </div></div>
             <div class="card-query"><pre class="query-pre" id="out-i3"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('i3')">&#8669; Copy query</button><span class="copy-status" id="cs-i3">Copied</span><button class="pivot-btn" onclick="goToFlow('identity',event)" title="Open investigation flow">&#9654; Identity / Impossible Traveler</button></div>
           </div>
@@ -339,7 +414,13 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
                   <option value="and">Src AND Dest</option>
                 </select>
               </div>
-              <div class="field-group" id="f0-ip1-group"><span class="field-label" id="f0-ip1-label">Destination IP</span><input type="text" id="f0-ip1" placeholder="10.0.0.1" oninput="rc('f0')"/></div>
+              <div class="field-group">
+                <span class="field-label">IP address</span>
+                <div class="multi-input-list" id="f0-ip1-list">
+                  <div class="multi-input-row"><input type="text" id="f0-ip1-0" placeholder="10.0.0.1" oninput="rc('f0')"/></div>
+                </div>
+                <button class="multi-add-btn" onclick="multiAdd('f0-ip1','f0','10.0.0.1')">+ Add another</button>
+              </div>
               <div class="field-group" id="f0-ip2-group" style="display:none"><span class="field-label" id="f0-ip2-label">Source IP</span><input type="text" id="f0-ip2" placeholder="10.0.0.2" oninput="rc('f0')"/></div>
             </div>
             <div class="card-query"><pre class="query-pre" id="out-f0"></pre></div>
@@ -360,7 +441,13 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
         <div class="cards-grid">
           <div class="card">
             <div class="card-header"><div><div class="card-title">Endpoint agent status and details</div><div class="card-desc">Basic agent info — online status, last seen, version, install date. Run at the start of every investigation for asset context.</div></div><span class="tag tag-ep">endpoint</span></div>
-            <div class="card-fields"><div class="field-group"><span class="field-label">Hostname</span><input type="text" id="e0-host" placeholder="L2345" oninput="rc('e0')"/></div></div>
+            <div class="card-fields"><div class="field-group">
+                <span class="field-label">Hostname</span>
+                <div class="multi-input-list" id="e0-host-list">
+                  <div class="multi-input-row"><input type="text" id="e0-host-0" placeholder="L2345" oninput="rc('e0')"/></div>
+                </div>
+                <button class="multi-add-btn" onclick="multiAdd('e0-host','e0','L2345')">+ Add another</button>
+              </div></div>
             <div class="card-query"><pre class="query-pre" id="out-e0"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('e0')">&#8669; Copy query</button><span class="copy-status" id="cs-e0">Copied</span><button class="pivot-btn" onclick="togglePivotMenu(this,event)">&#9654; Flows &#9662;<div class="pivot-menu" style="display:none"><div class="pivot-menu-item" onclick="goToFlow('lateral',event)">Lateral Movement</div><div class="pivot-menu-item" onclick="goToFlow('malware',event)">Malware / File Threats</div><div class="pivot-menu-item" onclick="goToFlow('custom',event)">Custom Rules</div></div></button></div>
           </div>
@@ -375,7 +462,13 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
           </div>
           <div class="card">
             <div class="card-header"><div><div class="card-title">Wildfire — file verdict lookup by SHA256</div><div class="card-desc">Pull Wildfire verdict and file metadata for a specific hash. Use to confirm sandbox verdict and delivery context.</div></div><span class="tag tag-ep">endpoint</span></div>
-            <div class="card-fields"><div class="field-group wide"><span class="field-label">SHA256 hash</span><input type="text" id="e2-hash" placeholder="a1b2c3d4e5f6..." oninput="rc('e2')"/></div></div>
+            <div class="card-fields"><div class="field-group wide">
+                <span class="field-label">SHA256 hash</span>
+                <div class="multi-input-list" id="e2-hash-list">
+                  <div class="multi-input-row"><input type="text" id="e2-hash-0" placeholder="a1b2c3d4e5f6..." oninput="rc('e2')"/></div>
+                </div>
+                <button class="multi-add-btn" onclick="multiAdd('e2-hash','e2','a1b2c3d4e5f6...')">+ Add another</button>
+              </div></div>
             <div class="card-query"><pre class="query-pre" id="out-e2"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('e2')">&#8669; Copy query</button><span class="copy-status" id="cs-e2">Copied</span><button class="pivot-btn" onclick="goToFlow('malware',event)" title="Open investigation flow">&#9654; Malware / File Threats</button></div>
           </div>
@@ -392,7 +485,13 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
           <div class="card">
             <div class="card-header"><div><div class="card-title">File — seen on other hosts (dedup by hostname)</div><div class="card-desc">Check how many endpoints have seen a specific filename. Use to scope potential spread of a suspicious file across the fleet. Deduplicates by hostname so each host appears once.</div></div><span class="tag tag-ep">endpoint</span></div>
             <div class="card-fields">
-              <div class="field-group wide"><span class="field-label">File name</span><input type="text" id="fw0-fname" placeholder="Cover Page.pdf" oninput="rc('fw0')"/></div>
+              <div class="field-group wide">
+                <span class="field-label">File name</span>
+                <div class="multi-input-list" id="fw0-fname-list">
+                  <div class="multi-input-row"><input type="text" id="fw0-fname-0" placeholder="Cover Page.pdf" oninput="rc('fw0')"/></div>
+                </div>
+                <button class="multi-add-btn" onclick="multiAdd('fw0-fname','fw0','Cover Page.pdf')">+ Add another</button>
+              </div>
               <div class="field-group narrow"><span class="field-label">Limit</span><input type="text" id="fw0-limit" placeholder="100" oninput="rc('fw0')"/></div>
             </div>
             <div class="card-query"><pre class="query-pre" id="out-fw0"></pre></div>
@@ -402,7 +501,13 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
           <div class="card">
             <div class="card-header"><div><div class="card-title">File — check if directly executed as actor process</div><div class="card-desc">Checks whether a suspicious file has been executed as a running process anywhere on the fleet. No results means the file has not been directly launched — does not rule out indirect execution.</div></div><span class="tag tag-ep">endpoint</span></div>
             <div class="card-fields">
-              <div class="field-group wide"><span class="field-label">File name</span><input type="text" id="fw1-fname" placeholder="suspicious.exe" oninput="rc('fw1')"/></div>
+              <div class="field-group wide">
+                <span class="field-label">File name</span>
+                <div class="multi-input-list" id="fw1-fname-list">
+                  <div class="multi-input-row"><input type="text" id="fw1-fname-0" placeholder="suspicious.exe" oninput="rc('fw1')"/></div>
+                </div>
+                <button class="multi-add-btn" onclick="multiAdd('fw1-fname','fw1','suspicious.exe')">+ Add another</button>
+              </div>
             </div>
             <div class="card-query"><pre class="query-pre" id="out-fw1"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('fw1')">&#8669; Copy query</button><span class="copy-status" id="cs-fw1">Copied</span><button class="pivot-btn" onclick="goToFlow('malware',event)" title="Open investigation flow">&#9654; Malware / File Threats</button></div>
@@ -460,7 +565,13 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
                   <option value="and">Remote AND Local</option>
                 </select>
               </div>
-              <div class="field-group" id="t0-ip1-group"><span class="field-label" id="t0-ip1-label">Remote IP (IOC)</span><input type="text" id="t0-ip1" placeholder="185.234.0.1" oninput="rc('t0')"/></div>
+              <div class="field-group">
+                <span class="field-label">Remote IP (IOC)</span>
+                <div class="multi-input-list" id="t0-ip1-list">
+                  <div class="multi-input-row"><input type="text" id="t0-ip1-0" placeholder="185.234.0.1" oninput="rc('t0')"/></div>
+                </div>
+                <button class="multi-add-btn" onclick="multiAdd('t0-ip1','t0','185.234.0.1')">+ Add another</button>
+              </div>
               <div class="field-group" id="t0-ip2-group" style="display:none"><span class="field-label" id="t0-ip2-label">Local IP</span><input type="text" id="t0-ip2" placeholder="10.0.0.1" oninput="rc('t0')"/></div>
             </div>
             <div class="card-query"><pre class="query-pre" id="out-t0"></pre></div>
@@ -474,7 +585,13 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
           </div>
           <div class="card">
             <div class="card-header"><div><div class="card-title">File hash sweep — all endpoints</div><div class="card-desc">All file events across the fleet for a specific SHA256. Use to determine spread of a malicious file following a Wildfire or VirusTotal hit.</div></div><span class="tag tag-threat">threat</span></div>
-            <div class="card-fields"><div class="field-group wide"><span class="field-label">SHA256 hash</span><input type="text" id="t2-hash" placeholder="a1b2c3d4e5f6..." oninput="rc('t2')"/></div></div>
+            <div class="card-fields"><div class="field-group wide">
+                <span class="field-label">SHA256 hash</span>
+                <div class="multi-input-list" id="t2-hash-list">
+                  <div class="multi-input-row"><input type="text" id="t2-hash-0" placeholder="a1b2c3d4e5f6..." oninput="rc('t2')"/></div>
+                </div>
+                <button class="multi-add-btn" onclick="multiAdd('t2-hash','t2','a1b2c3d4e5f6...')">+ Add another</button>
+              </div></div>
             <div class="card-query"><pre class="query-pre" id="out-t2"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('t2')">&#8669; Copy query</button><span class="copy-status" id="cs-t2">Copied</span><button class="pivot-btn" onclick="goToFlow('malware',event)" title="Open investigation flow">&#9654; Malware / File Threats</button></div>
           </div>
@@ -746,47 +863,47 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 
     <div class="flows-category">
       <div class="flows-cat-label">Persistence</div>
-      <div class="flows-item active" onclick="showFlow('persist',this)" data-terms="startup folder registry schtasks scheduled task executable script startup-related persist an executable or script was added to the startup folder an uncommon file added to startup-related registry keys uncommon local scheduled task creation via schtasks.exe executable or script file written by a web server process">Persistence — startup &amp; scheduled tasks</div>
+      <div class="flows-item active" onclick="showFlow('persist',this)" data-flow="persist" data-terms="startup folder registry schtasks scheduled task executable script startup-related persist an executable or script was added to the startup folder an uncommon file added to startup-related registry keys uncommon local scheduled task creation via schtasks.exe executable or script file written by a web server process">Persistence — startup &amp; scheduled tasks</div>
     </div>
     <div class="flows-category">
       <div class="flows-cat-label">Lateral Movement</div>
-      <div class="flows-item" onclick="showFlow('lateral',this)" data-terms="rdp rare rdp session smb domain controller lateral movement remote desktop rare rdp session to a remote host suspicious smb connection from domain controller">Lateral movement / RDP anomaly</div>
+      <div class="flows-item" onclick="showFlow('lateral',this)" data-flow="lateral" data-terms="rdp rare rdp session smb domain controller lateral movement remote desktop rare rdp session to a remote host suspicious smb connection from domain controller">Lateral movement / RDP anomaly</div>
     </div>
     <div class="flows-category">
       <div class="flows-cat-label">Malware / File Threats</div>
-      <div class="flows-item" onclick="showFlow('malware',this)" data-terms="local analysis malware smb executable file written wildfire threat verdict malicious an uncommon executable was remotely written over smb to an uncommon destination local analysis malware">Malware / local analysis / file threat</div>
+      <div class="flows-item" onclick="showFlow('malware',this)" data-flow="malware" data-terms="local analysis malware smb executable file written wildfire threat verdict malicious an uncommon executable was remotely written over smb to an uncommon destination local analysis malware">Malware / local analysis / file threat</div>
     </div>
     <div class="flows-category">
       <div class="flows-cat-label">Suspicious Process</div>
-      <div class="flows-item" onclick="showFlow('process',this)" data-terms="powershell lolbin high integrity notepad network connection uncommon process startup suspicious command line script suspicious powershell command line lolbin process executed with a high integrity level notepad process makes a network connection execution of an uncommon process at an early startup stage">Suspicious process / LOLBIN / PowerShell</div>
+      <div class="flows-item" onclick="showFlow('process',this)" data-flow="process" data-terms="powershell lolbin high integrity notepad network connection uncommon process startup suspicious command line script suspicious powershell command line lolbin process executed with a high integrity level notepad process makes a network connection execution of an uncommon process at an early startup stage">Suspicious process / LOLBIN / PowerShell</div>
     </div>
     <div class="flows-category">
       <div class="flows-cat-label">Identity &amp; Auth</div>
-      <div class="flows-item" onclick="showFlow('identity',this)" data-terms="azure risky login impossible traveler sso rare country login service account interactive kerberos suspicious country failed authentication azure risky login with suspicious characteristics impossible traveler - sso rare country login - impossible traveler interactive login by a service account rare kerberos traffic from a process user successfully connected from a suspicious country">Identity / impossible traveler</div>
+      <div class="flows-item" onclick="showFlow('identity',this)" data-flow="identity" data-terms="azure risky login impossible traveler sso rare country login service account interactive kerberos suspicious country failed authentication azure risky login with suspicious characteristics impossible traveler - sso rare country login - impossible traveler interactive login by a service account rare kerberos traffic from a process user successfully connected from a suspicious country">Identity / impossible traveler</div>
     </div>
     <div class="flows-category">
       <div class="flows-cat-label">C2 / Beaconing</div>
-      <div class="flows-item" onclick="showFlow('c2',this)" data-terms="abnormal recurring communications rare domain dns suspicious dns query generic beaconing c2 command control callback less common port abnormal recurring communications to a rare domain with a less common port suspicious dns query failed connections">C2 / DNS / beaconing</div>
+      <div class="flows-item" onclick="showFlow('c2',this)" data-flow="c2" data-terms="abnormal recurring communications rare domain dns suspicious dns query generic beaconing c2 command control callback less common port abnormal recurring communications to a rare domain with a less common port suspicious dns query failed connections">C2 / DNS / beaconing</div>
     </div>
     <div class="flows-category">
       <div class="flows-cat-label">Recon / Scanning</div>
-      <div class="flows-item" onclick="showFlow('recon',this)" data-terms="nmap scripting engine zgrab scanner detection ldap non-standard process scanning reconnaissance nmap scripting engine detection zgrab application layer scanner detection ldap traffic from non-standard and uncommon process failed connections">Recon / scanning</div>
+      <div class="flows-item" onclick="showFlow('recon',this)" data-flow="recon" data-terms="nmap scripting engine zgrab scanner detection ldap non-standard process scanning reconnaissance nmap scripting engine detection zgrab application layer scanner detection ldap traffic from non-standard and uncommon process failed connections">Recon / scanning</div>
     </div>
     <div class="flows-category">
       <div class="flows-cat-label">Privilege Escalation</div>
-      <div class="flows-item" onclick="showFlow('priv',this)" data-terms="privilege escalation new admin user local admin group user added account created enabled disabled mthom new admin user found">Privilege escalation</div>
+      <div class="flows-item" onclick="showFlow('priv',this)" data-flow="priv" data-terms="privilege escalation new admin user local admin group user added account created enabled disabled mthom new admin user found">Privilege escalation</div>
     </div>
     <div class="flows-category">
       <div class="flows-cat-label">Vulnerability / Exploit</div>
-      <div class="flows-item" onclick="showFlow('vuln',this)" data-terms="apache path traversal cisco ios http configuration vite arbitrary file read vulnerability exploit cve apache http server path traversal vulnerability cisco ios http configuration arbitrary administrative access vulnerability vite arbitrary file read vulnerability">Vulnerability / exploit attempt</div>
+      <div class="flows-item" onclick="showFlow('vuln',this)" data-flow="vuln" data-terms="apache path traversal cisco ios http configuration vite arbitrary file read vulnerability exploit cve apache http server path traversal vulnerability cisco ios http configuration arbitrary administrative access vulnerability vite arbitrary file read vulnerability">Vulnerability / exploit attempt</div>
     </div>
     <div class="flows-category">
       <div class="flows-cat-label">Threat ID</div>
-      <div class="flows-item" onclick="showFlow('threatid',this)" data-terms="threat id threat # threat id #273511773 threat id #378414516 threat id #9999">Threat ID alerts</div>
+      <div class="flows-item" onclick="showFlow('threatid',this)" data-flow="threatid" data-terms="threat id threat # threat id #273511773 threat id #378414516 threat id #9999">Threat ID alerts</div>
     </div>
     <div class="flows-category">
       <div class="flows-cat-label">Custom Rules</div>
-      <div class="flows-item" onclick="showFlow('custom',this)" data-terms="mthom brokervm claroty ot network new admin mobilepass slow data ingestion offline correlation rule error cisco ise multiple failed admin authentications cisco ise multiple failed wifi authentications parsing rule error mthom brokervm has gone offline mthom claroty new asset detected mthom slow data ingestion alert mthom mobilepass repeated failed authentication">Custom rules [MTHOM]</div>
+      <div class="flows-item" onclick="showFlow('custom',this)" data-flow="custom" data-terms="mthom brokervm claroty ot network new admin mobilepass slow data ingestion offline correlation rule error cisco ise multiple failed admin authentications cisco ise multiple failed wifi authentications parsing rule error mthom brokervm has gone offline mthom claroty new asset detected mthom slow data ingestion alert mthom mobilepass repeated failed authentication">Custom rules [MTHOM]</div>
     </div>
 
     <div style="padding:12px 16px;font-size:11px;color:var(--text3);display:none" id="no-flow-results">No matching alerts found</div>
@@ -799,6 +916,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
       <div class="flow-header">
         <h2>Persistence — startup &amp; scheduled tasks</h2>
         <p>Matching alerts: <em>An executable or script was added to the startup folder · An uncommon file added to startup-related Registry keys · Uncommon local scheduled task creation via schtasks.exe</em></p>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;"><span class="sev-critical">Critical</span><button class="btn-copy-all" onclick="copyAllFlow('persist')">&#8669; Copy all queries</button></div>
         <div class="flow-progress">Progress: <span id="prog-persist">0</span> / 5 steps complete</div>
       </div>
       <div class="flow-steps">
@@ -864,6 +982,11 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
           </div>
         </div>
       </div>
+      <div class="flow-notes">
+        <div class="flow-notes-label">Investigation notes <span class="flow-notes-saved" id="notes-saved-persist">Saved</span></div>
+        <textarea id="flow-notes-persist" placeholder="Jot your findings here as you work through the steps — auto-saved to your browser" oninput="saveFlowNote('persist')"></textarea>
+      </div>
+    
     </div>
 
     <!-- LATERAL MOVEMENT -->
@@ -871,6 +994,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
       <div class="flow-header">
         <h2>Lateral movement / RDP anomaly</h2>
         <p>Matching alerts: <em>Rare RDP session to a remote host · Suspicious SMB connection from domain controller</em></p>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;"><span class="sev-high">High</span><button class="btn-copy-all" onclick="copyAllFlow('lateral')">&#8669; Copy all queries</button></div>
         <div class="flow-progress">Progress: <span id="prog-lateral">0</span> / 5 steps complete</div>
       </div>
       <div class="flow-steps">
@@ -935,6 +1059,11 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
           </div>
         </div>
       </div>
+      <div class="flow-notes">
+        <div class="flow-notes-label">Investigation notes <span class="flow-notes-saved" id="notes-saved-lateral">Saved</span></div>
+        <textarea id="flow-notes-lateral" placeholder="Jot your findings here as you work through the steps — auto-saved to your browser" oninput="saveFlowNote('lateral')"></textarea>
+      </div>
+    
     </div>
 
     <!-- MALWARE -->
@@ -942,6 +1071,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
       <div class="flow-header">
         <h2>Malware / local analysis / file threat</h2>
         <p>Matching alerts: <em>Local Analysis Malware · An uncommon executable was remotely written over SMB · Wildfire malicious verdict</em></p>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;"><span class="sev-critical">Critical</span><button class="btn-copy-all" onclick="copyAllFlow('malware')">&#8669; Copy all queries</button></div>
         <div class="flow-progress">Progress: <span id="prog-malware">0</span> / 6 steps complete</div>
       </div>
       <div class="flow-steps">
@@ -1020,6 +1150,11 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
           </div>
         </div>
       </div>
+      <div class="flow-notes">
+        <div class="flow-notes-label">Investigation notes <span class="flow-notes-saved" id="notes-saved-malware">Saved</span></div>
+        <textarea id="flow-notes-malware" placeholder="Jot your findings here as you work through the steps — auto-saved to your browser" oninput="saveFlowNote('malware')"></textarea>
+      </div>
+    
     </div>
 
     <!-- PROCESS / LOLBIN -->
@@ -1027,6 +1162,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
       <div class="flow-header">
         <h2>Suspicious process / LOLBIN / PowerShell</h2>
         <p>Matching alerts: <em>Suspicious PowerShell Command Line · LOLBIN process executed with a high integrity level · Notepad process makes a network connection · Execution of an uncommon process at an early startup stage</em></p>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;"><span class="sev-high">High</span><button class="btn-copy-all" onclick="copyAllFlow('process')">&#8669; Copy all queries</button></div>
         <div class="flow-progress">Progress: <span id="prog-process">0</span> / 5 steps complete</div>
       </div>
       <div class="flow-steps">
@@ -1092,6 +1228,11 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
           </div>
         </div>
       </div>
+      <div class="flow-notes">
+        <div class="flow-notes-label">Investigation notes <span class="flow-notes-saved" id="notes-saved-process">Saved</span></div>
+        <textarea id="flow-notes-process" placeholder="Jot your findings here as you work through the steps — auto-saved to your browser" oninput="saveFlowNote('process')"></textarea>
+      </div>
+    
     </div>
 
     <!-- IDENTITY -->
@@ -1099,6 +1240,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
       <div class="flow-header">
         <h2>Identity / impossible traveler</h2>
         <p>Matching alerts: <em>Azure Risky Login with Suspicious Characteristics · Impossible traveler - SSO · Rare Country Login - Impossible Traveler (SSO) · User successfully connected from a suspicious country · Interactive login by a service account · Rare Kerberos Traffic from a Process</em></p>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;"><span class="sev-high">High</span><button class="btn-copy-all" onclick="copyAllFlow('identity')">&#8669; Copy all queries</button></div>
         <div class="flow-progress">Progress: <span id="prog-identity">0</span> / 5 steps complete</div>
       </div>
       <div class="flow-steps">
@@ -1163,6 +1305,11 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
           </div>
         </div>
       </div>
+      <div class="flow-notes">
+        <div class="flow-notes-label">Investigation notes <span class="flow-notes-saved" id="notes-saved-identity">Saved</span></div>
+        <textarea id="flow-notes-identity" placeholder="Jot your findings here as you work through the steps — auto-saved to your browser" oninput="saveFlowNote('identity')"></textarea>
+      </div>
+    
     </div>
 
     <!-- C2 -->
@@ -1170,6 +1317,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
       <div class="flow-header">
         <h2>C2 / DNS / beaconing</h2>
         <p>Matching alerts: <em>Abnormal Recurring Communications to a Rare Domain With a Less Common Port · Suspicious DNS Query (generic:...) · generic: alerts</em></p>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;"><span class="sev-critical">Critical</span><button class="btn-copy-all" onclick="copyAllFlow('c2')">&#8669; Copy all queries</button></div>
         <div class="flow-progress">Progress: <span id="prog-c2">0</span> / 5 steps complete</div>
       </div>
       <div class="flow-steps">
@@ -1236,6 +1384,11 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
           </div>
         </div>
       </div>
+      <div class="flow-notes">
+        <div class="flow-notes-label">Investigation notes <span class="flow-notes-saved" id="notes-saved-c2">Saved</span></div>
+        <textarea id="flow-notes-c2" placeholder="Jot your findings here as you work through the steps — auto-saved to your browser" oninput="saveFlowNote('c2')"></textarea>
+      </div>
+    
     </div>
 
     <!-- RECON -->
@@ -1243,6 +1396,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
       <div class="flow-header">
         <h2>Recon / scanning</h2>
         <p>Matching alerts: <em>Nmap Scripting Engine Detection · ZGrab Application Layer Scanner Detection · LDAP traffic from non-standard and uncommon process</em></p>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;"><span class="sev-medium">Medium</span><button class="btn-copy-all" onclick="copyAllFlow('recon')">&#8669; Copy all queries</button></div>
         <div class="flow-progress">Progress: <span id="prog-recon">0</span> / 4 steps complete</div>
       </div>
       <div class="flow-steps">
@@ -1295,6 +1449,11 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
           </div>
         </div>
       </div>
+      <div class="flow-notes">
+        <div class="flow-notes-label">Investigation notes <span class="flow-notes-saved" id="notes-saved-recon">Saved</span></div>
+        <textarea id="flow-notes-recon" placeholder="Jot your findings here as you work through the steps — auto-saved to your browser" oninput="saveFlowNote('recon')"></textarea>
+      </div>
+    
     </div>
 
     <!-- PRIV ESC -->
@@ -1302,6 +1461,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
       <div class="flow-header">
         <h2>Privilege escalation</h2>
         <p>Matching alerts: <em>[MTHOM] New Admin User Found · New local user created · User added to local admins group · Local user account enabled</em></p>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;"><span class="sev-high">High</span><button class="btn-copy-all" onclick="copyAllFlow('priv')">&#8669; Copy all queries</button></div>
         <div class="flow-progress">Progress: <span id="prog-priv">0</span> / 4 steps complete</div>
       </div>
       <div class="flow-steps">
@@ -1356,6 +1516,11 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
           </div>
         </div>
       </div>
+      <div class="flow-notes">
+        <div class="flow-notes-label">Investigation notes <span class="flow-notes-saved" id="notes-saved-priv">Saved</span></div>
+        <textarea id="flow-notes-priv" placeholder="Jot your findings here as you work through the steps — auto-saved to your browser" oninput="saveFlowNote('priv')"></textarea>
+      </div>
+    
     </div>
 
     <!-- VULN -->
@@ -1363,6 +1528,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
       <div class="flow-header">
         <h2>Vulnerability / exploit attempt</h2>
         <p>Matching alerts: <em>Apache HTTP Server Path Traversal Vulnerability · Cisco IOS HTTP Configuration Arbitrary Administrative Access Vulnerability · Vite Arbitrary File Read Vulnerability</em></p>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;"><span class="sev-high">High</span><button class="btn-copy-all" onclick="copyAllFlow('vuln')">&#8669; Copy all queries</button></div>
         <div class="flow-progress">Progress: <span id="prog-vuln">0</span> / 4 steps complete</div>
       </div>
       <div class="flow-steps">
@@ -1417,6 +1583,11 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
           </div>
         </div>
       </div>
+      <div class="flow-notes">
+        <div class="flow-notes-label">Investigation notes <span class="flow-notes-saved" id="notes-saved-vuln">Saved</span></div>
+        <textarea id="flow-notes-vuln" placeholder="Jot your findings here as you work through the steps — auto-saved to your browser" oninput="saveFlowNote('vuln')"></textarea>
+      </div>
+    
     </div>
 
     <!-- THREAT ID -->
@@ -1424,6 +1595,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
       <div class="flow-header">
         <h2>Threat ID alerts</h2>
         <p>Matching alerts: <em>Threat ID #273511773 · Threat ID #378414516 · Threat ID #9999 and other numeric Threat IDs</em></p>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;"><span class="sev-high">High</span><button class="btn-copy-all" onclick="copyAllFlow('threatid')">&#8669; Copy all queries</button></div>
         <div class="flow-progress">Progress: <span id="prog-threatid">0</span> / 4 steps complete</div>
       </div>
       <div class="flow-steps">
@@ -1478,6 +1650,11 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
           </div>
         </div>
       </div>
+      <div class="flow-notes">
+        <div class="flow-notes-label">Investigation notes <span class="flow-notes-saved" id="notes-saved-threatid">Saved</span></div>
+        <textarea id="flow-notes-threatid" placeholder="Jot your findings here as you work through the steps — auto-saved to your browser" oninput="saveFlowNote('threatid')"></textarea>
+      </div>
+    
     </div>
 
     <!-- CUSTOM MTHOM -->
@@ -1485,6 +1662,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
       <div class="flow-header">
         <h2>Custom rules [MTHOM]</h2>
         <p>Matching alerts: <em>[MTHOM] BrokerVM Has Gone Offline · [MTHOM] Claroty - New Asset(s) detected on the OT network · [MTHOM] Slow Data Ingestion Alert · [mthom] MobilePass Repeated Failed Authentication</em></p>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;"><span class="sev-medium">Medium</span><button class="btn-copy-all" onclick="copyAllFlow('custom')">&#8669; Copy all queries</button></div>
         <div class="flow-progress">Progress: <span id="prog-custom">0</span> / 4 steps complete</div>
       </div>
       <div class="flow-steps">
@@ -1539,6 +1717,11 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
           </div>
         </div>
       </div>
+      <div class="flow-notes">
+        <div class="flow-notes-label">Investigation notes <span class="flow-notes-saved" id="notes-saved-custom">Saved</span></div>
+        <textarea id="flow-notes-custom" placeholder="Jot your findings here as you work through the steps — auto-saved to your browser" oninput="saveFlowNote('custom')"></textarea>
+      </div>
+    
     </div>
 
   </main>
@@ -1556,6 +1739,14 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
     </div>
   </div>
   <div class="intel-grid" id="intel-grid"></div>
+</div>
+
+<div class="recently-used" id="recently-used-panel">
+  <div class="ru-header">
+    <span class="ru-title">&#9719; Recently copied queries</span>
+    <button class="ru-close" onclick="toggleRecentlyUsed()">&#10005;</button>
+  </div>
+  <div id="ru-list-inner"><div class="ru-empty">No queries copied yet</div></div>
 </div>
 
 <div class="toast" id="toast"><span class="toast-dot"></span><span id="toast-msg">Done</span></div>
@@ -1591,10 +1782,10 @@ var aqlBase = function(where){
 
 var B={
   'c0':function(){return 'dataset = cloud_audit_logs\n| filter raw_log ~= "'+gv('c0-guid','PASTE-APP-GUID')+'"\n| fields _time, identity_name, identity_uuid, operation_name,\n         caller_ip, referenced_resource, referenced_resource_name,\n         resource_type, state_changing_event, raw_log\n| sort desc _time\n| limit '+gv('c0-limit','50');},
-  'i0':function(){return 'config case_sensitive = false\n| dataset = microsoft_windows_raw\n| filter event_id = 4624\n| alter raw_target_username = json_extract_scalar(event_data, "$.TargetUserName")\n| alter target_username = lowercase(arrayindex(regextract(raw_target_username,"^[^@]+"),0))\n| alter targetusersid = json_extract_scalar(event_data, "$.TargetSid")\n| alter source_username = json_extract_scalar(event_data, "$.SubjectUserName")\n| alter source_ip_address = json_extract_scalar(event_data, "$.IpAddress")\n| alter source_workstation_name = lowercase(json_extract_scalar(event_data, "$.WorkstationName"))\n| alter logon_type = json_extract_scalar(event_data, "$.LogonType")\n| alter target_domain_name = event_data -> TargetDomainName\n| filter host_name contains "'+gv('i0-host','HOSTNAME')+'"\n| fields _time, event_id, logon_type, source_username, source_ip_address,\n         source_workstation_name, target_username,\n         host_name as target_workstation_name, target_domain_name, message, event_data';},
-  'i1':function(){return 'config case_sensitive = false\n| dataset = microsoft_windows_raw\n| filter event_id = 4624\n| alter raw_target_username = json_extract_scalar(event_data, "$.TargetUserName")\n| alter target_username = lowercase(arrayindex(regextract(raw_target_username,"^[^@]+"),0))\n| alter targetusersid = json_extract_scalar(event_data, "$.TargetSid")\n| alter source_username = json_extract_scalar(event_data, "$.SubjectUserName")\n| alter source_ip_address = json_extract_scalar(event_data, "$.IpAddress")\n| alter source_workstation_name = lowercase(json_extract_scalar(event_data, "$.WorkstationName"))\n| alter logon_type = json_extract_scalar(event_data, "$.LogonType")\n| alter target_domain_name = event_data -> TargetDomainName\n| filter target_username contains "'+gv('i1-user','USERNAME')+'"\n| fields _time, event_id, logon_type, source_username, source_ip_address,\n         source_workstation_name, target_username,\n         host_name as target_workstation_name, target_domain_name, message, event_data';},
-  'i2':function(){return 'config case_sensitive = false\n| dataset = email_data\n| filter mailbox_owner contains "'+gv('i2-user','USERNAME')+'"\n| fields sent_time, received_time, mailbox_owner, from, recipients,\n         cc_recipients, bcc_recipients, authentication_results,\n         sender_ip_location, attachments';},
-  'i3':function(){return 'config case_sensitive = false\n| dataset = panw_ngfw_url_raw\n| filter uri != null and source_user not in (null,"")\n| filter source_user contains "'+gv('i3-user','USERNAME')+'"\n| fields _time, uri, url_category, source_user, source_ip, dest_ip, dest_port';},
+  'i0':function(){return 'config case_sensitive = false\n| dataset = microsoft_windows_raw\n| filter event_id = 4624\n| alter raw_target_username = json_extract_scalar(event_data, "$.TargetUserName")\n| alter target_username = lowercase(arrayindex(regextract(raw_target_username,"^[^@]+"),0))\n| alter targetusersid = json_extract_scalar(event_data, "$.TargetSid")\n| alter source_username = json_extract_scalar(event_data, "$.SubjectUserName")\n| alter source_ip_address = json_extract_scalar(event_data, "$.IpAddress")\n| alter source_workstation_name = lowercase(json_extract_scalar(event_data, "$.WorkstationName"))\n| alter logon_type = json_extract_scalar(event_data, "$.LogonType")\n| alter target_domain_name = event_data -> TargetDomainName\n| filter host_name contains "'+gvMulti('i0-host','HOSTNAME')[0]+'"\n| fields _time, event_id, logon_type, source_username, source_ip_address,\n         source_workstation_name, target_username,\n         host_name as target_workstation_name, target_domain_name, message, event_data';},
+  'i1':function(){return 'config case_sensitive = false\n| dataset = microsoft_windows_raw\n| filter event_id = 4624\n| alter raw_target_username = json_extract_scalar(event_data, "$.TargetUserName")\n| alter target_username = lowercase(arrayindex(regextract(raw_target_username,"^[^@]+"),0))\n| alter targetusersid = json_extract_scalar(event_data, "$.TargetSid")\n| alter source_username = json_extract_scalar(event_data, "$.SubjectUserName")\n| alter source_ip_address = json_extract_scalar(event_data, "$.IpAddress")\n| alter source_workstation_name = lowercase(json_extract_scalar(event_data, "$.WorkstationName"))\n| alter logon_type = json_extract_scalar(event_data, "$.LogonType")\n| alter target_domain_name = event_data -> TargetDomainName\n| filter target_username contains "'+gvMulti('i1-user','USERNAME')[0]+'"\n| fields _time, event_id, logon_type, source_username, source_ip_address,\n         source_workstation_name, target_username,\n         host_name as target_workstation_name, target_domain_name, message, event_data';},
+  'i2':function(){return 'config case_sensitive = false\n| dataset = email_data\n| filter mailbox_owner contains "'+gvMulti('i2-user','USERNAME')[0]+'"\n| fields sent_time, received_time, mailbox_owner, from, recipients,\n         cc_recipients, bcc_recipients, authentication_results,\n         sender_ip_location, attachments';},
+  'i3':function(){return 'config case_sensitive = false\n| dataset = panw_ngfw_url_raw\n| filter uri != null and source_user not in (null,"")\n| filter source_user contains "'+gvMulti('i3-user','USERNAME')[0]+'"\n| fields _time, uri, url_category, source_user, source_ip, dest_ip, dest_port';},
   'f0':function(){
     var mode=gv('f0-mode','dest');
     var ip1=gv('f0-ip1','IP-ADDRESS');
@@ -1606,9 +1797,9 @@ var B={
     else filterLine='| filter dest_ip = "'+ip1+'"\n    and source_ip = "'+ip2+'"';
     return 'dataset = panw_ngfw_traffic_raw\n'+filterLine+'\n| fields _time, dest_ip, dest_port, source_ip, app,\n         action, protocol, session_end_reason\n| sort asc _time';},
   'f1':function(){return 'dataset = panw_ngfw_threat_raw\n| filter file_name contains "'+gv('f1-fname','FILENAME')+'"\n| fields _time, file_name, sub_type, verdict, source_ip, dest_ip,\n         source_user, partial_hash, app, threat_category,\n         threat_name_firewall, _reporting_device_name';},
-  'e0':function(){return 'dataset = endpoints\n| filter endpoint_name = "'+gv('e0-host','HOSTNAME')+'"\n| fields endpoint_name, endpoint_status, last_seen, agent_version, install_date';},
+  'e0':function(){return 'dataset = endpoints\n| filter endpoint_name = "'+gvMulti('e0-host','HOSTNAME')[0]+'"\n| fields endpoint_name, endpoint_status, last_seen, agent_version, install_date';},
   'e1':function(){return 'dataset = xdr_data\n| filter agent_hostname = "'+gv('e1-host','HOSTNAME')+'"\n| filter event_type = ENUM.NETWORK\n| filter actor_process_image_name ~= "(?i)msedge.exe"\n| filter action_remote_ip = "'+gv('e1-ip','REMOTE-IP')+'"\n| fields _time, agent_hostname, actor_process_image_name,\n         action_local_ip, action_local_port,\n         action_remote_ip, action_remote_port, action_external_hostname\n| sort asc _time';},
-  'e2':function(){return 'dataset = xdr_data\n| filter action_file_sha256 = "'+gv('e2-hash','SHA256-HASH')+'"\n| fields _time, agent_hostname, actor_process_image_name,\n         action_file_name, action_file_path,\n         action_file_sha256, action_file_wildfire_verdict\n| sort desc _time';},
+  'e2':function(){return 'dataset = xdr_data\n| filter action_file_sha256 = "'+gvMulti('e2-hash','SHA256-HASH')[0]+'"\n| fields _time, agent_hostname, actor_process_image_name,\n         action_file_name, action_file_path,\n         action_file_sha256, action_file_wildfire_verdict\n| sort desc _time';},
   'e3':function(){return 'dataset = xdr_data\n| filter agent_hostname = "'+gv('e3-host','HOSTNAME')+'"\n| filter event_type = ENUM.PROCESS\n| filter causality_actor_process_image_name ~= "(?i)'+gv('e3-proc','PARENT-PROCESS.exe')+'"\n| fields _time, agent_hostname,\n         causality_actor_process_image_name,\n         actor_process_image_name, actor_process_command_line,\n         actor_process_image_sha256\n| sort asc _time';},
   'b0':function(){return 'dataset = xdr_data\n| filter agent_hostname = "'+gv('b0-host','HOSTNAME')+'"\n| filter event_type = ENUM.NETWORK\n| filter actor_process_image_name ~= "(?i)msedge.exe"\n| filter action_remote_ip = "'+gv('b0-ip','REMOTE-IP')+'"\n    or action_remote_port = '+gv('b0-port','443')+'\n| fields _time, agent_hostname, actor_process_image_name,\n         action_local_ip, action_local_port,\n         action_remote_ip, action_remote_port, action_external_hostname\n| sort asc _time';},
   'b1':function(){return 'dataset = xdr_data\n| filter agent_hostname = "'+gv('b1-host','HOSTNAME')+'"\n| filter event_type = ENUM.NETWORK\n| filter actor_process_image_name ~= "(?i)msedge.exe"\n    or actor_process_image_name ~= "(?i)chrome.exe"\n| fields _time, agent_hostname, actor_process_image_name,\n         action_local_ip, action_local_port,\n         action_remote_ip, action_remote_port, action_external_hostname\n| sort asc _time';},
@@ -1623,7 +1814,7 @@ var B={
     else filterLine='| filter action_remote_ip = "'+ip1+'"\n    and action_local_ip = "'+ip2+'"';
     return 'dataset = xdr_data\n| filter event_type = ENUM.NETWORK\n'+filterLine+'\n| fields _time, agent_hostname, actor_process_image_name,\n         action_local_ip, action_local_port,\n         action_remote_ip, action_remote_port, action_external_hostname\n| sort desc _time\n| limit 200';},
   't1':function(){return 'dataset = xdr_data\n| filter event_type = ENUM.NETWORK\n| filter action_external_hostname ~= "(?i)'+gv('t1-domain','DOMAIN.COM')+'"\n| fields _time, agent_hostname, actor_process_image_name,\n         action_external_hostname, action_remote_ip, action_remote_port\n| sort desc _time\n| limit 200';},
-  't2':function(){return 'dataset = xdr_data\n| filter action_file_sha256 = "'+gv('t2-hash','SHA256-HASH')+'"\n| fields _time, agent_hostname, actor_process_image_name,\n         action_file_name, action_file_path,\n         action_file_sha256, action_file_wildfire_verdict\n| sort desc _time\n| limit 200';},
+  't2':function(){return 'dataset = xdr_data\n| filter action_file_sha256 = "'+gvMulti('t2-hash','SHA256-HASH')[0]+'"\n| fields _time, agent_hostname, actor_process_image_name,\n         action_file_name, action_file_path,\n         action_file_sha256, action_file_wildfire_verdict\n| sort desc _time\n| limit 200';},
   'l0':function(){return 'dataset = xdr_data\n| filter event_type = ENUM.NETWORK\n| filter agent_hostname = "'+gv('l0-src','SOURCE-HOSTNAME')+'"\n| filter action_remote_port = 3389\n| fields _time, agent_hostname, actor_process_image_name,\n         action_local_ip, action_remote_ip, action_remote_port\n| sort asc _time';},
   'l1':function(){return 'dataset = xdr_data\n| filter event_type = ENUM.NETWORK\n| filter agent_hostname = "'+gv('l1-src','SOURCE-HOSTNAME')+'"\n| filter action_remote_port = 3389\n| fields _time, agent_hostname, action_remote_ip\n| comp count(action_remote_ip) as connection_count by action_remote_ip\n| sort desc connection_count';},
   'p0':function(){
@@ -1651,8 +1842,8 @@ var B={
     return 'dataset = xdr_data\n'+hf+'| filter event_type = EVENT_LOG and action_evtlog_event_id = 4104\n| alter ScriptBlock = action_evtlog_data_fields -> ScriptBlockText\n| alter UserName = action_evtlog_data_fields -> UserName\n| filter ScriptBlock != null\n| fields _time, agent_hostname, UserName, ScriptBlock\n| sort desc _time\n| limit '+gv('x1-limit','50');},
   'x2':function(){return 'dataset = xdr_data\n| filter event_type = ENUM.NETWORK\n| filter actor_process_image_name ~= "(?i)'+gv('x2-proc','PROCESS-NAME')+'"\n| fields _time, agent_hostname, actor_process_image_name,\n         action_remote_ip, action_remote_port, action_external_hostname\n| sort desc _time\n| limit 200';},
   'a0':function(){return 'dataset = pan_dss_raw\n| filter admin_count = "1"\n| dedup sam_account_name\n| view column order = populated';},
-  'fw0':function(){return 'dataset = xdr_data\n| filter action_file_name = "'+gv('fw0-fname','FILENAME')+'"\n| fields _time, agent_hostname, actor_process_image_name,\n         action_file_name, action_file_path,\n         action_file_sha256\n| dedup agent_hostname\n| sort desc _time\n| limit '+gv('fw0-limit','100');},
-  'fw1':function(){return 'dataset = xdr_data\n| filter action_file_name = "'+gv('fw1-fname','FILENAME')+'"\n    or actor_process_image_name = "'+gv('fw1-fname','FILENAME')+'"\n| fields _time, agent_hostname, actor_process_image_name,\n         action_process_image_name,\n         action_process_image_command_line,\n         action_file_name, action_file_path\n| sort desc _time\n| limit 200';},
+  'fw0':function(){return 'dataset = xdr_data\n| filter action_file_name = "'+gvMulti('fw0-fname','FILENAME')[0]+'"\n| fields _time, agent_hostname, actor_process_image_name,\n         action_file_name, action_file_path,\n         action_file_sha256\n| dedup agent_hostname\n| sort desc _time\n| limit '+gv('fw0-limit','100');},
+  'fw1':function(){return 'dataset = xdr_data\n| filter action_file_name = "'+gvMulti('fw1-fname','FILENAME')[0]+'"\n    or actor_process_image_name = "'+gvMulti('fw1-fname','FILENAME')[0]+'"\n| fields _time, agent_hostname, actor_process_image_name,\n         action_process_image_name,\n         action_process_image_command_line,\n         action_file_name, action_file_path\n| sort desc _time\n| limit 200';},
   'fw2':function(){return 'dataset = xdr_data\n| filter actor_process_image_path contains "'+gv('fw2-dir','DIRECTORY')+'"\n    and action_process_image_name != "svchost.exe"\n| fields _time, agent_hostname, actor_process_image_name,\n         actor_process_image_path,\n         action_process_image_name,\n         action_process_image_command_line\n| sort desc _time\n| limit '+gv('fw2-limit','500');},
   't3':function(){return 'dataset = xdr_data\n| filter event_type = ENUM.NETWORK\n| filter action_local_port = 53\n    OR action_remote_port = 53\n| filter dns_query_name ~= "'+gv('t3-domain','DOMAIN.COM')+'"\n| fields _time, agent_hostname, actor_process_image_name,\n         actor_process_image_path, dns_query_name\n| sort asc _time';},
   'x3':function(){
@@ -1756,6 +1947,9 @@ function cc(id){
     var cs=document.getElementById('cs-'+id);
     if(cs){cs.classList.add('show');setTimeout(function(){cs.classList.remove('show');},2000);}
     showToast('Query copied to clipboard');
+    var card=document.querySelector('#out-'+id)?document.querySelector('#out-'+id).closest('.card'):null;
+    var name=card?(card.querySelector('.card-title')||{}).textContent||id:id;
+    saveToRecent(name,q);
   });
 }
 
@@ -2082,8 +2276,173 @@ function updateRefreshTime(){
   if(ref) ref.textContent='Last refreshed: '+now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
 }
 
+// ── MULTI-VALUE INPUTS ────────────────────────────────
+var multiCounts={};
+
+function multiGetValues(fieldId){
+  var vals=[];var i=0;
+  while(document.getElementById(fieldId+'-'+i)){
+    var v=document.getElementById(fieldId+'-'+i).value.trim();
+    if(v) vals.push(v);
+    i++;
+  }
+  return vals;
+}
+
+function multiAdd(fieldId,cardId,placeholder){
+  var list=document.getElementById(fieldId+'-list');
+  if(!list) return;
+  if(!multiCounts[fieldId]) multiCounts[fieldId]=1;
+  var idx=multiCounts[fieldId];
+  var row=document.createElement('div');
+  row.className='multi-input-row';
+  row.id=fieldId+'-row-'+idx;
+  row.innerHTML='<input type="text" id="'+fieldId+'-'+idx+'" placeholder="'+placeholder+'" oninput="rc(\''+cardId+'\')"/>'+
+    '<button class="multi-remove-btn" onclick="multiRemove(\''+fieldId+'\','+idx+',\''+cardId+'\')">&#215;</button>';
+  list.appendChild(row);
+  multiCounts[fieldId]++;
+  rc(cardId);
+}
+
+function multiRemove(fieldId,idx,cardId){
+  var row=document.getElementById(fieldId+'-row-'+idx);
+  if(row) row.remove();
+  rc(cardId);
+}
+
+function gvMulti(fieldId,fallback){
+  var list=document.getElementById(fieldId+'-list');
+  if(list){
+    var vals=multiGetValues(fieldId);
+    return vals.length>0?vals:[fallback];
+  }
+  var el=document.getElementById(fieldId);
+  var v=el?el.value.trim():'';
+  return [v||fallback];
+}
+
+// ── RECENTLY USED QUERIES ─────────────────────────────
+var recentQueries=[];
+
+function loadRecentQueries(){
+  try{var s=localStorage.getItem('soc_recent_queries');if(s) recentQueries=JSON.parse(s);}catch(e){}
+  renderRecentPanel();updateRecentToggleCount();
+}
+
+function saveToRecent(cardName,query){
+  recentQueries.unshift({name:cardName,query:query,time:new Date().toISOString()});
+  if(recentQueries.length>10) recentQueries=recentQueries.slice(0,10);
+  try{localStorage.setItem('soc_recent_queries',JSON.stringify(recentQueries));}catch(e){}
+  renderRecentPanel();updateRecentToggleCount();
+}
+
+function renderRecentPanel(){
+  var inner=document.getElementById('ru-list-inner');
+  if(!inner) return;
+  if(recentQueries.length===0){inner.innerHTML='<div class="ru-empty">No queries copied yet</div>';return;}
+  var html='';
+  recentQueries.forEach(function(item,idx){
+    var d=new Date(item.time);
+    var timeStr=d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})+' '+d.toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+    html+='<div class="ru-item">'+
+      '<div class="ru-item-info">'+
+        '<div class="ru-item-name">'+item.name.replace(/</g,'&lt;')+'</div>'+
+        '<div class="ru-item-time">'+timeStr+'</div>'+
+      '</div>'+
+      '<button class="ru-copy-btn" onclick="reCopyQuery('+idx+')">&#8669; Copy</button>'+
+    '</div>';
+  });
+  inner.innerHTML=html;
+}
+
+function reCopyQuery(idx){
+  var item=recentQueries[idx];
+  if(!item) return;
+  navigator.clipboard.writeText(item.query).then(function(){showToast('Recopied: '+item.name);});
+}
+
+function toggleRecentlyUsed(){
+  var panel=document.getElementById('recently-used-panel');
+  panel.classList.toggle('show');
+}
+
+function updateRecentToggleCount(){
+  var btn=document.getElementById('ru-toggle-btn');
+  if(btn) btn.textContent='⊙ Recent ('+recentQueries.length+')';
+}
+
+// ── FLOW NOTES ────────────────────────────────────────
+function saveFlowNote(flowId){
+  var ta=document.getElementById('flow-notes-'+flowId);
+  if(!ta) return;
+  try{localStorage.setItem('soc_note_'+flowId,ta.value);}catch(e){}
+  var saved=document.getElementById('notes-saved-'+flowId);
+  if(saved){saved.classList.add('show');setTimeout(function(){saved.classList.remove('show');},1500);}
+}
+
+function loadFlowNotes(){
+  ['persist','lateral','malware','process','identity','c2','recon','priv','vuln','threatid','custom'].forEach(function(id){
+    try{
+      var val=localStorage.getItem('soc_note_'+id);
+      var ta=document.getElementById('flow-notes-'+id);
+      if(ta&&val) ta.value=val;
+    }catch(e){}
+  });
+}
+
+// ── COPY ALL QUERIES IN A FLOW ────────────────────────
+var flowQueryMap={
+  'persist': ['e0','p0','p1','e3','fw1','i0'],
+  'lateral': ['e0','l0','l1','i0','f0'],
+  'malware': ['e2','f1','fw0','fw1','e3','x0','x2','p2'],
+  'process': ['x1','e3','x0','p1','x2','x3'],
+  'identity':['c0','i1','i0','i2','i3'],
+  'c2':      ['t3','t1','t0','x2','e1','f0'],
+  'recon':   ['f0','t0','x2','i0'],
+  'priv':    ['v0','v1','a0','v2','i1','i0'],
+  'vuln':    ['f1','f0','c0','t0','e3','x0'],
+  'threatid':['e0','e2','t0','p2','fw0','t2'],
+  'custom':  ['e0','i1','i0','f0','t0'],
+};
+
+function copyAllFlow(flowId){
+  var cardIds=flowQueryMap[flowId]||[];
+  var lines=['=== Investigation Flow: '+flowId.toUpperCase()+' ===\n'];
+  var stepNum=1;
+  cardIds.forEach(function(cardId){
+    var q=cache[cardId]||(B[cardId]&&B[cardId]());
+    if(q){
+      var card=document.querySelector('#out-'+cardId) ? document.querySelector('#out-'+cardId).closest('.card') : null;
+      var titleText=card?(card.querySelector('.card-title')||{}).textContent||('Query '+cardId):('Query '+cardId);
+      lines.push('-- Step '+stepNum+': '+titleText+' --');
+      lines.push(q);lines.push('');
+      stepNum++;
+    }
+  });
+  navigator.clipboard.writeText(lines.join('\n')).then(function(){
+    showToast('Copied '+( stepNum-1)+' queries for '+flowId+' flow');
+  });
+}
+
+// ── KEYBOARD SHORTCUT Ctrl+Enter ──────────────────────
+var lastFocusedCard=null;
+document.addEventListener('focusin',function(e){
+  var card=e.target.closest?e.target.closest('.card'):null;
+  if(card) lastFocusedCard=card;
+});
+document.addEventListener('keydown',function(e){
+  if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){
+    if(lastFocusedCard){
+      var btn=lastFocusedCard.querySelector('.btn[onclick^="cc("]');
+      if(btn) btn.click();
+    }
+  }
+});
+
 renderAll();
 loadXsiamUrl();
+loadRecentQueries();
+loadFlowNotes();
 </script>
 </body>
 </html>
