@@ -219,7 +219,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 <div class="topbar">
   <div class="topbar-left">
     <div class="logo">XQL <span>//</span> Query Builder</div>
-    <span class="ver">v3.1</span>
+    <span class="ver">v3.3</span>
   </div>
   <div class="topbar-right">
     <button class="btn" onclick="toggleSettings()" id="settings-btn">&#9881; Settings</button>
@@ -746,47 +746,47 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 
     <div class="flows-category">
       <div class="flows-cat-label">Persistence</div>
-      <div class="flows-item active" onclick="showFlow('persist',this)" data-terms="startup folder registry schtasks scheduled task executable script startup-related persist">Persistence — startup &amp; scheduled tasks</div>
+      <div class="flows-item active" onclick="showFlow('persist',this)" data-terms="startup folder registry schtasks scheduled task executable script startup-related persist an executable or script was added to the startup folder an uncommon file added to startup-related registry keys uncommon local scheduled task creation via schtasks.exe executable or script file written by a web server process">Persistence — startup &amp; scheduled tasks</div>
     </div>
     <div class="flows-category">
       <div class="flows-cat-label">Lateral Movement</div>
-      <div class="flows-item" onclick="showFlow('lateral',this)" data-terms="rdp rare rdp session smb domain controller lateral movement remote desktop">Lateral movement / RDP anomaly</div>
+      <div class="flows-item" onclick="showFlow('lateral',this)" data-terms="rdp rare rdp session smb domain controller lateral movement remote desktop rare rdp session to a remote host suspicious smb connection from domain controller">Lateral movement / RDP anomaly</div>
     </div>
     <div class="flows-category">
       <div class="flows-cat-label">Malware / File Threats</div>
-      <div class="flows-item" onclick="showFlow('malware',this)" data-terms="local analysis malware smb executable file written wildfire threat verdict malicious">Malware / local analysis / file threat</div>
+      <div class="flows-item" onclick="showFlow('malware',this)" data-terms="local analysis malware smb executable file written wildfire threat verdict malicious an uncommon executable was remotely written over smb to an uncommon destination local analysis malware">Malware / local analysis / file threat</div>
     </div>
     <div class="flows-category">
       <div class="flows-cat-label">Suspicious Process</div>
-      <div class="flows-item" onclick="showFlow('process',this)" data-terms="powershell lolbin high integrity notepad network connection uncommon process startup suspicious command line script">Suspicious process / LOLBIN / PowerShell</div>
+      <div class="flows-item" onclick="showFlow('process',this)" data-terms="powershell lolbin high integrity notepad network connection uncommon process startup suspicious command line script suspicious powershell command line lolbin process executed with a high integrity level notepad process makes a network connection execution of an uncommon process at an early startup stage">Suspicious process / LOLBIN / PowerShell</div>
     </div>
     <div class="flows-category">
       <div class="flows-cat-label">Identity &amp; Auth</div>
-      <div class="flows-item" onclick="showFlow('identity',this)" data-terms="azure risky login impossible traveler sso rare country login service account interactive kerberos suspicious country failed authentication">Identity / impossible traveler</div>
+      <div class="flows-item" onclick="showFlow('identity',this)" data-terms="azure risky login impossible traveler sso rare country login service account interactive kerberos suspicious country failed authentication azure risky login with suspicious characteristics impossible traveler - sso rare country login - impossible traveler interactive login by a service account rare kerberos traffic from a process user successfully connected from a suspicious country">Identity / impossible traveler</div>
     </div>
     <div class="flows-category">
       <div class="flows-cat-label">C2 / Beaconing</div>
-      <div class="flows-item" onclick="showFlow('c2',this)" data-terms="abnormal recurring communications rare domain dns suspicious dns query generic beaconing c2 command control callback less common port">C2 / DNS / beaconing</div>
+      <div class="flows-item" onclick="showFlow('c2',this)" data-terms="abnormal recurring communications rare domain dns suspicious dns query generic beaconing c2 command control callback less common port abnormal recurring communications to a rare domain with a less common port suspicious dns query failed connections">C2 / DNS / beaconing</div>
     </div>
     <div class="flows-category">
       <div class="flows-cat-label">Recon / Scanning</div>
-      <div class="flows-item" onclick="showFlow('recon',this)" data-terms="nmap scripting engine zgrab scanner detection ldap non-standard process scanning reconnaissance">Recon / scanning</div>
+      <div class="flows-item" onclick="showFlow('recon',this)" data-terms="nmap scripting engine zgrab scanner detection ldap non-standard process scanning reconnaissance nmap scripting engine detection zgrab application layer scanner detection ldap traffic from non-standard and uncommon process failed connections">Recon / scanning</div>
     </div>
     <div class="flows-category">
       <div class="flows-cat-label">Privilege Escalation</div>
-      <div class="flows-item" onclick="showFlow('priv',this)" data-terms="privilege escalation new admin user local admin group user added account created enabled disabled">Privilege escalation</div>
+      <div class="flows-item" onclick="showFlow('priv',this)" data-terms="privilege escalation new admin user local admin group user added account created enabled disabled mthom new admin user found">Privilege escalation</div>
     </div>
     <div class="flows-category">
       <div class="flows-cat-label">Vulnerability / Exploit</div>
-      <div class="flows-item" onclick="showFlow('vuln',this)" data-terms="apache path traversal cisco ios http configuration vite arbitrary file read vulnerability exploit cve">Vulnerability / exploit attempt</div>
+      <div class="flows-item" onclick="showFlow('vuln',this)" data-terms="apache path traversal cisco ios http configuration vite arbitrary file read vulnerability exploit cve apache http server path traversal vulnerability cisco ios http configuration arbitrary administrative access vulnerability vite arbitrary file read vulnerability">Vulnerability / exploit attempt</div>
     </div>
     <div class="flows-category">
       <div class="flows-cat-label">Threat ID</div>
-      <div class="flows-item" onclick="showFlow('threatid',this)" data-terms="threat id threat #">Threat ID alerts</div>
+      <div class="flows-item" onclick="showFlow('threatid',this)" data-terms="threat id threat # threat id #273511773 threat id #378414516 threat id #9999">Threat ID alerts</div>
     </div>
     <div class="flows-category">
       <div class="flows-cat-label">Custom Rules</div>
-      <div class="flows-item" onclick="showFlow('custom',this)" data-terms="mthom brokervm claroty ot network new admin mobilepass slow data ingestion offline">Custom rules [MTHOM]</div>
+      <div class="flows-item" onclick="showFlow('custom',this)" data-terms="mthom brokervm claroty ot network new admin mobilepass slow data ingestion offline correlation rule error cisco ise multiple failed admin authentications cisco ise multiple failed wifi authentications parsing rule error mthom brokervm has gone offline mthom claroty new asset detected mthom slow data ingestion alert mthom mobilepass repeated failed authentication">Custom rules [MTHOM]</div>
     </div>
 
     <div style="padding:12px 16px;font-size:11px;color:var(--text3);display:none" id="no-flow-results">No matching alerts found</div>
@@ -1928,7 +1928,81 @@ var FEEDS = [
   { id:'malwarebytes',name:'Malwarebytes Labs',   desc:'Malware analysis and threat research',              url:'https://www.malwarebytes.com/blog/feed/index.xml',                color:'#f5a623' },
   { id:'krebs',       name:'Krebs on Security',   desc:'In-depth security news and investigation',          url:'https://krebsonsecurity.com/feed/',                               color:'#a78bfa' }
 ];
-var RSS2JSON = 'https://api.rss2json.com/v1/api.json?rss_url=';
+
+function parseRSS(xml){
+  var results=[];
+  try{
+    var parser=new DOMParser();
+    var doc=parser.parseFromString(xml,'text/xml');
+    var itemEls=doc.querySelectorAll('item');
+    if(itemEls.length===0) itemEls=doc.querySelectorAll('entry');
+    itemEls.forEach(function(el){
+      var title=(el.querySelector('title')||{}).textContent||'No title';
+      var link='';
+      var linkEl=el.querySelector('link');
+      if(linkEl){ link=linkEl.getAttribute('href')||linkEl.textContent||''; }
+      var pubDate=(el.querySelector('pubDate')||el.querySelector('published')||el.querySelector('updated')||{}).textContent||'';
+      results.push({title:title.trim(),link:link.trim(),pubDate:pubDate.trim()});
+    });
+  }catch(e){}
+  return results.slice(0,6);
+}
+
+function renderFeedItems(feedId,feedItems,dot,items){
+  if(dot) dot.className='feed-dot live';
+  var html='';
+  feedItems.slice(0,6).forEach(function(item){
+    var date=item.pubDate?new Date(item.pubDate):null;
+    var dateStr=(date&&!isNaN(date))?date.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'';
+    var title=item.title?item.title.replace(/</g,'&lt;').replace(/>/g,'&gt;'):'No title';
+    html+='<div class="feed-item">'+
+      '<a class="feed-item-title" href="'+(item.link||'#')+'" target="_blank" rel="noopener">'+title+'</a>'+
+      '<div class="feed-item-date">'+dateStr+'</div>'+
+    '</div>';
+  });
+  if(items) items.innerHTML=html||'<div class="feed-empty">No items found</div>';
+}
+
+function fetchViaAllOrigins(feed,dot,items){
+  var url='https://api.allorigins.win/get?url='+encodeURIComponent(feed.url);
+  return fetch(url)
+    .then(function(r){return r.json();})
+    .then(function(data){
+      if(!data.contents) throw new Error('empty');
+      var parsed=parseRSS(data.contents);
+      if(parsed.length>0){
+        renderFeedItems(feed.id,parsed,dot,items);
+      } else {
+        if(dot) dot.className='feed-dot error';
+        if(items) items.innerHTML='<div class="feed-empty">No items found — feed may require direct access</div>';
+      }
+    })
+    .catch(function(){
+      if(dot) dot.className='feed-dot error';
+      if(items) items.innerHTML='<div class="feed-empty">Feed unavailable — check connection</div>';
+    });
+}
+
+function loadFeed(feed){
+  var dot=document.getElementById('dot-'+feed.id);
+  var items=document.getElementById('items-'+feed.id);
+  if(dot) dot.className='feed-dot loading';
+  if(items) items.innerHTML='<div class="feed-empty">Fetching...</div>';
+
+  var rss2jsonUrl='https://api.rss2json.com/v1/api.json?rss_url='+encodeURIComponent(feed.url)+'&count=6';
+  fetch(rss2jsonUrl)
+    .then(function(r){return r.json();})
+    .then(function(data){
+      if(data.status==='ok'&&data.items&&data.items.length>0){
+        renderFeedItems(feed.id,data.items,dot,items);
+      } else {
+        return fetchViaAllOrigins(feed,dot,items);
+      }
+    })
+    .catch(function(){
+      return fetchViaAllOrigins(feed,dot,items);
+    });
+}
 
 function buildFeedCard(feed){
   var grid=document.getElementById('intel-grid');
@@ -1951,37 +2025,6 @@ function buildFeedCard(feed){
     '</div>'+
     '<div class="feed-items" id="items-'+feed.id+'"><div class="feed-empty">Loading...</div></div>';
   grid.appendChild(card);
-}
-
-function loadFeed(feed){
-  var dot=document.getElementById('dot-'+feed.id);
-  var items=document.getElementById('items-'+feed.id);
-  if(dot) dot.className='feed-dot loading';
-  if(items) items.innerHTML='<div class="feed-empty">Fetching...</div>';
-  fetch(RSS2JSON+encodeURIComponent(feed.url)+'&count=6')
-    .then(function(r){return r.json();})
-    .then(function(data){
-      if(dot) dot.className='feed-dot live';
-      if(!data.items||data.items.length===0){
-        if(items) items.innerHTML='<div class="feed-empty">No items found</div>';
-        return;
-      }
-      var html='';
-      data.items.slice(0,6).forEach(function(item){
-        var date=item.pubDate?new Date(item.pubDate):null;
-        var dateStr=date?date.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'';
-        var title=item.title?item.title.replace(/</g,'&lt;').replace(/>/g,'&gt;'):'No title';
-        html+='<div class="feed-item">'+
-          '<a class="feed-item-title" href="'+(item.link||'#')+'" target="_blank" rel="noopener">'+title+'</a>'+
-          '<div class="feed-item-date">'+dateStr+'</div>'+
-        '</div>';
-      });
-      if(items) items.innerHTML=html;
-    })
-    .catch(function(){
-      if(dot) dot.className='feed-dot error';
-      if(items) items.innerHTML='<div class="feed-empty">Feed unavailable — check connection</div>';
-    });
 }
 
 function loadAllFeeds(){
