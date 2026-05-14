@@ -18,6 +18,29 @@
 html{font-size:14px;}
 body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;}
 
+/* SEARCH BAR */
+.xql-searchbar{display:none;align-items:center;gap:10px;padding:8px 24px;border-bottom:1px solid var(--border);background:var(--bg2);}
+.xql-searchbar.visible{display:flex;}
+.xql-searchbar-inner{position:relative;flex:1;max-width:480px;}
+.xql-searchbar-inner input{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-family:var(--sans);font-size:13px;height:34px;padding:0 12px 0 34px;outline:none;transition:border-color 0.15s;}
+.xql-searchbar-inner input:focus{border-color:var(--accent);}
+.xql-searchbar-inner input::placeholder{color:var(--text3);}
+.xql-search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:14px;pointer-events:none;}
+.xql-search-clear{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text3);cursor:pointer;font-size:16px;padding:2px 4px;display:none;}
+.xql-search-clear.visible{display:block;}
+.xql-search-clear:hover{color:var(--text);}
+.xql-search-hint{font-size:11.5px;color:var(--text3);}
+.xql-search-count{font-size:11.5px;color:var(--accent);font-weight:500;display:none;}
+.xql-search-count.visible{display:block;}
+
+/* SEARCH STATE — card/section visibility */
+.card.search-hidden{display:none;}
+.card.search-match{border-color:rgba(79,142,247,0.35);}
+.section.search-section-empty{display:none!important;}
+.search-alert-tags{display:flex;flex-wrap:wrap;gap:4px;padding:0 16px 10px;}
+.search-alert-tag{font-size:10px;padding:2px 7px;border-radius:10px;background:rgba(79,142,247,0.08);border:1px solid rgba(79,142,247,0.18);color:var(--accent);font-family:var(--sans);}
+.search-alert-tags.hidden{display:none;}
+
 .topbar{position:sticky;top:0;z-index:100;background:rgba(14,15,17,0.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:52px;}
 .topbar-left{display:flex;align-items:center;gap:16px;}
 .logo{font-size:13px;font-weight:600;letter-spacing:0.08em;color:var(--text);text-transform:uppercase;}
@@ -322,7 +345,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 <div class="topbar">
   <div class="topbar-left">
     <div class="logo">XQL <span>//</span> Query Builder</div>
-    <span class="ver">v4.7</span>
+    <span class="ver">v4.8</span>
   </div>
   <div class="topbar-right">
     <button class="btn" onclick="toggleSettings()" id="settings-btn">&#9881; Settings</button>
@@ -345,6 +368,17 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
   <span class="settings-label">XSIAM URL</span>
   <input type="text" id="xsiam-url-input" placeholder="https://your-tenant.xdr.us.paloaltonetworks.com" oninput="saveXsiamUrl()"/>
   <span style="font-size:11px;color:var(--text3);">Paste your XSIAM base URL — never stored in the file, saved to your browser only</span>
+</div>
+
+<!-- XQL SEARCH BAR -->
+<div class="xql-searchbar" id="xql-searchbar">
+  <div class="xql-searchbar-inner">
+    <span class="xql-search-icon">&#128269;</span>
+    <input type="text" id="xql-search-input" placeholder="Search by alert name, keyword, or MITRE tactic…" oninput="xqlSearch(this.value)" autocomplete="off"/>
+    <button class="xql-search-clear" id="xql-search-clear" onclick="xqlSearchClear()" title="Clear search">&#215;</button>
+  </div>
+  <span class="xql-search-hint">e.g. "Large Upload HTTPS", "lateral movement", "wildfire", "4720"</span>
+  <span class="xql-search-count" id="xql-search-count"></span>
 </div>
 
 <!-- AQL TIMEBAR (hidden until AQL tab active) -->
@@ -385,7 +419,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
       <div class="section active" id="xql-sec-cloud">
         <div class="section-header"><h2>Cloud &amp; identity</h2><p>Azure AD, cloud audit logs, service principal and Graph API activity.</p></div>
         <div class="cards-grid">
-          <div class="card">
+          <div class="card" data-alerts="Microsoft Graph API activity novel alert cloud app identity Microsoft Graph API activity from novel tenant Entra ID application service principal Azure AD cloud identity">
             <div class="card-header"><div><div class="card-title">Cloud audit logs — search by app ID</div><div class="card-desc">Raw log string match against an application GUID. Use when appId or servicePrincipalId are not directly queryable.</div></div><span class="tag tag-cloud">cloud</span></div>
             <div class="card-fields">
               <div class="field-group wide"><span class="field-label">App / service principal GUID</span><input type="text" id="c0-guid" placeholder="ce311824-ce5d-4ea6-8435-6d3eb5852285" oninput="rc('c0')"/></div>
@@ -401,7 +435,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
       <div class="section" id="xql-sec-identity">
         <div class="section-header"><h2>User &amp; host activity</h2><p>Windows login events, email activity, URL browsing logs.</p></div>
         <div class="cards-grid">
-          <div class="card">
+          <div class="card" data-alerts="Impossible Traveler multiple failed logins brute force credential stuffing authentication anomaly login from new location account compromise identity lateral movement 4624 logon">
             <div class="card-header"><div><div class="card-title">Host login activity (event 4624)</div><div class="card-desc">Windows logon events filtered by target hostname. Extracts username, SID, logon type, source IP and workstation.</div></div><span class="tag tag-id">identity</span></div>
             <div class="card-fields"><div class="field-group">
                 <span class="field-label">Hostname (partial match)</span>
@@ -413,7 +447,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
             <div class="card-query"><pre class="query-pre" id="out-i0"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('i0')">&#8669; Copy query</button><span class="copy-status" id="cs-i0">Copied</span><button class="pivot-btn" onclick="togglePivotMenu(this,event)">&#9654; Flows &#9662;<div class="pivot-menu" style="display:none"><div class="pivot-menu-item" onclick="goToFlow('identity',event)">Identity / Impossible Traveler</div><div class="pivot-menu-item" onclick="goToFlow('lateral',event)">Lateral Movement</div><div class="pivot-menu-item" onclick="goToFlow('custom',event)">Custom Rules</div></div></button></div>
           </div>
-          <div class="card">
+          <div class="card" data-alerts="Impossible Traveler multiple failed logins brute force credential stuffing authentication anomaly login from new location account compromise identity 4624 logon user activity">
             <div class="card-header"><div><div class="card-title">User login activity (event 4624)</div><div class="card-desc">Windows logon events filtered by target username. Use to trace where a specific account has authenticated across the estate.</div></div><span class="tag tag-user">user</span></div>
             <div class="card-fields"><div class="field-group">
                 <span class="field-label">Username (partial match)</span>
@@ -425,7 +459,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
             <div class="card-query"><pre class="query-pre" id="out-i1"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('i1')">&#8669; Copy query</button><span class="copy-status" id="cs-i1">Copied</span><button class="pivot-btn" onclick="togglePivotMenu(this,event)">&#9654; Flows &#9662;<div class="pivot-menu" style="display:none"><div class="pivot-menu-item" onclick="goToFlow('identity',event)">Identity / Impossible Traveler</div><div class="pivot-menu-item" onclick="goToFlow('lateral',event)">Lateral Movement</div><div class="pivot-menu-item" onclick="goToFlow('custom',event)">Custom Rules</div></div></button></div>
           </div>
-          <div class="card">
+          <div class="card" data-alerts="Suspicious Email Activity phishing BEC business email compromise email forwarding rule suspicious attachment malicious email">
             <div class="card-header"><div><div class="card-title">User email activity</div><div class="card-desc">Email events for a specific mailbox owner. Returns sent/received times, from, recipients, attachments, sender IP and auth results.</div></div><span class="tag tag-email">email</span></div>
             <div class="card-fields"><div class="field-group">
                 <span class="field-label">Mailbox owner / username (partial match)</span>
@@ -437,7 +471,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
             <div class="card-query"><pre class="query-pre" id="out-i2"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('i2')">&#8669; Copy query</button><span class="copy-status" id="cs-i2">Copied</span><button class="pivot-btn" onclick="goToFlow('identity',event)" title="Open investigation flow">&#9654; Identity / Impossible Traveler</button></div>
           </div>
-          <div class="card">
+          <div class="card" data-alerts="Suspicious Web Browsing URL filtering policy violation malicious URL phishing site browsing activity user web traffic">
             <div class="card-header"><div><div class="card-title">User URL activity</div><div class="card-desc">Firewall URL log entries for a specific user. Returns URI, URL category, source/dest IPs and port.</div></div><span class="tag tag-user">user</span></div>
             <div class="card-fields"><div class="field-group">
                 <span class="field-label">Username (partial match)</span>
@@ -456,7 +490,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
       <div class="section" id="xql-sec-firewall">
         <div class="section-header"><h2>Firewall</h2><p>Palo Alto NGFW traffic and threat logs.</p></div>
         <div class="cards-grid">
-          <div class="card">
+          <div class="card" data-alerts="Large Upload HTTPS Large Download HTTP Failed Connections Port Scan Network Scan Recon Scanning data exfiltration C2 beaconing suspicious outbound traffic iDRAC telemetry large transfer ngfw traffic">
             <div class="card-header"><div><div class="card-title">Firewall traffic by IP</div><div class="card-desc">Traffic log entries filtered by source, destination, or both IPs. Shows app, bytes sent/received, action, rule matched, and session end reason. Use AND mode to confirm two-way traffic between two specific hosts.</div></div><span class="tag tag-fw">firewall</span></div>
             <div class="card-fields">
               <div class="field-group narrow">
@@ -480,13 +514,13 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
             <div class="card-query"><pre class="query-pre" id="out-f0"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('f0')">&#8669; Copy query</button><span class="copy-status" id="cs-f0">Copied</span><button class="pivot-btn" onclick="togglePivotMenu(this,event)">&#9654; Flows &#9662;<div class="pivot-menu" style="display:none"><div class="pivot-menu-item" onclick="goToFlow('recon',event)">Recon / Scanning</div><div class="pivot-menu-item" onclick="goToFlow('c2',event)">C2 / DNS / Beaconing</div><div class="pivot-menu-item" onclick="goToFlow('vuln',event)">Vulnerability / Exploit</div></div></button></div>
           </div>
-          <div class="card">
+          <div class="card" data-alerts="Wildfire Malware Verdict WildFire inline ML malicious file detection malware download suspicious file threat prevention NGFW malware">
             <div class="card-header"><div><div class="card-title">Threat log — file verdict by filename</div><div class="card-desc">Searches NGFW threat logs for a specific filename. Returns Wildfire verdict, threat category, source/dest IPs, user, and partial hash.</div></div><span class="tag tag-fw">firewall</span></div>
             <div class="card-fields"><div class="field-group"><span class="field-label">File name (partial match)</span><input type="text" id="f1-fname" placeholder="Cover Page.pdf" oninput="rc('f1')"/></div></div>
             <div class="card-query"><pre class="query-pre" id="out-f1"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('f1')">&#8669; Copy query</button><span class="copy-status" id="cs-f1">Copied</span></div>
           </div>
-          <div class="card">
+          <div class="card" data-alerts="Check Point IPS detection EXE File Insert OT network intrusion prevention repeated block IPS alert Check Point high risk detection">
             <div class="card-header"><div><div class="card-title">Check Point IPS — events by source IP</div><div class="card-desc">IPS events from the Check Point dataset filtered by source IP. Returns protection name, action, severity, and destination. Use to confirm repeated block patterns on OT or internal devices — a consistent protection name and destination over time supports a false positive verdict.</div></div><span class="tag tag-fw">firewall</span></div>
             <div class="card-fields">
               <div class="field-group"><span class="field-label">Source IP</span><input type="text" id="cp0-ip" placeholder="172.16.8.93" oninput="rc('cp0')"/></div>
@@ -501,7 +535,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
       <div class="section" id="xql-sec-endpoint">
         <div class="section-header"><h2>Endpoint</h2><p>Agent status, process activity, file events, and network connections from XDR data.</p></div>
         <div class="cards-grid">
-          <div class="card">
+          <div class="card" data-alerts="asset context agent offline endpoint status host lookup all alerts triage first step">
             <div class="card-header"><div><div class="card-title">Endpoint agent status and details</div><div class="card-desc">Basic agent info — online status, last seen, version, install date. Run at the start of every investigation for asset context.</div></div><span class="tag tag-ep">endpoint</span></div>
             <div class="card-fields"><div class="field-group">
                 <span class="field-label">Hostname</span>
@@ -513,13 +547,13 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
             <div class="card-query"><pre class="query-pre" id="out-e0"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('e0')">&#8669; Copy query</button><span class="copy-status" id="cs-e0">Copied</span><button class="pivot-btn" onclick="togglePivotMenu(this,event)">&#9654; Flows &#9662;<div class="pivot-menu" style="display:none"><div class="pivot-menu-item" onclick="goToFlow('lateral',event)">Lateral Movement</div><div class="pivot-menu-item" onclick="goToFlow('malware',event)">Malware / File Threats</div><div class="pivot-menu-item" onclick="goToFlow('custom',event)">Custom Rules</div></div></button></div>
           </div>
-          <div class="card">
+          <div class="card" data-alerts="Large Upload HTTPS iDRAC no agent OT device firmware no causality chain no hostname Failed Connections unknown source IP asset identification">
             <div class="card-header"><div><div class="card-title">Endpoint agent lookup by IP address</div><div class="card-desc">Looks up an endpoint by IP address rather than hostname. Use when you have a source IP from firewall or network logs and need to identify the host — e.g. iDRAC, OT devices, or hosts with no DNS record. No result = no Cortex agent (expected for firmware-level devices).</div></div><span class="tag tag-ep">endpoint</span></div>
             <div class="card-fields"><div class="field-group"><span class="field-label">IP Address</span><input type="text" id="enip0-ip" placeholder="10.0.0.1" oninput="rc('enip0')"/></div></div>
             <div class="card-query"><pre class="query-pre" id="out-enip0"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('enip0')">&#8669; Copy query</button><span class="copy-status" id="cs-enip0">Copied</span></div>
           </div>
-          <div class="card">
+          <div class="card" data-alerts="Suspicious Browser Activity malicious URL phishing C2 connection browser network connection Edge msedge">
             <div class="card-header"><div><div class="card-title">Edge connections — specific remote IP (strict)</div><div class="card-desc">Strictly filters msedge.exe network events on a host to a single remote IP. Use for targeted confirmation against a known-bad IP.</div></div><span class="tag tag-ep">endpoint</span></div>
             <div class="card-fields">
               <div class="field-group"><span class="field-label">Hostname</span><input type="text" id="e1-host" placeholder="L2345" oninput="rc('e1')"/></div>
@@ -528,7 +562,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
             <div class="card-query"><pre class="query-pre" id="out-e1"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('e1')">&#8669; Copy query</button><span class="copy-status" id="cs-e1">Copied</span><button class="pivot-btn" onclick="goToFlow('c2',event)" title="Open investigation flow">&#9654; C2 / DNS / Beaconing</button></div>
           </div>
-          <div class="card">
+          <div class="card" data-alerts="Wildfire Malware Verdict malicious file hash malware suspicious file SHA256 file execution Wildfire inline ML digital signer restriction">
             <div class="card-header"><div><div class="card-title">Wildfire — file verdict lookup by SHA256</div><div class="card-desc">Pull Wildfire verdict and file metadata for a specific hash. Use to confirm sandbox verdict and delivery context.</div></div><span class="tag tag-ep">endpoint</span></div>
             <div class="card-fields"><div class="field-group wide">
                 <span class="field-label">SHA256 hash</span>
@@ -540,7 +574,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
             <div class="card-query"><pre class="query-pre" id="out-e2"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('e2')">&#8669; Copy query</button><span class="copy-status" id="cs-e2">Copied</span><button class="pivot-btn" onclick="goToFlow('malware',event)" title="Open investigation flow">&#9654; Malware / File Threats</button></div>
           </div>
-          <div class="card">
+          <div class="card" data-alerts="Suspicious Process Execution malicious child process post-exploitation Office spawning shell PDF spawning process execution chain causality UAC Bypass LOLBin wscript userinit">
             <div class="card-header"><div><div class="card-title">Child processes spawned by parent process</div><div class="card-desc">Returns all child processes under a parent process on a given host. Critical for post-execution analysis — e.g. PDF reader or Office app spawning shells.</div></div><span class="tag tag-ep">endpoint</span></div>
             <div class="card-fields">
               <div class="field-group"><span class="field-label">Hostname</span><input type="text" id="e3-host" placeholder="L2345" oninput="rc('e3')"/></div>
@@ -550,7 +584,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
             <div class="card-footer"><button class="btn" onclick="cc('e3')">&#8669; Copy query</button><span class="copy-status" id="cs-e3">Copied</span><button class="pivot-btn" onclick="togglePivotMenu(this,event)">&#9654; Flows &#9662;<div class="pivot-menu" style="display:none"><div class="pivot-menu-item" onclick="goToFlow('malware',event)">Malware / File Threats</div><div class="pivot-menu-item" onclick="goToFlow('process',event)">Suspicious Process / LOLBIN</div></div></button></div>
           </div>
 
-          <div class="card">
+          <div class="card" data-alerts="Wildfire Malware Verdict malware spread file prevalence scope check lateral spread suspicious file fleet wide malicious file">
             <div class="card-header"><div><div class="card-title">File — seen on other hosts (dedup by hostname)</div><div class="card-desc">Check how many endpoints have seen a specific filename. Use to scope potential spread of a suspicious file across the fleet. Deduplicates by hostname so each host appears once.</div></div><span class="tag tag-ep">endpoint</span></div>
             <div class="card-fields">
               <div class="field-group wide">
@@ -566,7 +600,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
             <div class="card-footer"><button class="btn" onclick="cc('fw0')">&#8669; Copy query</button><span class="copy-status" id="cs-fw0">Copied</span><button class="pivot-btn" onclick="goToFlow('malware',event)" title="Open investigation flow">&#9654; Malware / File Threats</button></div>
           </div>
 
-          <div class="card">
+          <div class="card" data-alerts="Wildfire Malware Verdict malicious file execution check process execution file run malware executed">
             <div class="card-header"><div><div class="card-title">File — check if directly executed as actor process</div><div class="card-desc">Checks whether a suspicious file has been executed as a running process anywhere on the fleet. No results means the file has not been directly launched — does not rule out indirect execution.</div></div><span class="tag tag-ep">endpoint</span></div>
             <div class="card-fields">
               <div class="field-group wide">
@@ -581,7 +615,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
             <div class="card-footer"><button class="btn" onclick="cc('fw1')">&#8669; Copy query</button><span class="copy-status" id="cs-fw1">Copied</span><button class="pivot-btn" onclick="goToFlow('malware',event)" title="Open investigation flow">&#9654; Malware / File Threats</button></div>
           </div>
 
-          <div class="card">
+          <div class="card" data-alerts="Suspicious Process Execution LOLBin process spawned from path directory execution Multiple Discovery Commands process from temp appdata">
             <div class="card-header"><div><div class="card-title">Process — child processes from directory (excluding svchost)</div><div class="card-desc">Finds processes spawned from a specific folder path and filters out svchost to surface meaningful child activity. Use to check what an application directory is actually executing.</div></div><span class="tag tag-ep">endpoint</span></div>
             <div class="card-fields">
               <div class="field-group wide"><span class="field-label">Directory path (partial match)</span><input type="text" id="fw2-dir" placeholder="C:\Users\Public\" oninput="rc('fw2')"/></div>
@@ -598,7 +632,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
       <div class="section" id="xql-sec-browser">
         <div class="section-header"><h2>Browser network</h2><p>Edge and Chrome outbound connection events from xdr_data.</p></div>
         <div class="cards-grid">
-          <div class="card">
+          <div class="card" data-alerts="Suspicious Browser Activity C2 connection phishing malicious domain browser pivot network connection Edge msedge">
             <div class="card-header"><div><div class="card-title">Edge connections — remote IP or port</div><div class="card-desc">Edge network events matching a remote IP or port. Use when pivoting on a suspicious IP or port from a phishing or malware investigation.</div></div><span class="tag tag-browser">browser</span></div>
             <div class="card-fields">
               <div class="field-group"><span class="field-label">Hostname</span><input type="text" id="b0-host" placeholder="T79751" oninput="rc('b0')"/></div>
@@ -608,7 +642,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
             <div class="card-query"><pre class="query-pre" id="out-b0"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('b0')">&#8669; Copy query</button><span class="copy-status" id="cs-b0">Copied</span></div>
           </div>
-          <div class="card">
+          <div class="card" data-alerts="Suspicious Web Browsing web-based threat browser traffic review phishing C2 connection browser network Edge Chrome">
             <div class="card-header"><div><div class="card-title">Browser network connections — Edge &amp; Chrome (all)</div><div class="card-desc">All outbound connections from Edge or Chrome on a given host. Use for broad browser traffic review during web-based threat investigations.</div></div><span class="tag tag-browser">browser</span></div>
             <div class="card-fields"><div class="field-group"><span class="field-label">Hostname</span><input type="text" id="b1-host" placeholder="T79751" oninput="rc('b1')"/></div></div>
             <div class="card-query"><pre class="query-pre" id="out-b1"></pre></div>
@@ -621,7 +655,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
       <div class="section" id="xql-sec-threat">
         <div class="section-header"><h2>Threat intel / IOC</h2><p>IP, domain, and hash sweeps across network and endpoint telemetry.</p></div>
         <div class="cards-grid">
-          <div class="card">
+          <div class="card" data-alerts="C2 Beaconing IOC match threat intel hit malicious IP fleet exposure scope check Failed Connections external IP connection">
             <div class="card-header"><div><div class="card-title">All endpoint connections to external IP (fleet sweep)</div><div class="card-desc">All XDR network events where IP matches across any process and any host. Use when you have a confirmed bad IP and want to check fleet-wide exposure. Use AND to confirm traffic between two specific IPs.</div></div><span class="tag tag-threat">threat</span></div>
             <div class="card-fields">
               <div class="field-group narrow">
@@ -645,13 +679,13 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
             <div class="card-query"><pre class="query-pre" id="out-t0"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('t0')">&#8669; Copy query</button><span class="copy-status" id="cs-t0">Copied</span><button class="pivot-btn" onclick="togglePivotMenu(this,event)">&#9654; Flows &#9662;<div class="pivot-menu" style="display:none"><div class="pivot-menu-item" onclick="goToFlow('c2',event)">C2 / DNS / Beaconing</div><div class="pivot-menu-item" onclick="goToFlow('recon',event)">Recon / Scanning</div></div></button></div>
           </div>
-          <div class="card">
+          <div class="card" data-alerts="C2 Beaconing DNS Beaconing malicious domain IOC domain threat intel DNS lookup suspicious hostname external hostname">
             <div class="card-header"><div><div class="card-title">DNS / hostname lookups for domain IOC</div><div class="card-desc">Network events where external hostname matches a domain. Use to identify which hosts contacted or resolved a suspicious domain.</div></div><span class="tag tag-threat">threat</span></div>
             <div class="card-fields"><div class="field-group"><span class="field-label">Domain (partial match)</span><input type="text" id="t1-domain" placeholder="malicious-domain.com" oninput="rc('t1')"/></div></div>
             <div class="card-query"><pre class="query-pre" id="out-t1"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('t1')">&#8669; Copy query</button><span class="copy-status" id="cs-t1">Copied</span><button class="pivot-btn" onclick="goToFlow('c2',event)" title="Open investigation flow">&#9654; C2 / DNS / Beaconing</button></div>
           </div>
-          <div class="card">
+          <div class="card" data-alerts="Wildfire Malware Verdict malicious file hash fleet sweep SHA256 malware spread scope file prevalence">
             <div class="card-header"><div><div class="card-title">File hash sweep — all endpoints</div><div class="card-desc">All file events across the fleet for a specific SHA256. Use to determine spread of a malicious file following a Wildfire or VirusTotal hit.</div></div><span class="tag tag-threat">threat</span></div>
             <div class="card-fields"><div class="field-group wide">
                 <span class="field-label">SHA256 hash</span>
@@ -664,7 +698,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
             <div class="card-footer"><button class="btn" onclick="cc('t2')">&#8669; Copy query</button><span class="copy-status" id="cs-t2">Copied</span><button class="pivot-btn" onclick="goToFlow('malware',event)" title="Open investigation flow">&#9654; Malware / File Threats</button></div>
           </div>
 
-          <div class="card">
+          <div class="card" data-alerts="C2 Beaconing DNS Beaconing Possible DNS Tunneling malicious domain query DNS exfiltration port 53 dns_query_name">
             <div class="card-header"><div><div class="card-title">DNS query lookup by domain name (port 53)</div><div class="card-desc">Filters on DNS traffic (port 53) and matches against the dns_query_name field. More precise than the external hostname match — use when you have a specific malicious domain and want to confirm which hosts queried it.</div></div><span class="tag tag-threat">threat</span></div>
             <div class="card-fields"><div class="field-group"><span class="field-label">Domain (exact or partial match)</span><input type="text" id="t3-domain" placeholder="xcss.me" oninput="rc('t3')"/></div></div>
             <div class="card-query"><pre class="query-pre" id="out-t3"></pre></div>
@@ -677,13 +711,13 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
       <div class="section" id="xql-sec-lateral">
         <div class="section-header"><h2>Lateral movement</h2><p>RDP and remote access patterns — including anomalous source hosts like WSUS servers.</p></div>
         <div class="cards-grid">
-          <div class="card">
+          <div class="card" data-alerts="RDP Lateral Movement suspicious RDP connection Remote Desktop unexpected RDP lateral movement 3389 pass the hash pass the ticket">
             <div class="card-header"><div><div class="card-title">RDP connections from a specific source host</div><div class="card-desc">All RDP (port 3389) connections originating from a given hostname. Use when a host with no legitimate reason to RDP is seen initiating connections.</div></div><span class="tag tag-lateral">lateral</span></div>
             <div class="card-fields"><div class="field-group"><span class="field-label">Source hostname</span><input type="text" id="l0-src" placeholder="WSUS-SERVER01" oninput="rc('l0')"/></div></div>
             <div class="card-query"><pre class="query-pre" id="out-l0"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('l0')">&#8669; Copy query</button><span class="copy-status" id="cs-l0">Copied</span><button class="pivot-btn" onclick="goToFlow('lateral',event)" title="Open investigation flow">&#9654; Lateral Movement</button></div>
           </div>
-          <div class="card">
+          <div class="card" data-alerts="RDP Lateral Movement RDP Scanning lateral spread Remote Desktop multiple destinations network scan 3389">
             <div class="card-header"><div><div class="card-title">RDP connections — one source to multiple destinations</div><div class="card-desc">Groups RDP connections from a source host by destination to show spread. A high destination count from one source is a strong escalation indicator.</div></div><span class="tag tag-lateral">lateral</span></div>
             <div class="card-fields"><div class="field-group"><span class="field-label">Source hostname</span><input type="text" id="l1-src" placeholder="WSUS-SERVER01" oninput="rc('l1')"/></div></div>
             <div class="card-query"><pre class="query-pre" id="out-l1"></pre></div>
@@ -696,19 +730,19 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
       <div class="section" id="xql-sec-persist">
         <div class="section-header"><h2>Persistence</h2><p>Scheduled tasks, startup locations, and suspicious file drops.</p></div>
         <div class="cards-grid">
-          <div class="card">
+          <div class="card" data-alerts="Scheduled Task or Job persistence attacker scheduled task 4698 task creation T1053 persistence mechanism">
             <div class="card-header"><div><div class="card-title">Scheduled task creation (event 4698)</div><div class="card-desc">Windows scheduled task creation events. High-value persistence indicator — attacker may be creating tasks for execution on reboot or at intervals.</div></div><span class="tag tag-persist">persist</span></div>
             <div class="card-fields"><div class="field-group"><span class="field-label">Hostname (leave blank for fleet-wide)</span><input type="text" id="p0-host" placeholder="" oninput="rc('p0')"/></div></div>
             <div class="card-query"><pre class="query-pre" id="out-p0"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('p0')">&#8669; Copy query</button><span class="copy-status" id="cs-p0">Copied</span><button class="pivot-btn" onclick="goToFlow('persist',event)" title="Open investigation flow">&#9654; Persistence</button></div>
           </div>
-          <div class="card">
+          <div class="card" data-alerts="Suspicious File Written malware drop file written temp appdata startup LOLBin dropper persistence malicious file dropped">
             <div class="card-header"><div><div class="card-title">File written to temp / appdata / startup locations</div><div class="card-desc">File events where the path includes common malware drop locations. Use after a malware alert to identify what was written and where.</div></div><span class="tag tag-persist">persist</span></div>
             <div class="card-fields"><div class="field-group"><span class="field-label">Hostname</span><input type="text" id="p1-host" placeholder="L2345" oninput="rc('p1')"/></div></div>
             <div class="card-query"><pre class="query-pre" id="out-p1"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('p1')">&#8669; Copy query</button><span class="copy-status" id="cs-p1">Copied</span><button class="pivot-btn" onclick="goToFlow('persist',event)" title="Open investigation flow">&#9654; Persistence</button></div>
           </div>
-          <div class="card">
+          <div class="card" data-alerts="C2 Beaconing DNS Beaconing suspicious TLD phishing callback post-phishing C2 beacon .xyz .top .ru .cn exfiltration">
             <div class="card-header"><div><div class="card-title">DNS queries to suspicious TLDs from endpoint</div><div class="card-desc">Network events where external hostname resolves to an uncommon TLD (.xyz, .top, .ru, .cn etc). Use for C2 beacon detection or post-phishing callback hunting.</div></div><span class="tag tag-persist">persist</span></div>
             <div class="card-fields"><div class="field-group"><span class="field-label">Hostname</span><input type="text" id="p2-host" placeholder="L2345" oninput="rc('p2')"/></div></div>
             <div class="card-query"><pre class="query-pre" id="out-p2"></pre></div>
@@ -721,19 +755,19 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
       <div class="section" id="xql-sec-priv">
         <div class="section-header"><h2>Privilege escalation</h2><p>Account creation, group membership changes, and account re-enablement.</p></div>
         <div class="cards-grid">
-          <div class="card">
+          <div class="card" data-alerts="New Local User Account Created privilege escalation backdoor account persistence attacker account 4720 account creation T1136">
             <div class="card-header"><div><div class="card-title">New local user created (event 4720)</div><div class="card-desc">Windows account creation events. Use to detect attacker-created backdoor accounts post-compromise.</div></div><span class="tag tag-priv">priv esc</span></div>
             <div class="card-fields"><div class="field-group"><span class="field-label">Hostname (leave blank for fleet-wide)</span><input type="text" id="v0-host" placeholder="" oninput="rc('v0')"/></div></div>
             <div class="card-query"><pre class="query-pre" id="out-v0"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('v0')">&#8669; Copy query</button><span class="copy-status" id="cs-v0">Copied</span><button class="pivot-btn" onclick="goToFlow('priv',event)" title="Open investigation flow">&#9654; Privilege Escalation</button></div>
           </div>
-          <div class="card">
+          <div class="card" data-alerts="User Added to Privileged Group privilege escalation local admin 4732 group membership change T1078 T1098 account manipulation administrator">
             <div class="card-header"><div><div class="card-title">User added to local admins group (event 4732)</div><div class="card-desc">Fires when a user is added to the local Administrators group (SID S-1-5-32-544). Strong indicator of privilege escalation or persistence.</div></div><span class="tag tag-priv">priv esc</span></div>
             <div class="card-fields"><div class="field-group"><span class="field-label">Hostname (leave blank for fleet-wide)</span><input type="text" id="v1-host" placeholder="" oninput="rc('v1')"/></div></div>
             <div class="card-query"><pre class="query-pre" id="out-v1"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('v1')">&#8669; Copy query</button><span class="copy-status" id="cs-v1">Copied</span><button class="pivot-btn" onclick="goToFlow('priv',event)" title="Open investigation flow">&#9654; Privilege Escalation</button></div>
           </div>
-          <div class="card">
+          <div class="card" data-alerts="Local Account Enabled dormant account re-enabled privilege escalation persistence backdoor 4722 account enabled T1078">
             <div class="card-header"><div><div class="card-title">Local user account enabled (event 4722)</div><div class="card-desc">Fires when a disabled account is re-enabled. Attacker tactic — re-enabling dormant accounts to avoid triggering new account creation alerts.</div></div><span class="tag tag-priv">priv esc</span></div>
             <div class="card-fields"><div class="field-group"><span class="field-label">Hostname (leave blank for fleet-wide)</span><input type="text" id="v2-host" placeholder="" oninput="rc('v2')"/></div></div>
             <div class="card-query"><pre class="query-pre" id="out-v2"></pre></div>
@@ -746,13 +780,13 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
       <div class="section" id="xql-sec-process">
         <div class="section-header"><h2>Process execution</h2><p>Suspicious interpreter spawning, PowerShell logging, and fleet-wide process network activity.</p></div>
         <div class="cards-grid">
-          <div class="card">
+          <div class="card" data-alerts="Suspicious Process Execution LOLBin wscript cscript mshta rundll32 cmd powershell post-phishing shell spawned execution UAC Bypass LOLBAS living off the land">
             <div class="card-header"><div><div class="card-title">Suspicious shell / interpreter spawned on host</div><div class="card-desc">Catches cmd, powershell, wscript, cscript, mshta, rundll32 being executed. Good for post-phishing triage — run after a malicious document or PDF alert.</div></div><span class="tag tag-ep">endpoint</span></div>
             <div class="card-fields"><div class="field-group"><span class="field-label">Hostname</span><input type="text" id="x0-host" placeholder="L2345" oninput="rc('x0')"/></div></div>
             <div class="card-query"><pre class="query-pre" id="out-x0"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('x0')">&#8669; Copy query</button><span class="copy-status" id="cs-x0">Copied</span><button class="pivot-btn" onclick="togglePivotMenu(this,event)">&#9654; Flows &#9662;<div class="pivot-menu" style="display:none"><div class="pivot-menu-item" onclick="goToFlow('process',event)">Suspicious Process / LOLBIN</div><div class="pivot-menu-item" onclick="goToFlow('malware',event)">Malware / File Threats</div></div></button></div>
           </div>
-          <div class="card">
+          <div class="card" data-alerts="Suspicious PowerShell Execution PowerShell encoded command obfuscated PowerShell 4104 script block logging execution policy bypass T1059 command and scripting">
             <div class="card-header"><div><div class="card-title">PowerShell script block logging (event 4104)</div><div class="card-desc">Captures actual PowerShell content being executed via Windows script block logging. Shows decoded/deobfuscated PS content. Requires script block logging enabled on client.</div></div><span class="tag tag-ep">endpoint</span></div>
             <div class="card-fields">
               <div class="field-group"><span class="field-label">Hostname (leave blank for fleet-wide)</span><input type="text" id="x1-host" placeholder="" oninput="rc('x1')"/></div>
@@ -761,14 +795,14 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
             <div class="card-query"><pre class="query-pre" id="out-x1"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('x1')">&#8669; Copy query</button><span class="copy-status" id="cs-x1">Copied</span><button class="pivot-btn" onclick="goToFlow('process',event)" title="Open investigation flow">&#9654; Suspicious Process / LOLBIN</button></div>
           </div>
-          <div class="card">
+          <div class="card" data-alerts="C2 Beaconing suspicious process network activity process making connections fleet-wide process callback multiple discovery commands LOLBin network">
             <div class="card-header"><div><div class="card-title">Network connections by process name — fleet-wide</div><div class="card-desc">All network connections made by a named process across all hosts. Use when you have a suspicious process from one alert and want to check if it is active elsewhere.</div></div><span class="tag tag-threat">threat</span></div>
             <div class="card-fields"><div class="field-group"><span class="field-label">Process name (partial match)</span><input type="text" id="x2-proc" placeholder="malware.exe" oninput="rc('x2')"/></div></div>
             <div class="card-query"><pre class="query-pre" id="out-x2"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('x2')">&#8669; Copy query</button><span class="copy-status" id="cs-x2">Copied</span><button class="pivot-btn" onclick="togglePivotMenu(this,event)">&#9654; Flows &#9662;<div class="pivot-menu" style="display:none"><div class="pivot-menu-item" onclick="goToFlow('process',event)">Suspicious Process / LOLBIN</div><div class="pivot-menu-item" onclick="goToFlow('c2',event)">C2 / DNS / Beaconing</div></div></button></div>
           </div>
 
-          <div class="card">
+          <div class="card" data-alerts="Suspicious Process Execution malicious binary known bad process IOC process name threat intel process list malware execution">
             <div class="card-header"><div><div class="card-title">Suspicious processes by name list — on host</div><div class="card-desc">Checks for specific process names being executed on a host using an exact match list. Add as many process names as needed — use when you have a known list of malicious or suspicious executables from an investigation or threat intel report.</div></div><span class="tag tag-ep">endpoint</span></div>
             <div class="card-fields">
               <div class="field-group"><span class="field-label">Hostname</span><input type="text" id="x3-host" placeholder="L2345" oninput="rc('x3')"/></div>
@@ -784,7 +818,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
             <div class="card-footer"><button class="btn" onclick="cc('x3')">&#8669; Copy query</button><span class="copy-status" id="cs-x3">Copied</span><button class="pivot-btn" onclick="goToFlow('process',event)" title="Open investigation flow">&#9654; Suspicious Process / LOLBIN</button></div>
           </div>
 
-          <div class="card">
+          <div class="card" data-alerts="DLL Sideloading DLL hijacking suspicious DLL loaded module sideload T1574 execution hijack malicious DLL">
             <div class="card-header"><div><div class="card-title">DLL sideloading investigation</div><div class="card-desc">Pivots from an alerted process to show all DLLs it loaded and from where. Use when a sideloading alert fires — confirms whether the loaded module is from a legitimate path or a suspicious one.</div></div><span class="tag tag-ep">endpoint</span></div>
             <div class="card-fields">
               <div class="field-group"><span class="field-label">Hostname</span>
@@ -801,7 +835,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
             <div class="card-footer"><button class="btn" onclick="cc('dll0')">&#8669; Copy query</button><span class="copy-status" id="cs-dll0">Copied</span><button class="pivot-btn" onclick="goToFlow('malware',event)" title="Open investigation flow">&#9654; Malware / File Threats</button></div>
           </div>
 
-          <div class="card">
+          <div class="card" data-alerts="Removable Media Execution ISO mount USB drop execution from removable drive non-standard drive letter T1091 T1052">
             <div class="card-header"><div><div class="card-title">ISO / removable media execution</div><div class="card-desc">Catches processes executing from non-standard drive letters (D-F). Use for ISO mounts, USB drops, or any execution from removable media.</div></div><span class="tag tag-ep">endpoint</span></div>
             <div class="card-fields">
               <div class="field-group"><span class="field-label">Hostname</span>
@@ -814,7 +848,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
             <div class="card-footer"><button class="btn" onclick="cc('iso0')">&#8669; Copy query</button><span class="copy-status" id="cs-iso0">Copied</span><button class="pivot-btn" onclick="goToFlow('malware',event)" title="Open investigation flow">&#9654; Malware / File Threats</button></div>
           </div>
 
-          <div class="card">
+          <div class="card" data-alerts="Suspicious Process Execution installer callback C2 connection process network activity CDN vs C2 check post-install network Wildfire Malware Verdict">
             <div class="card-header"><div><div class="card-title">Installer / process network callback check</div><div class="card-desc">Returns network events for one or more named processes on a host. Use to validate CDN vs C2 during or after an install — checks what the process actually connected to.</div></div><span class="tag tag-ep">endpoint</span></div>
             <div class="card-fields">
               <div class="field-group"><span class="field-label">Hostname</span>
@@ -831,7 +865,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
             <div class="card-footer"><button class="btn" onclick="cc('net0')">&#8669; Copy query</button><span class="copy-status" id="cs-net0">Copied</span><button class="pivot-btn" onclick="goToFlow('c2',event)" title="Open investigation flow">&#9654; C2 / DNS / Beaconing</button></div>
           </div>
 
-          <div class="card">
+          <div class="card" data-alerts="Suspicious Process Execution encoded command obfuscated arguments command line PowerShell bypass execution flags LOLBin arguments Multiple Discovery Commands">
             <div class="card-header"><div><div class="card-title">Command line argument inspection</div><div class="card-desc">Returns full command line arguments for a specific process on a host. Use to confirm installer context, validate flags passed to a suspicious process, or check for encoded/obfuscated arguments.</div></div><span class="tag tag-ep">endpoint</span></div>
             <div class="card-fields">
               <div class="field-group"><span class="field-label">Hostname</span>
@@ -855,7 +889,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
       <div class="section" id="xql-sec-admin">
         <div class="section-header"><h2>Admin &amp; privileged accounts</h2><p>Privileged account enumeration.</p></div>
         <div class="cards-grid">
-          <div class="card">
+          <div class="card" data-alerts="privileged account list admin accounts DSS privileged user review account audit T1078 valid accounts">
             <div class="card-header"><div><div class="card-title">Admin account list (pan_dss_raw)</div><div class="card-desc">All unique accounts flagged with admin_count = 1 from the DSS dataset. No variables needed — run as-is to get a current list of privileged accounts for a client tenant.</div></div><span class="tag tag-admin">admin</span></div>
             <div class="card-query"><pre class="query-pre" id="out-a0"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('a0')">&#8669; Copy query</button><span class="copy-status" id="cs-a0">Copied</span></div>
@@ -2206,6 +2240,8 @@ function showPlatform(p,el){
   document.getElementById('xql-layout').style.display=p==='xql'?'flex':'none';
   document.getElementById('aql-layout').style.display=p==='aql'?'flex':'none';
   document.getElementById('aql-timebar').style.display=p==='aql'?'flex':'none';
+  var sb=document.getElementById('xql-searchbar');
+  if(p==='xql') sb.classList.add('visible'); else sb.classList.remove('visible');
   var fl=document.getElementById('flows-layout');
   fl.style.display=p==='flows'?'flex':'none';
   var il=document.getElementById('intel-layout');
@@ -2214,6 +2250,114 @@ function showPlatform(p,el){
   document.querySelectorAll('.ptab').forEach(function(t){t.classList.remove('active');});
   el.classList.add('active');
 }
+
+/* ── XQL SEARCH ───────────────────────────────────────────────── */
+function xqlSearch(q){
+  var clearBtn=document.getElementById('xql-search-clear');
+  var countEl=document.getElementById('xql-search-count');
+  q=q.trim().toLowerCase();
+
+  if(!q){
+    xqlSearchClear();
+    return;
+  }
+
+  clearBtn.classList.add('visible');
+
+  // Show ALL sections first so we can evaluate them
+  document.querySelectorAll('#pc-xql .section').forEach(function(s){
+    s.classList.add('active');
+    s.classList.remove('search-section-empty');
+  });
+
+  var totalMatches=0;
+  var terms=q.split(/\s+/);
+
+  document.querySelectorAll('#pc-xql .card').forEach(function(card){
+    // Build searchable text from title, description, and data-alerts
+    var title=(card.querySelector('.card-title')||{}).textContent||'';
+    var desc=(card.querySelector('.card-desc')||{}).textContent||'';
+    var alerts=card.getAttribute('data-alerts')||'';
+    var haystack=(title+' '+desc+' '+alerts).toLowerCase();
+
+    // Card matches if ALL terms are found somewhere in the haystack
+    var matches=terms.every(function(t){ return haystack.indexOf(t)!==-1; });
+
+    if(matches){
+      card.classList.remove('search-hidden');
+      card.classList.add('search-match');
+      totalMatches++;
+    } else {
+      card.classList.add('search-hidden');
+      card.classList.remove('search-match');
+    }
+  });
+
+  // Hide sections where all cards are hidden
+  document.querySelectorAll('#pc-xql .section').forEach(function(s){
+    var visible=s.querySelectorAll('.card:not(.search-hidden)');
+    if(visible.length===0){
+      s.classList.remove('active');
+      s.classList.add('search-section-empty');
+    }
+  });
+
+  // Update sidebar counts to show matches
+  document.querySelectorAll('#sidebar-xql .sidebar-item').forEach(function(item){
+    var onclick=item.getAttribute('onclick')||'';
+    var m=onclick.match(/'xql','([^']+)'/);
+    if(!m) return;
+    var secId='xql-sec-'+m[1];
+    var sec=document.getElementById(secId);
+    if(!sec) return;
+    var countEl2=item.querySelector('.sidebar-count');
+    if(!countEl2) return;
+    var visCount=sec.querySelectorAll('.card:not(.search-hidden)').length;
+    countEl2.textContent=visCount;
+    item.style.opacity=visCount===0?'0.35':'1';
+  });
+
+  countEl.textContent=totalMatches+' card'+(totalMatches!==1?'s':'')+' matched';
+  countEl.classList.add('visible');
+}
+
+function xqlSearchClear(){
+  document.getElementById('xql-search-input').value='';
+  document.getElementById('xql-search-clear').classList.remove('visible');
+  document.getElementById('xql-search-count').classList.remove('visible');
+
+  // Restore all cards
+  document.querySelectorAll('#pc-xql .card').forEach(function(card){
+    card.classList.remove('search-hidden','search-match');
+  });
+
+  // Restore section visibility — show only the active one
+  document.querySelectorAll('#pc-xql .section').forEach(function(s){
+    s.classList.remove('active','search-section-empty');
+  });
+  // Re-activate the currently selected sidebar item's section
+  var activeSidebarItem=document.querySelector('#sidebar-xql .sidebar-item.active');
+  if(activeSidebarItem){
+    var onclick=activeSidebarItem.getAttribute('onclick')||'';
+    var m=onclick.match(/'xql','([^']+)'/);
+    if(m){ var sec=document.getElementById('xql-sec-'+m[1]); if(sec) sec.classList.add('active'); }
+  } else {
+    var first=document.querySelector('#pc-xql .section');
+    if(first) first.classList.add('active');
+  }
+
+  // Restore sidebar counts to originals
+  var originalCounts={cloud:1,identity:4,firewall:3,endpoint:8,browser:2,threat:4,lateral:2,persist:3,priv:3,process:7,admin:1};
+  document.querySelectorAll('#sidebar-xql .sidebar-item').forEach(function(item){
+    var onclick=item.getAttribute('onclick')||'';
+    var m=onclick.match(/'xql','([^']+)'/);
+    if(!m) return;
+    var countEl2=item.querySelector('.sidebar-count');
+    if(countEl2 && originalCounts[m[1]]!==undefined) countEl2.textContent=originalCounts[m[1]];
+    item.style.opacity='1';
+  });
+}
+/* ── END XQL SEARCH ───────────────────────────────────────────── */
 
 function showSection(platform,id,el){
   var prefix=platform==='aql'?'aql':'xql';
@@ -2917,6 +3061,8 @@ loadXsiamUrl();
 loadRecentQueries();
 loadFlowNotes();
 loadStepFindings();
+// Show search bar on load — XQL is the default tab
+document.getElementById('xql-searchbar').classList.add('visible');
 </script>
 </body>
 </html>
