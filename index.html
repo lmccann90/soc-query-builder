@@ -146,7 +146,52 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 .step-desc{font-size:11.5px;color:var(--text2);line-height:1.5;margin-bottom:6px;}
 .step-lookfor{font-size:11px;color:var(--text3);background:var(--bg3);border-left:2px solid var(--accent);padding:5px 8px;border-radius:0 4px 4px 0;margin-bottom:8px;line-height:1.5;}
 .step-lookfor strong{color:var(--text2);}
-.step-query-ref{display:inline-flex;align-items:center;gap:5px;font-size:11px;padding:3px 10px;border-radius:4px;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);cursor:pointer;transition:all 0.15s;}
+
+/* FLOWS QUERY PANEL */
+.flows-query-panel{
+  width:0;min-width:0;overflow:hidden;
+  border-left:1px solid var(--border);
+  background:var(--bg2);
+  display:flex;flex-direction:column;
+  transition:width 0.25s ease, min-width 0.25s ease;
+  flex-shrink:0;
+}
+.flows-query-panel.open{
+  width:380px;min-width:380px;
+}
+.fqp-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 16px;border-bottom:1px solid var(--border);
+  flex-shrink:0;
+}
+.fqp-title{font-size:12.5px;font-weight:500;color:var(--text);}
+.fqp-close{background:none;border:none;color:var(--text3);font-size:16px;cursor:pointer;padding:0 2px;font-family:var(--sans);transition:color 0.15s;}
+.fqp-close:hover{color:var(--text);}
+.fqp-body{flex:1;overflow-y:auto;padding:14px 16px;}
+.fqp-card-title{font-size:13px;font-weight:500;color:var(--text);margin-bottom:4px;}
+.fqp-card-desc{font-size:11.5px;color:var(--text2);line-height:1.5;margin-bottom:12px;}
+.fqp-fields{display:flex;flex-direction:column;gap:8px;margin-bottom:12px;}
+.fqp-field{display:flex;flex-direction:column;gap:3px;}
+.fqp-field-label{font-size:10.5px;font-weight:500;color:var(--text3);letter-spacing:0.04em;}
+.fqp-field input,.fqp-field select{
+  background:var(--bg3);border:1px solid var(--border);border-radius:6px;
+  color:var(--text);font-family:var(--mono);font-size:12px;
+  height:32px;padding:0 10px;outline:none;transition:border-color 0.15s;width:100%;
+}
+.fqp-field input:focus,.fqp-field select:focus{border-color:var(--accent);background:var(--bg4);}
+.fqp-field input::placeholder{color:var(--text3);}
+.fqp-query-out{
+  background:var(--bg);border:1px solid var(--border);border-radius:6px;
+  font-family:var(--mono);font-size:11px;color:var(--text2);
+  padding:10px 12px;white-space:pre;overflow-x:auto;overflow-y:auto;
+  max-height:220px;line-height:1.7;margin-bottom:10px;
+}
+.fqp-actions{display:flex;gap:8px;flex-wrap:wrap;}
+.fqp-empty{font-size:12px;color:var(--text3);text-align:center;padding:32px 0;line-height:1.7;}
+.step-query-ref{display:inline-flex;align-items:center;gap:5px;font-size:11px;padding:3px 10px;border-radius:4px;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);cursor:pointer;transition:all 0.15s;margin-right:4px;margin-bottom:4px;}
+.step-query-ref:hover{border-color:var(--accent);color:var(--accent);}
+.step-query-ref.active-panel{border-color:var(--accent);color:var(--accent);background:rgba(79,142,247,0.08);}
+
 .step-query-ref:hover{border-color:var(--accent);color:var(--accent);}
 .flow-step.done .step-title{color:var(--text3);text-decoration:line-through;}
 .no-results{font-size:13px;color:var(--text3);padding:20px 0;}
@@ -277,7 +322,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 <div class="topbar">
   <div class="topbar-left">
     <div class="logo">XQL <span>//</span> Query Builder</div>
-    <span class="ver">v4.4</span>
+    <span class="ver">v4.7</span>
   </div>
   <div class="topbar-right">
     <button class="btn" onclick="toggleSettings()" id="settings-btn">&#9881; Settings</button>
@@ -323,14 +368,14 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
     <div class="sidebar-label">XQL queries</div>
     <div class="sidebar-item active" onclick="showSection('xql','cloud',this)"><span class="sidebar-dot" style="background:#4f8ef7"></span>Cloud &amp; identity<span class="sidebar-count">1</span></div>
     <div class="sidebar-item" onclick="showSection('xql','identity',this)"><span class="sidebar-dot" style="background:#c4b5fd"></span>User &amp; host activity<span class="sidebar-count">4</span></div>
-    <div class="sidebar-item" onclick="showSection('xql','firewall',this)"><span class="sidebar-dot" style="background:#f5a623"></span>Firewall<span class="sidebar-count">2</span></div>
-    <div class="sidebar-item" onclick="showSection('xql','endpoint',this)"><span class="sidebar-dot" style="background:#3ecf8e"></span>Endpoint<span class="sidebar-count">7</span></div>
+    <div class="sidebar-item" onclick="showSection('xql','firewall',this)"><span class="sidebar-dot" style="background:#f5a623"></span>Firewall<span class="sidebar-count">3</span></div>
+    <div class="sidebar-item" onclick="showSection('xql','endpoint',this)"><span class="sidebar-dot" style="background:#3ecf8e"></span>Endpoint<span class="sidebar-count">8</span></div>
     <div class="sidebar-item" onclick="showSection('xql','browser',this)"><span class="sidebar-dot" style="background:#a78bfa"></span>Browser network<span class="sidebar-count">2</span></div>
     <div class="sidebar-item" onclick="showSection('xql','threat',this)"><span class="sidebar-dot" style="background:#e05252"></span>Threat intel / IOC<span class="sidebar-count">4</span></div>
     <div class="sidebar-item" onclick="showSection('xql','lateral',this)"><span class="sidebar-dot" style="background:#f87171"></span>Lateral movement<span class="sidebar-count">2</span></div>
     <div class="sidebar-item" onclick="showSection('xql','persist',this)"><span class="sidebar-dot" style="background:#fcd34d"></span>Persistence<span class="sidebar-count">3</span></div>
     <div class="sidebar-item" onclick="showSection('xql','priv',this)"><span class="sidebar-dot" style="background:#fca5a5"></span>Privilege escalation<span class="sidebar-count">3</span></div>
-    <div class="sidebar-item" onclick="showSection('xql','process',this)"><span class="sidebar-dot" style="background:#6ee7b7"></span>Process execution<span class="sidebar-count">4</span></div>
+    <div class="sidebar-item" onclick="showSection('xql','process',this)"><span class="sidebar-dot" style="background:#6ee7b7"></span>Process execution<span class="sidebar-count">7</span></div>
     <div class="sidebar-item" onclick="showSection('xql','admin',this)"><span class="sidebar-dot" style="background:#fca5a5"></span>Admin &amp; privileged<span class="sidebar-count">1</span></div>
   </nav>
   <main class="main" id="main-xql">
@@ -412,7 +457,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
         <div class="section-header"><h2>Firewall</h2><p>Palo Alto NGFW traffic and threat logs.</p></div>
         <div class="cards-grid">
           <div class="card">
-            <div class="card-header"><div><div class="card-title">Firewall traffic by IP</div><div class="card-desc">Traffic log entries filtered by source, destination, or both IPs. Shows app identification, action, protocol, and session end reason. Use AND mode to confirm two-way traffic between two specific hosts.</div></div><span class="tag tag-fw">firewall</span></div>
+            <div class="card-header"><div><div class="card-title">Firewall traffic by IP</div><div class="card-desc">Traffic log entries filtered by source, destination, or both IPs. Shows app, bytes sent/received, action, rule matched, and session end reason. Use AND mode to confirm two-way traffic between two specific hosts.</div></div><span class="tag tag-fw">firewall</span></div>
             <div class="card-fields">
               <div class="field-group narrow">
                 <span class="field-label">Mode</span>
@@ -441,6 +486,14 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
             <div class="card-query"><pre class="query-pre" id="out-f1"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('f1')">&#8669; Copy query</button><span class="copy-status" id="cs-f1">Copied</span></div>
           </div>
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">Check Point IPS — events by source IP</div><div class="card-desc">IPS events from the Check Point dataset filtered by source IP. Returns protection name, action, severity, and destination. Use to confirm repeated block patterns on OT or internal devices — a consistent protection name and destination over time supports a false positive verdict.</div></div><span class="tag tag-fw">firewall</span></div>
+            <div class="card-fields">
+              <div class="field-group"><span class="field-label">Source IP</span><input type="text" id="cp0-ip" placeholder="172.16.8.93" oninput="rc('cp0')"/></div>
+            </div>
+            <div class="card-query"><pre class="query-pre" id="out-cp0"></pre></div>
+            <div class="card-footer"><button class="btn" onclick="cc('cp0')">&#8669; Copy query</button><span class="copy-status" id="cs-cp0">Copied</span></div>
+          </div>
         </div>
       </div>
 
@@ -459,6 +512,12 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               </div></div>
             <div class="card-query"><pre class="query-pre" id="out-e0"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('e0')">&#8669; Copy query</button><span class="copy-status" id="cs-e0">Copied</span><button class="pivot-btn" onclick="togglePivotMenu(this,event)">&#9654; Flows &#9662;<div class="pivot-menu" style="display:none"><div class="pivot-menu-item" onclick="goToFlow('lateral',event)">Lateral Movement</div><div class="pivot-menu-item" onclick="goToFlow('malware',event)">Malware / File Threats</div><div class="pivot-menu-item" onclick="goToFlow('custom',event)">Custom Rules</div></div></button></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">Endpoint agent lookup by IP address</div><div class="card-desc">Looks up an endpoint by IP address rather than hostname. Use when you have a source IP from firewall or network logs and need to identify the host — e.g. iDRAC, OT devices, or hosts with no DNS record. No result = no Cortex agent (expected for firmware-level devices).</div></div><span class="tag tag-ep">endpoint</span></div>
+            <div class="card-fields"><div class="field-group"><span class="field-label">IP Address</span><input type="text" id="enip0-ip" placeholder="10.0.0.1" oninput="rc('enip0')"/></div></div>
+            <div class="card-query"><pre class="query-pre" id="out-enip0"></pre></div>
+            <div class="card-footer"><button class="btn" onclick="cc('enip0')">&#8669; Copy query</button><span class="copy-status" id="cs-enip0">Copied</span></div>
           </div>
           <div class="card">
             <div class="card-header"><div><div class="card-title">Edge connections — specific remote IP (strict)</div><div class="card-desc">Strictly filters msedge.exe network events on a host to a single remote IP. Use for targeted confirmation against a known-bad IP.</div></div><span class="tag tag-ep">endpoint</span></div>
@@ -724,6 +783,71 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
             <div class="card-query"><pre class="query-pre" id="out-x3"></pre></div>
             <div class="card-footer"><button class="btn" onclick="cc('x3')">&#8669; Copy query</button><span class="copy-status" id="cs-x3">Copied</span><button class="pivot-btn" onclick="goToFlow('process',event)" title="Open investigation flow">&#9654; Suspicious Process / LOLBIN</button></div>
           </div>
+
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">DLL sideloading investigation</div><div class="card-desc">Pivots from an alerted process to show all DLLs it loaded and from where. Use when a sideloading alert fires — confirms whether the loaded module is from a legitimate path or a suspicious one.</div></div><span class="tag tag-ep">endpoint</span></div>
+            <div class="card-fields">
+              <div class="field-group"><span class="field-label">Hostname</span>
+                <div class="multi-input-list" id="dll0-host-list"><div class="multi-input-row"><input type="text" id="dll0-host-0" placeholder="L2345" oninput="rc('dll0')"/></div></div>
+                <button class="multi-add-btn" onclick="multiAdd('dll0-host','dll0','L2345')">+ Add another</button>
+              </div>
+              <div class="field-group"><span class="field-label">Process name</span>
+                <div class="multi-input-list" id="dll0-proc-list"><div class="multi-input-row"><input type="text" id="dll0-proc-0" placeholder="suspicious.exe" oninput="rc('dll0')"/></div></div>
+                <button class="multi-add-btn" onclick="multiAdd('dll0-proc','dll0','process.exe')">+ Add another</button>
+              </div>
+              <div class="field-group narrow"><span class="field-label">Limit</span><input type="text" id="dll0-limit" placeholder="100" oninput="rc('dll0')"/></div>
+            </div>
+            <div class="card-query"><pre class="query-pre" id="out-dll0"></pre></div>
+            <div class="card-footer"><button class="btn" onclick="cc('dll0')">&#8669; Copy query</button><span class="copy-status" id="cs-dll0">Copied</span><button class="pivot-btn" onclick="goToFlow('malware',event)" title="Open investigation flow">&#9654; Malware / File Threats</button></div>
+          </div>
+
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">ISO / removable media execution</div><div class="card-desc">Catches processes executing from non-standard drive letters (D-F). Use for ISO mounts, USB drops, or any execution from removable media.</div></div><span class="tag tag-ep">endpoint</span></div>
+            <div class="card-fields">
+              <div class="field-group"><span class="field-label">Hostname</span>
+                <div class="multi-input-list" id="iso0-host-list"><div class="multi-input-row"><input type="text" id="iso0-host-0" placeholder="L2345" oninput="rc('iso0')"/></div></div>
+                <button class="multi-add-btn" onclick="multiAdd('iso0-host','iso0','L2345')">+ Add another</button>
+              </div>
+              <div class="field-group narrow"><span class="field-label">Limit</span><input type="text" id="iso0-limit" placeholder="100" oninput="rc('iso0')"/></div>
+            </div>
+            <div class="card-query"><pre class="query-pre" id="out-iso0"></pre></div>
+            <div class="card-footer"><button class="btn" onclick="cc('iso0')">&#8669; Copy query</button><span class="copy-status" id="cs-iso0">Copied</span><button class="pivot-btn" onclick="goToFlow('malware',event)" title="Open investigation flow">&#9654; Malware / File Threats</button></div>
+          </div>
+
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">Installer / process network callback check</div><div class="card-desc">Returns network events for one or more named processes on a host. Use to validate CDN vs C2 during or after an install — checks what the process actually connected to.</div></div><span class="tag tag-ep">endpoint</span></div>
+            <div class="card-fields">
+              <div class="field-group"><span class="field-label">Hostname</span>
+                <div class="multi-input-list" id="net0-host-list"><div class="multi-input-row"><input type="text" id="net0-host-0" placeholder="L2345" oninput="rc('net0')"/></div></div>
+                <button class="multi-add-btn" onclick="multiAdd('net0-host','net0','L2345')">+ Add another</button>
+              </div>
+              <div class="field-group"><span class="field-label">Process name(s)</span>
+                <div class="multi-input-list" id="net0-proc-list"><div class="multi-input-row"><input type="text" id="net0-proc-0" placeholder="setup.exe" oninput="rc('net0')"/></div></div>
+                <button class="multi-add-btn" onclick="multiAdd('net0-proc','net0','process.exe')">+ Add another</button>
+              </div>
+              <div class="field-group narrow"><span class="field-label">Limit</span><input type="text" id="net0-limit" placeholder="100" oninput="rc('net0')"/></div>
+            </div>
+            <div class="card-query"><pre class="query-pre" id="out-net0"></pre></div>
+            <div class="card-footer"><button class="btn" onclick="cc('net0')">&#8669; Copy query</button><span class="copy-status" id="cs-net0">Copied</span><button class="pivot-btn" onclick="goToFlow('c2',event)" title="Open investigation flow">&#9654; C2 / DNS / Beaconing</button></div>
+          </div>
+
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">Command line argument inspection</div><div class="card-desc">Returns full command line arguments for a specific process on a host. Use to confirm installer context, validate flags passed to a suspicious process, or check for encoded/obfuscated arguments.</div></div><span class="tag tag-ep">endpoint</span></div>
+            <div class="card-fields">
+              <div class="field-group"><span class="field-label">Hostname</span>
+                <div class="multi-input-list" id="cmd0-host-list"><div class="multi-input-row"><input type="text" id="cmd0-host-0" placeholder="L2345" oninput="rc('cmd0')"/></div></div>
+                <button class="multi-add-btn" onclick="multiAdd('cmd0-host','cmd0','L2345')">+ Add another</button>
+              </div>
+              <div class="field-group"><span class="field-label">Process name</span>
+                <div class="multi-input-list" id="cmd0-proc-list"><div class="multi-input-row"><input type="text" id="cmd0-proc-0" placeholder="suspicious.exe" oninput="rc('cmd0')"/></div></div>
+                <button class="multi-add-btn" onclick="multiAdd('cmd0-proc','cmd0','process.exe')">+ Add another</button>
+              </div>
+              <div class="field-group narrow"><span class="field-label">Limit</span><input type="text" id="cmd0-limit" placeholder="100" oninput="rc('cmd0')"/></div>
+            </div>
+            <div class="card-query"><pre class="query-pre" id="out-cmd0"></pre></div>
+            <div class="card-footer"><button class="btn" onclick="cc('cmd0')">&#8669; Copy query</button><span class="copy-status" id="cs-cmd0">Copied</span><button class="pivot-btn" onclick="goToFlow('process',event)" title="Open investigation flow">&#9654; Suspicious Process / LOLBIN</button></div>
+          </div>
+
         </div>
       </div>
 
@@ -937,7 +1061,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-title">Confirm the affected host is online and has an agent</div>
               <div class="step-desc">Verify the endpoint has an active XDR agent before investing time in deeper queries.</div>
               <div class="step-lookfor"><strong>Look for:</strong> endpoint_status = Online, recent last_seen timestamp. If agent is missing or stale, raise with client before proceeding.</div>
-              <button class="step-query-ref" onclick="goToQueryCard('e0')">&#8669; Endpoint agent status</button>
+              <button class="step-query-ref" onclick="openFQP(\'e0\',this)">&#8669; Endpoint agent status</button>
             <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('persist',0,this.value)" id="finding-persist-0"></textarea></div>
 </div>
           </div>
@@ -950,7 +1074,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-title">Check for scheduled task creation events</div>
               <div class="step-desc">Query for Windows event 4698 — scheduled task created. Run fleet-wide first to see if this is isolated or widespread.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Unexpected task names, tasks pointing to temp/appdata paths, tasks created by non-admin users or unusual accounts.</div>
-              <button class="step-query-ref" onclick="goToQueryCard('p0')">&#8669; Scheduled task creation (4698)</button>
+              <button class="step-query-ref" onclick="openFQP(\'p0\',this)">&#8669; Scheduled task creation (4698)</button>
             <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('persist',1,this.value)" id="finding-persist-1"></textarea></div>
 </div>
           </div>
@@ -963,7 +1087,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-title">Check for files written to startup or suspicious locations</div>
               <div class="step-desc">Look for files dropped into temp, appdata, or startup folders around the time of the alert.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Executables or scripts (.exe, .ps1, .bat, .vbs) written to startup paths. Note the process that wrote them — that's your likely initial access vector.</div>
-              <button class="step-query-ref" onclick="goToQueryCard('p1')">&#8669; File written to temp/appdata/startup</button>
+              <button class="step-query-ref" onclick="openFQP(\'p1\',this)">&#8669; File written to temp/appdata/startup</button>
             <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('persist',2,this.value)" id="finding-persist-2"></textarea></div>
 </div>
           </div>
@@ -976,8 +1100,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-title">Check what the dropped file spawned</div>
               <div class="step-desc">If a suspicious file was found, check whether it was executed and what child processes it created.</div>
               <div class="step-lookfor"><strong>Look for:</strong> cmd.exe, powershell.exe, or network-connected processes spawned from the suspicious parent. Any results here = likely True Positive, escalate.</div>
-              <button class="step-query-ref" onclick="goToQueryCard('e3')">&#8669; Child processes by parent</button>
-              <button class="step-query-ref" onclick="goToQueryCard('fw1')" style="margin-left:6px">&#8669; File directly executed check</button>
+              <button class="step-query-ref" onclick="openFQP(\'e3\',this)">&#8669; Child processes by parent</button>
+              <button class="step-query-ref" onclick="openFQP(\'fw1\',this)" style="margin-left:6px">&#8669; File directly executed check</button>
             <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('persist',3,this.value)" id="finding-persist-3"></textarea></div>
 </div>
           </div>
@@ -990,7 +1114,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-title">Check login context around the alert time</div>
               <div class="step-desc">Establish who was logged into the host when the persistence mechanism was created.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Unexpected usernames, logins from unusual source IPs or workstations, or service account interactive logins. Cross-reference with the alert timestamp.</div>
-              <button class="step-query-ref" onclick="goToQueryCard('i0')">&#8669; Host login activity</button>
+              <button class="step-query-ref" onclick="openFQP(\'i0\',this)">&#8669; Host login activity</button>
             </div>
           </div>
         </div>
@@ -1019,7 +1143,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-title">Confirm source host agent status</div>
               <div class="step-desc">Verify the host initiating the RDP/SMB connection has an active agent and is a known asset.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Is this a server, workstation, or service host? A WSUS server, print server, or DC initiating RDP to workstations is immediately suspicious.</div>
-              <button class="step-query-ref" onclick="goToQueryCard('e0')">&#8669; Endpoint agent status</button>
+              <button class="step-query-ref" onclick="openFQP(\'e0\',this)">&#8669; Endpoint agent status</button>
             <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('lateral',0,this.value)" id="finding-lateral-0"></textarea></div>
 </div>
           </div>
@@ -1032,7 +1156,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-title">Pull all RDP connections from the source host</div>
               <div class="step-desc">Get the full picture of RDP activity originating from this host — not just the single connection that triggered the alert.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Multiple destination IPs, connections outside business hours, or RDP from a process with no legitimate reason to initiate remote desktop sessions.</div>
-              <button class="step-query-ref" onclick="goToQueryCard('l0')">&#8669; RDP connections from source host</button>
+              <button class="step-query-ref" onclick="openFQP(\'l0\',this)">&#8669; RDP connections from source host</button>
             <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('lateral',1,this.value)" id="finding-lateral-1"></textarea></div>
 </div>
           </div>
@@ -1045,7 +1169,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-title">Count unique RDP destinations from the source</div>
               <div class="step-desc">Aggregate RDP destinations to assess spread — a single host RDP'ing to many others is a strong lateral movement indicator.</div>
               <div class="step-lookfor"><strong>Look for:</strong> High connection_count to multiple unique IPs. 3+ unique destinations from a non-admin host = escalate immediately.</div>
-              <button class="step-query-ref" onclick="goToQueryCard('l1')">&#8669; RDP — one source to multiple destinations</button>
+              <button class="step-query-ref" onclick="openFQP(\'l1\',this)">&#8669; RDP — one source to multiple destinations</button>
             <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('lateral',2,this.value)" id="finding-lateral-2"></textarea></div>
 </div>
           </div>
@@ -1058,7 +1182,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-title">Check who was logged into the source host</div>
               <div class="step-desc">Establish what user account was active on the source host around the time of the RDP activity.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Service accounts logging in interactively, accounts that don't belong on that host, or logins from unusual source IPs preceding the RDP activity.</div>
-              <button class="step-query-ref" onclick="goToQueryCard('i0')">&#8669; Host login activity</button>
+              <button class="step-query-ref" onclick="openFQP(\'i0\',this)">&#8669; Host login activity</button>
             <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('lateral',3,this.value)" id="finding-lateral-3"></textarea></div>
 </div>
           </div>
@@ -1071,7 +1195,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-title">Check firewall for corroborating traffic</div>
               <div class="step-desc">Confirm the RDP traffic was seen at the network layer and whether it was allowed or blocked.</div>
               <div class="step-lookfor"><strong>Look for:</strong> session_end_reason — if "aged-out" or "policy-allow" the connection succeeded. If "policy-deny" it was blocked. No firewall record at all = possible internal VLAN hop not traversing the firewall.</div>
-              <button class="step-query-ref" onclick="goToQueryCard('f0')">&#8669; Firewall traffic by IP</button>
+              <button class="step-query-ref" onclick="openFQP(\'f0\',this)">&#8669; Firewall traffic by IP</button>
             </div>
           </div>
         </div>
@@ -1100,7 +1224,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-title">Get Wildfire verdict on the file hash</div>
               <div class="step-desc">Confirm the sandbox verdict for the file hash associated with the alert.</div>
               <div class="step-lookfor"><strong>Look for:</strong> action_file_wildfire_verdict — malicious/grayware = investigate further. Benign = likely FP but still check for unusual delivery context. No verdict = file hasn't been submitted to Wildfire yet.</div>
-              <button class="step-query-ref" onclick="goToQueryCard('e2')">&#8669; Wildfire verdict by SHA256</button>
+              <button class="step-query-ref" onclick="openFQP(\'e2\',this)">&#8669; Wildfire verdict by SHA256</button>
             <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('malware',0,this.value)" id="finding-malware-0"></textarea></div>
 </div>
           </div>
@@ -1113,7 +1237,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-title">Check the firewall threat log for the file</div>
               <div class="step-desc">See if the file was caught at the perimeter by the NGFW threat engine.</div>
               <div class="step-lookfor"><strong>Look for:</strong> verdict field — malicious confirms the file. sub_type and threat_name_firewall give context on the threat category. source_user tells you who downloaded it.</div>
-              <button class="step-query-ref" onclick="goToQueryCard('f1')">&#8669; Threat log by filename</button>
+              <button class="step-query-ref" onclick="openFQP(\'f1\',this)">&#8669; Threat log by filename</button>
             <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('malware',1,this.value)" id="finding-malware-1"></textarea></div>
 </div>
           </div>
@@ -1126,7 +1250,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-title">Check how many hosts have seen this file</div>
               <div class="step-desc">Scope the potential spread — how many endpoints have a file event for this filename.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Multiple hostnames = widespread delivery, possibly a phishing campaign or network share infection. Single host = contained, but still needs full investigation.</div>
-              <button class="step-query-ref" onclick="goToQueryCard('fw0')">&#8669; File seen on other hosts</button>
+              <button class="step-query-ref" onclick="openFQP(\'fw0\',this)">&#8669; File seen on other hosts</button>
             <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('malware',2,this.value)" id="finding-malware-2"></textarea></div>
 </div>
           </div>
@@ -1139,7 +1263,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-title">Check if the file was directly executed</div>
               <div class="step-desc">Determine whether the file has been launched as a process — this changes severity significantly.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Any results = file was executed, escalate. No results = file present but not yet run. Note: absence of results does not rule out indirect execution (e.g. DLL sideloading).</div>
-              <button class="step-query-ref" onclick="goToQueryCard('fw1')">&#8669; File directly executed check</button>
+              <button class="step-query-ref" onclick="openFQP(\'fw1\',this)">&#8669; File directly executed check</button>
             <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('malware',3,this.value)" id="finding-malware-3"></textarea></div>
 </div>
           </div>
@@ -1152,8 +1276,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-title">Check what the file spawned</div>
               <div class="step-desc">If the file was executed, look at what child processes it created.</div>
               <div class="step-lookfor"><strong>Look for:</strong> cmd.exe, powershell.exe, wscript.exe, or any network-connected child processes. Shell spawning = code execution confirmed, escalate immediately.</div>
-              <button class="step-query-ref" onclick="goToQueryCard('e3')">&#8669; Child processes by parent</button>
-              <button class="step-query-ref" onclick="goToQueryCard('x0')" style="margin-left:6px">&#8669; Suspicious shell spawned</button>
+              <button class="step-query-ref" onclick="openFQP(\'e3\',this)">&#8669; Child processes by parent</button>
+              <button class="step-query-ref" onclick="openFQP(\'x0\',this)" style="margin-left:6px">&#8669; Suspicious shell spawned</button>
             <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('malware',4,this.value)" id="finding-malware-4"></textarea></div>
 </div>
           </div>
@@ -1166,8 +1290,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-title">Check for outbound connections after execution</div>
               <div class="step-desc">Look for C2 callbacks or data exfiltration following the execution.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Connections to rare/external IPs, uncommon TLDs, or high-frequency beaconing patterns. Cross-reference destination IPs with VirusTotal.</div>
-              <button class="step-query-ref" onclick="goToQueryCard('x2')">&#8669; Network connections by process</button>
-              <button class="step-query-ref" onclick="goToQueryCard('p2')" style="margin-left:6px">&#8669; DNS to suspicious TLDs</button>
+              <button class="step-query-ref" onclick="openFQP(\'x2\',this)">&#8669; Network connections by process</button>
+              <button class="step-query-ref" onclick="openFQP(\'p2\',this)" style="margin-left:6px">&#8669; DNS to suspicious TLDs</button>
             </div>
           </div>
         </div>
@@ -1196,7 +1320,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-title">Review PowerShell script block content</div>
               <div class="step-desc">If the alert involves PowerShell, pull the actual script content from event 4104 logging.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Base64 encoded strings, IEX (Invoke-Expression), DownloadString, WebClient, or references to known C2 frameworks (Cobalt Strike, Metasploit, Empire). Encoded content = almost always malicious.</div>
-              <button class="step-query-ref" onclick="goToQueryCard('x1')">&#8669; PowerShell script block (4104)</button>
+              <button class="step-query-ref" onclick="openFQP(\'x1\',this)">&#8669; PowerShell script block (4104)</button>
             <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('process',0,this.value)" id="finding-process-0"></textarea></div>
 </div>
           </div>
@@ -1209,8 +1333,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-title">Check what spawned the suspicious process</div>
               <div class="step-desc">Identify the parent process — this tells you the initial access vector.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Office apps (winword, excel), PDF readers, browsers spawning PowerShell or cmd = likely phishing/malicious document. explorer.exe or unusual parents are also worth escalating.</div>
-              <button class="step-query-ref" onclick="goToQueryCard('e3')">&#8669; Child processes by parent</button>
-              <button class="step-query-ref" onclick="goToQueryCard('x0')" style="margin-left:6px">&#8669; Suspicious shell spawned</button>
+              <button class="step-query-ref" onclick="openFQP(\'e3\',this)">&#8669; Child processes by parent</button>
+              <button class="step-query-ref" onclick="openFQP(\'x0\',this)" style="margin-left:6px">&#8669; Suspicious shell spawned</button>
             <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('process',1,this.value)" id="finding-process-1"></textarea></div>
 </div>
           </div>
@@ -1223,7 +1347,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-title">Check for files dropped to disk</div>
               <div class="step-desc">Determine whether the process wrote any files to suspicious locations.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Executables, scripts, or DLLs written to temp/appdata/startup. A process dropping files = likely second-stage payload delivery.</div>
-              <button class="step-query-ref" onclick="goToQueryCard('p1')">&#8669; File written to temp/appdata/startup</button>
+              <button class="step-query-ref" onclick="openFQP(\'p1\',this)">&#8669; File written to temp/appdata/startup</button>
             <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('process',2,this.value)" id="finding-process-2"></textarea></div>
 </div>
           </div>
@@ -1236,7 +1360,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-title">Check for outbound network connections from the process</div>
               <div class="step-desc">Look for the suspicious process making external connections — callback, C2, or data exfil.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Connections to external IPs from notepad.exe, powershell.exe, or other LOLBINs that have no legitimate reason to make network connections. Any result here is a strong True Positive indicator.</div>
-              <button class="step-query-ref" onclick="goToQueryCard('x2')">&#8669; Network connections by process</button>
+              <button class="step-query-ref" onclick="openFQP(\'x2\',this)">&#8669; Network connections by process</button>
             <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('process',3,this.value)" id="finding-process-3"></textarea></div>
 </div>
           </div>
@@ -1249,7 +1373,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-title">Check if the same process is running fleet-wide</div>
               <div class="step-desc">Determine whether this is isolated to one host or part of a broader campaign.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Same suspicious process name appearing on multiple hosts. Fleet-wide spread = likely automated malware campaign, escalate immediately with full host list.</div>
-              <button class="step-query-ref" onclick="goToQueryCard('x3')">&#8669; Suspicious processes by name list</button>
+              <button class="step-query-ref" onclick="openFQP(\'x3\',this)">&#8669; Suspicious processes by name list</button>
             </div>
           </div>
         </div>
@@ -1278,7 +1402,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-title">Review cloud audit logs for the user / app</div>
               <div class="step-desc">Pull cloud audit activity for the identity involved in the alert — what operations were performed and from where.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Unusual operation_name values (e.g. bulk downloads, admin operations), caller_ip from unexpected countries, multiple rapid authentications from different geolocations.</div>
-              <button class="step-query-ref" onclick="goToQueryCard('c0')">&#8669; Cloud audit logs by app ID</button>
+              <button class="step-query-ref" onclick="openFQP(\'c0\',this)">&#8669; Cloud audit logs by app ID</button>
             <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('identity',0,this.value)" id="finding-identity-0"></textarea></div>
 </div>
           </div>
@@ -1291,7 +1415,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-title">Review Windows login activity for the user</div>
               <div class="step-desc">Pull Windows authentication events for the affected username to build a login timeline.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Logins from multiple source IPs in a short window, logon_type 10 (remote interactive) from unexpected IPs, or logins outside of normal working hours.</div>
-              <button class="step-query-ref" onclick="goToQueryCard('i1')">&#8669; User login activity (4624)</button>
+              <button class="step-query-ref" onclick="openFQP(\'i1\',this)">&#8669; User login activity (4624)</button>
             <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('identity',1,this.value)" id="finding-identity-1"></textarea></div>
 </div>
           </div>
@@ -1304,7 +1428,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-title">Check what hosts the user logged into</div>
               <div class="step-desc">Identify which machines the user authenticated to — helps establish scope if the account is compromised.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Logins to servers or sensitive hosts the user doesn't normally access. Multiple host logins in quick succession following an unusual source IP = strong compromise indicator.</div>
-              <button class="step-query-ref" onclick="goToQueryCard('i0')">&#8669; Host login activity (4624)</button>
+              <button class="step-query-ref" onclick="openFQP(\'i0\',this)">&#8669; Host login activity (4624)</button>
             <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('identity',2,this.value)" id="finding-identity-2"></textarea></div>
 </div>
           </div>
@@ -1317,7 +1441,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-title">Review user email activity</div>
               <div class="step-desc">Check for suspicious email patterns around the alert time — forwarding rules, unusual recipients, or phishing delivery.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Emails sent to external domains, BCC to personal addresses, authentication_results failures, or sender_ip_location mismatches with the user's normal location.</div>
-              <button class="step-query-ref" onclick="goToQueryCard('i2')">&#8669; User email activity</button>
+              <button class="step-query-ref" onclick="openFQP(\'i2\',this)">&#8669; User email activity</button>
             <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('identity',3,this.value)" id="finding-identity-3"></textarea></div>
 </div>
           </div>
@@ -1330,7 +1454,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-title">Review user URL / browsing activity</div>
               <div class="step-desc">Check what URLs the user visited around the alert time — may reveal credential harvesting pages or unusual activity.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Visits to login pages for services the user doesn't normally use, unusual URL categories, or access from an unexpected source IP.</div>
-              <button class="step-query-ref" onclick="goToQueryCard('i3')">&#8669; User URL activity</button>
+              <button class="step-query-ref" onclick="openFQP(\'i3\',this)">&#8669; User URL activity</button>
             </div>
           </div>
         </div>
@@ -1359,8 +1483,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-title">Confirm DNS queries to the suspicious domain</div>
               <div class="step-desc">Verify the domain in the alert is being queried via the DNS query name field — more precise than hostname matching.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Repeated queries to the same domain, queries from multiple hosts (potential fleet-wide C2), or queries at regular intervals (beaconing pattern). Check the domain on VirusTotal.</div>
-              <button class="step-query-ref" onclick="goToQueryCard('t3')">&#8669; DNS query by domain name (port 53)</button>
-              <button class="step-query-ref" onclick="goToQueryCard('t1')" style="margin-left:6px">&#8669; Hostname lookups for domain IOC</button>
+              <button class="step-query-ref" onclick="openFQP(\'t3\',this)">&#8669; DNS query by domain name (port 53)</button>
+              <button class="step-query-ref" onclick="openFQP(\'t1\',this)" style="margin-left:6px">&#8669; Hostname lookups for domain IOC</button>
             <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('c2',0,this.value)" id="finding-c2-0"></textarea></div>
 </div>
           </div>
@@ -1373,7 +1497,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-title">Check for connections to suspicious TLDs</div>
               <div class="step-desc">Broaden the search — check if the host is connecting to any other uncommon TLDs beyond the one in the alert.</div>
               <div class="step-lookfor"><strong>Look for:</strong> .xyz, .top, .ru, .cn, .tk, .onion domains. Multiple suspicious TLD connections from one host = strong C2 indicator. Note all domains for VirusTotal checks.</div>
-              <button class="step-query-ref" onclick="goToQueryCard('p2')">&#8669; DNS to suspicious TLDs</button>
+              <button class="step-query-ref" onclick="openFQP(\'p2\',this)">&#8669; DNS to suspicious TLDs</button>
             <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('c2',1,this.value)" id="finding-c2-1"></textarea></div>
 </div>
           </div>
@@ -1386,7 +1510,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-title">Fleet sweep — any other hosts connecting to the IOC IP</div>
               <div class="step-desc">Check whether any other hosts on the estate are communicating with the same C2 IP.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Multiple hosts connecting to the same external IP = widespread campaign. Note all affected hostnames for the incident report. Single host = contained but still investigate.</div>
-              <button class="step-query-ref" onclick="goToQueryCard('t0')">&#8669; Fleet sweep by IP</button>
+              <button class="step-query-ref" onclick="openFQP(\'t0\',this)">&#8669; Fleet sweep by IP</button>
             <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('c2',2,this.value)" id="finding-c2-2"></textarea></div>
 </div>
           </div>
@@ -1399,8 +1523,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-title">Identify the process making the connections</div>
               <div class="step-desc">Determine what process on the endpoint is responsible for the C2 communication.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Unexpected processes making external connections (notepad.exe, svchost.exe from wrong path, renamed system binaries). Check actor_process_image_path — legitimate svchost runs from System32 only.</div>
-              <button class="step-query-ref" onclick="goToQueryCard('x2')">&#8669; Network connections by process</button>
-              <button class="step-query-ref" onclick="goToQueryCard('e1')" style="margin-left:6px">&#8669; Edge connections to specific IP</button>
+              <button class="step-query-ref" onclick="openFQP(\'x2\',this)">&#8669; Network connections by process</button>
+              <button class="step-query-ref" onclick="openFQP(\'e1\',this)" style="margin-left:6px">&#8669; Edge connections to specific IP</button>
             <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('c2',3,this.value)" id="finding-c2-3"></textarea></div>
 </div>
           </div>
@@ -1413,7 +1537,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-title">Check firewall — was the connection allowed or blocked?</div>
               <div class="step-desc">Confirm at the network layer whether the C2 traffic reached its destination.</div>
               <div class="step-lookfor"><strong>Look for:</strong> action = allow and session_end_reason = aged-out = active C2 session, escalate immediately. action = deny = blocked but host is still infected, needs remediation. No record = traffic may be internal or on a non-monitored interface.</div>
-              <button class="step-query-ref" onclick="goToQueryCard('f0')">&#8669; Firewall traffic by IP</button>
+              <button class="step-query-ref" onclick="openFQP(\'f0\',this)">&#8669; Firewall traffic by IP</button>
             </div>
           </div>
         </div>
@@ -1442,7 +1566,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-title">Identify the source IP at the firewall</div>
               <div class="step-desc">Pull firewall traffic for the scanning source IP to understand what was being scanned and what ports were targeted.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Broad port ranges, multiple destination IPs, or systematic sweeps. External source IP = inbound scan, check VirusTotal. Internal source IP = compromised internal host or authorised pen test — verify with client.</div>
-              <button class="step-query-ref" onclick="goToQueryCard('f0')">&#8669; Firewall traffic by IP</button>
+              <button class="step-query-ref" onclick="openFQP(\'f0\',this)">&#8669; Firewall traffic by IP</button>
             <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('recon',0,this.value)" id="finding-recon-0"></textarea></div>
 </div>
           </div>
@@ -1455,7 +1579,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-title">Fleet sweep from the source IP</div>
               <div class="step-desc">Check how many endpoints received traffic from the scanning source.</div>
               <div class="step-lookfor"><strong>Look for:</strong> High number of destination hosts = active scan in progress. Note the scan timing — is it ongoing or a historical event? Ongoing = urgent, contact client immediately.</div>
-              <button class="step-query-ref" onclick="goToQueryCard('t0')">&#8669; Fleet sweep by IP</button>
+              <button class="step-query-ref" onclick="openFQP(\'t0\',this)">&#8669; Fleet sweep by IP</button>
             <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('recon',1,this.value)" id="finding-recon-1"></textarea></div>
 </div>
           </div>
@@ -1468,7 +1592,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-title">Identify the process responsible (if internal source)</div>
               <div class="step-desc">For LDAP or internal scanning alerts, identify which process is generating the traffic.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Scanning tools (nmap, netscan, masscan) or unexpected processes making LDAP/network connections. Legitimate LDAP traffic comes from lsass.exe or domain-joined processes — anything else is suspicious.</div>
-              <button class="step-query-ref" onclick="goToQueryCard('x2')">&#8669; Network connections by process</button>
+              <button class="step-query-ref" onclick="openFQP(\'x2\',this)">&#8669; Network connections by process</button>
             <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('recon',2,this.value)" id="finding-recon-2"></textarea></div>
 </div>
           </div>
@@ -1481,7 +1605,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-title">Check login activity on the source host</div>
               <div class="step-desc">If the scan originated internally, check who was logged into that host around the time of the alert.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Unusual accounts, remote logins immediately preceding the scan activity, or service accounts logging in interactively. This may indicate the host was already compromised before the scan began.</div>
-              <button class="step-query-ref" onclick="goToQueryCard('i0')">&#8669; Host login activity</button>
+              <button class="step-query-ref" onclick="openFQP(\'i0\',this)">&#8669; Host login activity</button>
             </div>
           </div>
         </div>
@@ -1510,7 +1634,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-title">Check for new local user account creation</div>
               <div class="step-desc">Query for Windows event 4720 — new local user created. Run fleet-wide to catch any accounts created across the estate.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Account names that don't follow naming conventions, accounts created by unexpected users (WhoDid field), or creation outside business hours. Verify with client whether this is authorised.</div>
-              <button class="step-query-ref" onclick="goToQueryCard('v0')">&#8669; New local user created (4720)</button>
+              <button class="step-query-ref" onclick="openFQP(\'v0\',this)">&#8669; New local user created (4720)</button>
             <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('priv',0,this.value)" id="finding-priv-0"></textarea></div>
 </div>
           </div>
@@ -1523,8 +1647,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-title">Check for additions to the local admins group</div>
               <div class="step-desc">Query for event 4732 filtered to SID S-1-5-32-544 (local Administrators group).</div>
               <div class="step-lookfor"><strong>Look for:</strong> Any account added to local admins that isn't in the authorised admin list. Cross-reference with the admin account list query. Machine accounts (ending in $) can be excluded — focus on user accounts.</div>
-              <button class="step-query-ref" onclick="goToQueryCard('v1')">&#8669; User added to local admins (4732)</button>
-              <button class="step-query-ref" onclick="goToQueryCard('a0')" style="margin-left:6px">&#8669; Admin account list</button>
+              <button class="step-query-ref" onclick="openFQP(\'v1\',this)">&#8669; User added to local admins (4732)</button>
+              <button class="step-query-ref" onclick="openFQP(\'a0\',this)" style="margin-left:6px">&#8669; Admin account list</button>
             <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('priv',1,this.value)" id="finding-priv-1"></textarea></div>
 </div>
           </div>
@@ -1537,7 +1661,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-title">Check for re-enabled dormant accounts</div>
               <div class="step-desc">Query for event 4722 — account re-enabled. This is a stealthier tactic than creating a new account.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Accounts that have been dormant (check last_seen in DSS data), re-enabled outside business hours, or re-enabled by an unexpected user. Attacker may use these to blend in with legitimate account history.</div>
-              <button class="step-query-ref" onclick="goToQueryCard('v2')">&#8669; Local user account enabled (4722)</button>
+              <button class="step-query-ref" onclick="openFQP(\'v2\',this)">&#8669; Local user account enabled (4722)</button>
             <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('priv',2,this.value)" id="finding-priv-2"></textarea></div>
 </div>
           </div>
@@ -1550,8 +1674,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-title">Check what the privileged account did after escalation</div>
               <div class="step-desc">If a suspicious account was created or elevated, trace its subsequent login activity.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Logins to sensitive hosts, RDP sessions, or access to servers shortly after the account was created/elevated. Any privileged activity from a newly created account = True Positive, escalate.</div>
-              <button class="step-query-ref" onclick="goToQueryCard('i1')">&#8669; User login activity</button>
-              <button class="step-query-ref" onclick="goToQueryCard('i0')" style="margin-left:6px">&#8669; Host login activity</button>
+              <button class="step-query-ref" onclick="openFQP(\'i1\',this)">&#8669; User login activity</button>
+              <button class="step-query-ref" onclick="openFQP(\'i0\',this)" style="margin-left:6px">&#8669; Host login activity</button>
             </div>
           </div>
         </div>
@@ -1580,8 +1704,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-title">Check the firewall threat log for the exploit attempt</div>
               <div class="step-desc">Pull the NGFW threat log for the source IP involved in the exploit attempt to see what was detected.</div>
               <div class="step-lookfor"><strong>Look for:</strong> threat_name_firewall — does it match the CVE or vulnerability in the alert? sub_type = exploit confirms active exploitation attempt. Check whether action = allow or deny — allowed = needs urgent client notification.</div>
-              <button class="step-query-ref" onclick="goToQueryCard('f1')">&#8669; Threat log by filename</button>
-              <button class="step-query-ref" onclick="goToQueryCard('f0')" style="margin-left:6px">&#8669; Firewall traffic by IP</button>
+              <button class="step-query-ref" onclick="openFQP(\'f1\',this)">&#8669; Threat log by filename</button>
+              <button class="step-query-ref" onclick="openFQP(\'f0\',this)" style="margin-left:6px">&#8669; Firewall traffic by IP</button>
             <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('vuln',0,this.value)" id="finding-vuln-0"></textarea></div>
 </div>
           </div>
@@ -1594,7 +1718,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-title">Check the cloud audit logs for post-exploit activity</div>
               <div class="step-desc">If the exploit targeted a cloud-connected service, check for any operations performed after the exploit attempt.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Unexpected admin operations, resource access, or configuration changes following the exploit timestamp. Any successful operations after a path traversal or arbitrary read = confirmed exploitation.</div>
-              <button class="step-query-ref" onclick="goToQueryCard('c0')">&#8669; Cloud audit logs</button>
+              <button class="step-query-ref" onclick="openFQP(\'c0\',this)">&#8669; Cloud audit logs</button>
             <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('vuln',1,this.value)" id="finding-vuln-1"></textarea></div>
 </div>
           </div>
@@ -1607,7 +1731,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-title">Fleet sweep — other hosts targeted by the same source IP</div>
               <div class="step-desc">Check whether the attacking IP targeted other hosts beyond the one in the alert.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Multiple destination hosts from the same source = automated exploit scanning. Single target = targeted attack. Either way, check source IP on VirusTotal for attribution.</div>
-              <button class="step-query-ref" onclick="goToQueryCard('t0')">&#8669; Fleet sweep by IP</button>
+              <button class="step-query-ref" onclick="openFQP(\'t0\',this)">&#8669; Fleet sweep by IP</button>
             <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('vuln',2,this.value)" id="finding-vuln-2"></textarea></div>
 </div>
           </div>
@@ -1620,8 +1744,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-title">Check for any processes spawned on the target host</div>
               <div class="step-desc">If the target host has an XDR agent, check whether the exploit resulted in process execution.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Web server processes (apache, nginx, iis) spawning cmd.exe, powershell.exe, or other shells = confirmed Remote Code Execution, escalate as Critical immediately.</div>
-              <button class="step-query-ref" onclick="goToQueryCard('e3')">&#8669; Child processes by parent</button>
-              <button class="step-query-ref" onclick="goToQueryCard('x0')" style="margin-left:6px">&#8669; Suspicious shell spawned</button>
+              <button class="step-query-ref" onclick="openFQP(\'e3\',this)">&#8669; Child processes by parent</button>
+              <button class="step-query-ref" onclick="openFQP(\'x0\',this)" style="margin-left:6px">&#8669; Suspicious shell spawned</button>
             </div>
           </div>
         </div>
@@ -1650,7 +1774,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-title">Confirm the affected endpoint is online</div>
               <div class="step-desc">Threat ID alerts can vary widely — start by confirming the host has an active agent and get basic asset context before investigating further.</div>
               <div class="step-lookfor"><strong>Look for:</strong> endpoint_status, last_seen, agent_version. Look up the Threat ID number in the XSIAM alert details or Cortex documentation to understand exactly what was detected before running further queries.</div>
-              <button class="step-query-ref" onclick="goToQueryCard('e0')">&#8669; Endpoint agent status</button>
+              <button class="step-query-ref" onclick="openFQP(\'e0\',this)">&#8669; Endpoint agent status</button>
             <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('threatid',0,this.value)" id="finding-threatid-0"></textarea></div>
 </div>
           </div>
@@ -1663,7 +1787,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-title">Check Wildfire verdict if a file is involved</div>
               <div class="step-desc">If the Threat ID alert references a file hash, pull the Wildfire verdict to confirm maliciousness.</div>
               <div class="step-lookfor"><strong>Look for:</strong> action_file_wildfire_verdict = malicious = True Positive, proceed with malware flow. Benign = possible FP, investigate delivery context. No result = file not yet submitted.</div>
-              <button class="step-query-ref" onclick="goToQueryCard('e2')">&#8669; Wildfire verdict by SHA256</button>
+              <button class="step-query-ref" onclick="openFQP(\'e2\',this)">&#8669; Wildfire verdict by SHA256</button>
             <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('threatid',1,this.value)" id="finding-threatid-1"></textarea></div>
 </div>
           </div>
@@ -1676,8 +1800,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-title">Check for network connections from the host</div>
               <div class="step-desc">Review outbound connections from the affected host around the alert time.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Connections to external IPs, unusual ports, or rare domains. Cross-reference any IPs or domains with VirusTotal. C2 connections = escalate immediately.</div>
-              <button class="step-query-ref" onclick="goToQueryCard('t0')">&#8669; Fleet sweep by IP</button>
-              <button class="step-query-ref" onclick="goToQueryCard('p2')" style="margin-left:6px">&#8669; DNS to suspicious TLDs</button>
+              <button class="step-query-ref" onclick="openFQP(\'t0\',this)">&#8669; Fleet sweep by IP</button>
+              <button class="step-query-ref" onclick="openFQP(\'p2\',this)" style="margin-left:6px">&#8669; DNS to suspicious TLDs</button>
             <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('threatid',2,this.value)" id="finding-threatid-2"></textarea></div>
 </div>
           </div>
@@ -1690,8 +1814,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-title">Check for file spread across the fleet</div>
               <div class="step-desc">If a file is referenced in the alert, check whether it appears on other hosts.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Multiple hosts with the same file = widespread delivery. Single host = contained. If spread is confirmed, escalate with full host list and file hash for client containment.</div>
-              <button class="step-query-ref" onclick="goToQueryCard('fw0')">&#8669; File seen on other hosts</button>
-              <button class="step-query-ref" onclick="goToQueryCard('t2')" style="margin-left:6px">&#8669; File hash fleet sweep</button>
+              <button class="step-query-ref" onclick="openFQP(\'fw0\',this)">&#8669; File seen on other hosts</button>
+              <button class="step-query-ref" onclick="openFQP(\'t2\',this)" style="margin-left:6px">&#8669; File hash fleet sweep</button>
             </div>
           </div>
         </div>
@@ -1732,8 +1856,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-title">Confirm host or user context</div>
               <div class="step-desc">Get basic asset or identity context for whatever entity is named in the alert.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Is the host online? Is the user active? For MobilePass auth failures, check if the username is a valid account. For BrokerVM/OT alerts, check with client whether the asset going offline was planned maintenance.</div>
-              <button class="step-query-ref" onclick="goToQueryCard('e0')">&#8669; Endpoint agent status</button>
-              <button class="step-query-ref" onclick="goToQueryCard('i1')" style="margin-left:6px">&#8669; User login activity</button>
+              <button class="step-query-ref" onclick="openFQP(\'e0\',this)">&#8669; Endpoint agent status</button>
+              <button class="step-query-ref" onclick="openFQP(\'i1\',this)" style="margin-left:6px">&#8669; User login activity</button>
             <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('custom',1,this.value)" id="finding-custom-1"></textarea></div>
 </div>
           </div>
@@ -1746,8 +1870,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-title">Check login activity for the affected entity</div>
               <div class="step-desc">For auth-related custom rules (MobilePass repeated failures), review login events around the alert time.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Multiple rapid failed authentications from the same source IP = brute force. Failed auths from multiple IPs = credential stuffing. Successful login immediately after failures = account compromise.</div>
-              <button class="step-query-ref" onclick="goToQueryCard('i0')">&#8669; Host login activity</button>
-              <button class="step-query-ref" onclick="goToQueryCard('i1')" style="margin-left:6px">&#8669; User login activity</button>
+              <button class="step-query-ref" onclick="openFQP(\'i0\',this)">&#8669; Host login activity</button>
+              <button class="step-query-ref" onclick="openFQP(\'i1\',this)" style="margin-left:6px">&#8669; User login activity</button>
             <div class="step-finding"><textarea placeholder="Findings for this step..." oninput="saveStepFinding('custom',2,this.value)" id="finding-custom-2"></textarea></div>
 </div>
           </div>
@@ -1760,8 +1884,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="step-title">Check for correlated network activity</div>
               <div class="step-desc">Review any network traffic associated with the alert entity.</div>
               <div class="step-lookfor"><strong>Look for:</strong> Unusual outbound connections, traffic to unexpected destinations, or firewall denies. For Claroty/OT new asset alerts — a new unrecognised device on the OT network should always be escalated to the client for verification.</div>
-              <button class="step-query-ref" onclick="goToQueryCard('f0')">&#8669; Firewall traffic by IP</button>
-              <button class="step-query-ref" onclick="goToQueryCard('t0')" style="margin-left:6px">&#8669; Fleet sweep by IP</button>
+              <button class="step-query-ref" onclick="openFQP(\'f0\',this)">&#8669; Firewall traffic by IP</button>
+              <button class="step-query-ref" onclick="openFQP(\'t0\',this)" style="margin-left:6px">&#8669; Fleet sweep by IP</button>
             </div>
           </div>
         </div>
@@ -1774,6 +1898,16 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
     </div>
 
   </main>
+
+  <div class="flows-query-panel" id="flows-query-panel">
+    <div class="fqp-header">
+      <span class="fqp-title" id="fqp-title">Query</span>
+      <button class="fqp-close" onclick="closeFQP()" title="Close panel">&#10005;</button>
+    </div>
+    <div class="fqp-body" id="fqp-body">
+      <div class="fqp-empty">Click a query button on any investigation step to load it here.</div>
+    </div>
+  </div>
 </div>
 
 <div class="intel-layout" id="intel-layout">
@@ -1845,8 +1979,10 @@ var B={
     else if(mode==='src') filterLine='| filter source_ip '+ipFilter;
     else if(mode==='or') filterLine='| filter dest_ip '+ipFilter+'\n    or source_ip '+ipFilter;
     else filterLine='| filter dest_ip = \"'+ips[0]+'\"\n    and source_ip = \"'+ip2+'\"';
-    return 'dataset = panw_ngfw_traffic_raw\n'+filterLine+'\n| fields _time, dest_ip, dest_port, source_ip, app,\n         action, protocol, session_end_reason\n| sort asc _time';},
+    return 'dataset = panw_ngfw_traffic_raw\n'+filterLine+'\n| fields _time, source_ip, dest_ip, dest_port, app,\n         bytes_sent, bytes_received, action, protocol,\n         rule_matched, session_end_reason\n| sort asc _time';},
   'f1':function(){return 'dataset = panw_ngfw_threat_raw\n| filter file_name contains "'+gv('f1-fname','FILENAME')+'"\n| fields _time, file_name, sub_type, verdict, source_ip, dest_ip,\n         source_user, partial_hash, app, threat_category,\n         threat_name_firewall, _reporting_device_name';},
+  'cp0':function(){return 'dataset = check_point_ips_raw\n| filter source_ip = "'+gv('cp0-ip','SOURCE-IP')+'"\n| fields _time, source_ip, dest_ip, action, protection_name, severity\n| sort desc _time\n| limit 50';},
+  'enip0':function(){return 'dataset = endpoints\n| filter ip_address = "'+gv('enip0-ip','10.0.0.1')+'"\n| fields endpoint_name, endpoint_type, endpoint_status,\n         last_seen, os_type, ip_address';},
   'e0':function(){var _h=gvMulti('e0-host','HOSTNAME');var _f=_h.length>1?'| filter endpoint_name in ('+_h.map(function(v){return'"'+v+'"';}).join(', ')+')':'| filter endpoint_name = "'+_h[0]+'"';return 'dataset = endpoints\n'+_f+'\n| fields endpoint_name, endpoint_status, last_seen, agent_version, install_date';},
   'e1':function(){return 'dataset = xdr_data\n| filter agent_hostname = "'+gv('e1-host','HOSTNAME')+'"\n| filter event_type = ENUM.NETWORK\n| filter actor_process_image_name ~= "(?i)msedge.exe"\n| filter action_remote_ip = "'+gv('e1-ip','REMOTE-IP')+'"\n| fields _time, agent_hostname, actor_process_image_name,\n         action_local_ip, action_local_port,\n         action_remote_ip, action_remote_port, action_external_hostname\n| sort asc _time';},
   'e2':function(){var _h=gvMulti('e2-hash','SHA256-HASH');var _f=_h.length>1?'| filter action_file_sha256 in ('+_h.map(function(v){return'"'+v+'"';}).join(', ')+')':'| filter action_file_sha256 = "'+_h[0]+'"';return 'dataset = xdr_data\n'+_f+'\n| fields _time, agent_hostname, actor_process_image_name,\n         action_file_name, action_file_path,\n         action_file_sha256, action_file_wildfire_verdict\n| sort desc _time';},
@@ -1892,6 +2028,28 @@ var B={
     var hf=h?'| filter agent_hostname = "'+h+'"\n':'';
     return 'dataset = xdr_data\n'+hf+'| filter event_type = EVENT_LOG and action_evtlog_event_id = 4104\n| alter ScriptBlock = action_evtlog_data_fields -> ScriptBlockText\n| alter UserName = action_evtlog_data_fields -> UserName\n| filter ScriptBlock != null\n| fields _time, agent_hostname, UserName, ScriptBlock\n| sort desc _time\n| limit '+gv('x1-limit','50');},
   'x2':function(){return 'dataset = xdr_data\n| filter event_type = ENUM.NETWORK\n| filter actor_process_image_name ~= "(?i)'+gv('x2-proc','PROCESS-NAME')+'"\n| fields _time, agent_hostname, actor_process_image_name,\n         action_remote_ip, action_remote_port, action_external_hostname\n| sort desc _time\n| limit 200';},
+  'dll0':function(){
+    var hosts=gvMulti('dll0-host','HOSTNAME');
+    var procs=gvMulti('dll0-proc','PROCESS-NAME.exe');
+    var hf=hosts.length>1?'| filter agent_hostname in ('+hosts.map(function(v){return'\"'+v+'\"';}).join(', ')+')':'| filter agent_hostname = \"'+hosts[0]+'\"';
+    var pf=procs.length>1?'| filter actor_process_image_name in ('+procs.map(function(v){return'\"'+v+'\"';}).join(', ')+')':'| filter actor_process_image_name = \"'+procs[0]+'\"';
+    return 'dataset = xdr_data\n'+hf+'\n  and event_type = ENUM.LOAD_IMAGE\n'+pf+'\n| fields _time, agent_hostname, actor_process_image_name,\n         action_file_path, action_file_name,\n         action_module_sha256, actor_process_image_sha256\n| sort _time asc\n| limit '+gv('dll0-limit','100');},
+  'iso0':function(){
+    var hosts=gvMulti('iso0-host','HOSTNAME');
+    var hf=hosts.length>1?'| filter agent_hostname in ('+hosts.map(function(v){return'\"'+v+'\"';}).join(', ')+')':'| filter agent_hostname = \"'+hosts[0]+'\"';
+    return 'dataset = xdr_data\n'+hf+'\n  and event_type = ENUM.PROCESS\n  and (actor_process_image_path ~= \"^[D-Fd-f]:\\\\\"\n   or action_process_image_path ~= \"^[D-Fd-f]:\\\\\"  )\n| fields _time, agent_hostname, actor_process_image_name,\n         actor_process_image_path, action_process_image_name,\n         action_process_image_path, actor_process_cmd_line,\n         action_process_image_sha256\n| sort _time asc\n| limit '+gv('iso0-limit','100');},
+  'net0':function(){
+    var hosts=gvMulti('net0-host','HOSTNAME');
+    var procs=gvMulti('net0-proc','PROCESS-NAME.exe');
+    var hf=hosts.length>1?'| filter agent_hostname in ('+hosts.map(function(v){return'\"'+v+'\"';}).join(', ')+')':'| filter agent_hostname = \"'+hosts[0]+'\"';
+    var pf=procs.length>1?'| filter actor_process_image_name in ('+procs.map(function(v){return'\"'+v+'\"';}).join(', ')+')':'| filter actor_process_image_name = \"'+procs[0]+'\"';
+    return 'dataset = xdr_data\n'+hf+'\n  and '+pf.replace('| filter ','')+'\n  and event_type = ENUM.NETWORK\n| fields _time, actor_process_image_name, event_type,\n         action_remote_ip, action_remote_port,\n         action_local_ip, dns_query_name\n| sort _time asc\n| limit '+gv('net0-limit','100');},
+  'cmd0':function(){
+    var hosts=gvMulti('cmd0-host','HOSTNAME');
+    var procs=gvMulti('cmd0-proc','PROCESS-NAME.exe');
+    var hf=hosts.length>1?'| filter agent_hostname in ('+hosts.map(function(v){return'\"'+v+'\"';}).join(', ')+')':'| filter agent_hostname = \"'+hosts[0]+'\"';
+    var pf=procs.length>1?'| filter actor_process_image_name in ('+procs.map(function(v){return'\"'+v+'\"';}).join(', ')+')':'| filter actor_process_image_name = \"'+procs[0]+'\"';
+    return 'dataset = xdr_data\n'+hf+'\n  and '+pf.replace('| filter ','')+'\n  and event_type = ENUM.PROCESS\n| fields _time, agent_hostname, actor_process_image_name,\n         actor_process_cmd_line, action_process_image_name,\n         action_process_cmd_line, actor_process_image_sha256,\n         os_actor_process_image_name\n| sort _time asc\n| limit '+gv('cmd0-limit','100');},
   'a0':function(){return 'dataset = pan_dss_raw\n| filter admin_count = "1"\n| dedup sam_account_name\n| view column order = populated';},
   'fw0':function(){var _h=gvMulti('fw0-fname','FILENAME');var _f=_h.length>1?'| filter action_file_name in ('+_h.map(function(v){return'"'+v+'"';}).join(', ')+')':'| filter action_file_name = "'+_h[0]+'"';return 'dataset = xdr_data\n'+_f+'\n| fields _time, agent_hostname, actor_process_image_name,\n         action_file_name, action_file_path,\n         action_file_sha256\n| dedup agent_hostname\n| sort desc _time\n| limit '+gv('fw0-limit','100');},
   'fw1':function(){var _h=gvMulti('fw1-fname','FILENAME');var _fline=_h.length>1?'| filter action_file_name in ('+_h.map(function(v){return'"'+v+'"';}).join(', ')+')\n    or actor_process_image_name in ('+_h.map(function(v){return'"'+v+'"';}).join(', ')+')':'| filter action_file_name = "'+_h[0]+'"\n    or actor_process_image_name = "'+_h[0]+'"';return 'dataset = xdr_data\n'+_fline+'\n| fields _time, agent_hostname, actor_process_image_name,\n         action_process_image_name,\n         action_process_image_command_line,\n         action_file_name, action_file_path\n| sort desc _time\n| limit 200';},
@@ -2539,6 +2697,174 @@ document.addEventListener('keydown',function(e){
     }
   }
 });
+
+// ── FLOWS QUERY PANEL ─────────────────────────────────
+var fqpActiveBtn = null;
+var fqpActiveCard = null;
+
+// Card metadata for the panel — title, desc, fields
+var fqpMeta = {
+  'c0':  {title:'Cloud audit logs — app ID',        desc:'Raw log match against an application GUID.'},
+  'i0':  {title:'Host login activity (4624)',        desc:'Windows logon events by hostname.'},
+  'i1':  {title:'User login activity (4624)',        desc:'Windows logon events by username.'},
+  'i2':  {title:'User email activity',               desc:'Email events for a mailbox owner.'},
+  'i3':  {title:'User URL activity',                 desc:'Firewall URL logs by user.'},
+  'f0':  {title:'Firewall traffic by IP',            desc:'NGFW traffic logs — src, dest, or both.'},
+  'f1':  {title:'Threat log — file verdict',         desc:'NGFW threat log by filename.'},
+  'cp0': {title:'Check Point IPS by source IP',      desc:'Check Point IPS events — protection name, action, severity.'},
+  'enip0':{title:'Endpoint lookup by IP address',    desc:'Identify a host by IP — no result = no Cortex agent.'},
+  'e0':  {title:'Endpoint agent status',             desc:'Agent info — status, last seen, version.'},
+  'e1':  {title:'Edge connections — specific IP',    desc:'msedge.exe network events to a single IP.'},
+  'e2':  {title:'Wildfire verdict by SHA256',        desc:'Wildfire verdict and file metadata.'},
+  'e3':  {title:'Child processes by parent',         desc:'Child processes spawned by a parent process.'},
+  'fw0': {title:'File seen on other hosts',          desc:'Hosts that have a file event for this filename.'},
+  'fw1': {title:'File directly executed check',      desc:'Check if file has been run as a process.'},
+  'fw2': {title:'Child processes from directory',    desc:'Processes spawned from a folder path.'},
+  'b0':  {title:'Edge connections — IP or port',     desc:'Edge network events by remote IP or port.'},
+  'b1':  {title:'Edge & Chrome — all connections',   desc:'All outbound browser connections.'},
+  't0':  {title:'Fleet sweep by IP',                 desc:'All XDR network events matching an IP.'},
+  't1':  {title:'DNS / hostname lookup — domain',    desc:'Network events where hostname matches domain.'},
+  't2':  {title:'File hash sweep — fleet',           desc:'All file events for a SHA256 across all hosts.'},
+  't3':  {title:'DNS query by domain (port 53)',      desc:'DNS traffic filtered by dns_query_name.'},
+  'l0':  {title:'RDP from source host',              desc:'RDP (3389) connections from a specific host.'},
+  'l1':  {title:'RDP spread — destination count',    desc:'RDP destinations grouped by count.'},
+  'p0':  {title:'Scheduled task creation (4698)',    desc:'Windows scheduled task creation events.'},
+  'p1':  {title:'File written to temp/startup',      desc:'File events in suspicious paths.'},
+  'p2':  {title:'DNS to suspicious TLDs',            desc:'Network events to uncommon TLDs.'},
+  'v0':  {title:'New local user (4720)',              desc:'Windows local user account creation.'},
+  'v1':  {title:'User added to admins (4732)',        desc:'Additions to local Administrators group.'},
+  'v2':  {title:'Account re-enabled (4722)',          desc:'Disabled accounts that were re-enabled.'},
+  'x0':  {title:'Suspicious shell spawned',          desc:'cmd/powershell/wscript/mshta execution.'},
+  'x1':  {title:'PowerShell script block (4104)',    desc:'PowerShell script block logging content.'},
+  'x2':  {title:'Network connections by process',   desc:'Fleet-wide network events by process name.'},
+  'x3':  {title:'Suspicious processes by name list', desc:'Checks for specific process names on a host.'},
+  'a0':  {title:'Admin account list',                desc:'All accounts with admin_count = 1.'},
+  'dll0':{title:'DLL sideloading investigation',     desc:'DLLs loaded by a process — path and hash.'},
+  'iso0':{title:'ISO / removable media execution',   desc:'Processes executing from non-C drive letters.'},
+  'net0':{title:'Process network callback check',    desc:'Network events for named process(es).'},
+  'cmd0':{title:'Command line argument inspection',  desc:'Full command line args for a named process.'},
+};
+
+function openFQP(cardId, btn) {
+  var panel = document.getElementById('flows-query-panel');
+  var body = document.getElementById('fqp-body');
+  var titleEl = document.getElementById('fqp-title');
+
+  // Deactivate previous button
+  if(fqpActiveBtn) fqpActiveBtn.classList.remove('active-panel');
+  if(btn) { btn.classList.add('active-panel'); fqpActiveBtn = btn; }
+  fqpActiveCard = cardId;
+
+  // Open panel
+  panel.classList.add('open');
+
+  // Get metadata
+  var meta = fqpMeta[cardId] || {title: cardId, desc: ''};
+  if(titleEl) titleEl.textContent = meta.title;
+
+  // Build fields by mirroring the XQL card's inputs
+  var origCard = document.querySelector('#out-'+cardId) 
+    ? document.querySelector('#out-'+cardId).closest('.card') 
+    : null;
+
+  var fieldsHTML = '';
+  if(origCard) {
+    // Mirror all inputs and selects from the original card
+    var inputs = origCard.querySelectorAll('input[type=text], input[type=number], select');
+    inputs.forEach(function(inp) {
+      if(!inp.id) return;
+      var label = '';
+      var fg = inp.closest('.field-group');
+      if(fg) {
+        var lbl = fg.querySelector('.field-label');
+        if(lbl) label = lbl.textContent;
+      }
+      if(inp.tagName === 'SELECT') {
+        var opts = Array.from(inp.options).map(function(o){
+          return '<option value="'+o.value+'"'+(o.selected?' selected':'')+'>'+o.text+'</option>';
+        }).join('');
+        fieldsHTML += '<div class="fqp-field"><span class="fqp-field-label">'+label+'</span>'+
+          '<select id="fqp-'+inp.id+'" onchange="syncFQP(\''+inp.id+'\',\'fqp-'+inp.id+'\',\''+cardId+'\')">'+opts+'</select></div>';
+      } else {
+        fieldsHTML += '<div class="fqp-field"><span class="fqp-field-label">'+label+'</span>'+
+          '<input type="text" id="fqp-'+inp.id+'" placeholder="'+inp.placeholder+'" value="'+inp.value+'" '+
+          'oninput="syncFQP(\''+inp.id+'\',\'fqp-'+inp.id+'\',\''+cardId+'\')" /></div>';
+      }
+    });
+  }
+
+  // Get current query
+  var q = cache[cardId] || (B[cardId] && B[cardId]()) || '';
+
+  body.innerHTML =
+    '<div class="fqp-card-desc">'+meta.desc+'</div>'+
+    '<div class="fqp-fields">'+fieldsHTML+'</div>'+
+    '<div class="fqp-query-out" id="fqp-query-out">'+hl(q)+'</div>'+
+    '<div class="fqp-actions">'+
+      '<button class="btn btn-primary" onclick="copyFQP()">&#8669; Copy query</button>'+
+      '<button class="btn btn-danger" onclick="clearFQP()">&#10005; Clear</button>'+
+      '<span class="copy-status" id="fqp-cs" style="font-size:11.5px;color:var(--green);opacity:0;transition:opacity 0.2s;">Copied</span>'+
+    '</div>';
+}
+
+function syncFQP(origId, fqpId, cardId) {
+  // Sync value from panel input back to original card input
+  var fqpEl = document.getElementById(fqpId);
+  var origEl = document.getElementById(origId);
+  if(fqpEl && origEl) {
+    origEl.value = fqpEl.value;
+    // Trigger oninput on original to rebuild query
+    origEl.dispatchEvent(new Event('input', {bubbles:true}));
+  }
+  // Update panel query preview
+  setTimeout(function(){
+    var q = cache[cardId] || (B[cardId] && B[cardId]()) || '';
+    var out = document.getElementById('fqp-query-out');
+    if(out) out.innerHTML = hl(q);
+  }, 50);
+}
+
+function copyFQP() {
+  if(!fqpActiveCard) return;
+  var q = cache[fqpActiveCard] || (B[fqpActiveCard] && B[fqpActiveCard]()) || '';
+  navigator.clipboard.writeText(q).then(function(){
+    var cs = document.getElementById('fqp-cs');
+    if(cs){cs.style.opacity='1';setTimeout(function(){cs.style.opacity='0';},1800);}
+    showToast('Query copied');
+    var meta = fqpMeta[fqpActiveCard] || {title:fqpActiveCard};
+    saveToRecent(meta.title, q);
+  });
+}
+
+function clearFQP() {
+  if(!fqpActiveCard) return;
+  var origCard = document.querySelector('#out-'+fqpActiveCard)
+    ? document.querySelector('#out-'+fqpActiveCard).closest('.card')
+    : null;
+  if(origCard) {
+    origCard.querySelectorAll('input[type=text]').forEach(function(i){ i.value=''; });
+    origCard.querySelectorAll('input[type=number]').forEach(function(i){ i.value=''; });
+  }
+  // Clear panel inputs too
+  var body = document.getElementById('fqp-body');
+  if(body) {
+    body.querySelectorAll('input[type=text], input[type=number]').forEach(function(i){ i.value=''; });
+  }
+  rc(fqpActiveCard);
+  setTimeout(function(){
+    var q = cache[fqpActiveCard] || (B[fqpActiveCard] && B[fqpActiveCard]()) || '';
+    var out = document.getElementById('fqp-query-out');
+    if(out) out.innerHTML = hl(q);
+  }, 50);
+  showToast('Fields cleared');
+}
+
+function closeFQP() {
+  var panel = document.getElementById('flows-query-panel');
+  panel.classList.remove('open');
+  if(fqpActiveBtn) { fqpActiveBtn.classList.remove('active-panel'); fqpActiveBtn = null; }
+  fqpActiveCard = null;
+}
 
 function saveStepFinding(flowId,stepIdx,value){
   try{localStorage.setItem('soc_finding_'+flowId+'_'+stepIdx,value);}catch(e){}
