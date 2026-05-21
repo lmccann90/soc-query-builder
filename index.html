@@ -54,6 +54,11 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 
 .sidebar{width:224px;min-width:224px;border-right:1px solid var(--border);padding:14px 0;overflow-y:auto;background:var(--bg);}
 .sidebar-label{font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);padding:8px 16px 5px;}
+.xql-search-wrap{padding:6px 10px 8px;position:relative;}
+.xql-search-wrap input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--sans);font-size:12px;height:28px;padding:0 8px 0 26px;outline:none;transition:border-color 0.15s;}
+.xql-search-wrap input:focus{border-color:var(--accent);}
+.xql-search-wrap input::placeholder{color:var(--text3);}
+.xql-search-icon{position:absolute;left:18px;top:13px;color:var(--text3);font-size:11px;pointer-events:none;}
 .sidebar-item{display:flex;align-items:center;gap:8px;padding:7px 16px;font-size:12.5px;color:var(--text2);cursor:pointer;border-left:2px solid transparent;transition:all 0.1s;user-select:none;}
 .sidebar-item:hover{color:var(--text);background:var(--bg2);}
 .sidebar-item.active{color:var(--accent);border-left-color:var(--accent);background:rgba(79,142,247,0.06);}
@@ -369,6 +374,10 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 <div class="layout" id="xql-layout">
   <nav class="sidebar" id="sidebar-xql">
     <div class="sidebar-label">XQL queries</div>
+    <div class="xql-search-wrap">
+      <span class="xql-search-icon">&#128269;</span>
+      <input type="text" id="xql-search" placeholder="Search cards..." oninput="searchXqlCards(this.value)"/>
+    </div>
     <div class="sidebar-item active" onclick="showSection('xql','cloud',this)"><span class="sidebar-dot" style="background:#4f8ef7"></span>Cloud &amp; identity<span class="sidebar-count">3</span></div>
     <div class="sidebar-item" onclick="showSection('xql','identity',this)"><span class="sidebar-dot" style="background:#c4b5fd"></span>User &amp; host activity<span class="sidebar-count">4</span></div>
     <div class="sidebar-item" onclick="showSection('xql','firewall',this)"><span class="sidebar-dot" style="background:#f5a623"></span>Firewall<span class="sidebar-count">5</span></div>
@@ -3098,6 +3107,43 @@ function toggleStep(flowId,stepIdx,btn){
   if(prog) prog.textContent=arr.length;
 }
 
+function searchXqlCards(val){
+  var q = val.toLowerCase().trim();
+  var allCards = document.querySelectorAll('#main-xql .card');
+  var sectionCounts = {};
+  allCards.forEach(function(card){
+    var title = (card.querySelector('.card-title')||{}).textContent||'';
+    var desc  = (card.querySelector('.card-desc')||{}).textContent||'';
+    var match = !q || title.toLowerCase().indexOf(q)>-1 || desc.toLowerCase().indexOf(q)>-1;
+    card.style.display = match ? '' : 'none';
+    // Track counts per section
+    var sec = card.closest('.section');
+    if(sec){
+      var sid = sec.id;
+      sectionCounts[sid] = (sectionCounts[sid]||0) + (match?1:0);
+    }
+  });
+  // Show/hide sections with no visible cards, update sidebar counts
+  document.querySelectorAll('#main-xql .section').forEach(function(sec){
+    var count = sectionCounts[sec.id]||0;
+    sec.style.display = (!q || count>0) ? '' : 'none';
+    // Update sidebar count badge
+    var secName = sec.id.replace('xql-sec-','');
+    var sidebarItem = document.querySelector('#sidebar-xql .sidebar-item[onclick*="\''+secName+'\'"]');
+    if(sidebarItem){
+      var badge = sidebarItem.querySelector('.sidebar-count');
+      if(badge) badge.textContent = q ? count : badge.getAttribute('data-orig')||badge.textContent;
+    }
+  });
+  // If searching, show first section with results
+  if(q){
+    var firstVisible = document.querySelector('#main-xql .section[style=""],.section:not([style])');
+    document.querySelectorAll('#main-xql .section').forEach(function(s){
+      if(s.style.display!=='none' && !firstVisible) firstVisible=s;
+    });
+  }
+}
+
 function searchFlows(val){
   var q=val.toLowerCase().trim();
   var items=document.querySelectorAll('.flows-item');
@@ -3503,7 +3549,7 @@ var fqpMeta = {
   'i1':  {title:'User login activity (4624)',        desc:'Windows logon events by username.', fields:[{id:'i1-user-0',label:'Username',placeholder:'jsmith'}]},
   'i2':  {title:'User email activity',               desc:'Email events for a mailbox owner.', fields:[{id:'i2-user-0',label:'Mailbox owner / username',placeholder:'jsmith'}]},
   'i3':  {title:'User URL activity',                 desc:'Firewall URL logs by user.', fields:[{id:'i3-user-0',label:'Username',placeholder:'jsmith'}]},
-  'f0':  {title:'Firewall traffic by IP',            desc:'NGFW traffic logs — src, dest, or both.', fields:[{id:'f0-ip1-0',label:'IP address',placeholder:'10.0.0.1'}]},
+  'f0':  {title:'Firewall traffic by IP',            desc:'NGFW traffic logs — src, dest, or both.', fields:[{id:'f0-ip1-0',label:'IP address',placeholder:'10.0.0.1'}], custom:'f0'},
   'f1':  {title:'Threat log — file verdict',         desc:'NGFW threat log by filename.', fields:[{id:'f1-fname',label:'File name',placeholder:'Cover Page.pdf'}]},
   'e0':  {title:'Endpoint agent status',             desc:'Agent info — status, last seen, version.', fields:[{id:'e0-host-0',label:'Hostname',placeholder:'L2345'}]},
   'e1':  {title:'Edge connections — specific IP',    desc:'msedge.exe network events to a single IP.', fields:[{id:'e1-host',label:'Hostname',placeholder:'L2345'},{id:'e1-ip',label:'Remote IP',placeholder:'10.0.0.1'}]},
@@ -3578,7 +3624,25 @@ function openFQP(cardId, btn) {
   var fieldsHTML = '';
   var metaFields = meta.fields || [];
 
-  if(metaFields.length > 0) {
+  // Custom render for cards with mode dropdowns (f0, t0)
+  if(meta.custom === 'f0') {
+    var curMode = gv('f0-mode','dest');
+    var curIp = (document.getElementById('f0-ip1-0') || {}).value || '';
+    var curIp2 = gv('f0-ip2','');
+    fieldsHTML =
+      '<div class="fqp-field"><span class="fqp-field-label">Mode</span>'+
+      '<select id="fqp-f0-mode" onchange="syncFQP(\'f0-mode\',\'fqp-f0-mode\',\'f0\')">'+
+      '<option value="dest"'+(curMode==='dest'?' selected':'')+'>Destination IP</option>'+
+      '<option value="src"'+(curMode==='src'?' selected':'')+'>Source IP</option>'+
+      '<option value="or"'+(curMode==='or'?' selected':'')+'>Src OR Dest</option>'+
+      '<option value="and"'+(curMode==='and'?' selected':'')+'>Src AND Dest</option>'+
+      '</select></div>'+
+      '<div class="fqp-field"><span class="fqp-field-label">IP address</span>'+
+      '<input type="text" id="fqp-f0-ip1-0" placeholder="10.0.0.1" value="'+curIp+'" oninput="syncFQP(\'f0-ip1-0\',\'fqp-f0-ip1-0\',\'f0\')"/></div>'+
+      '<div class="fqp-field" id="fqp-f0-ip2-wrap" style="'+(curMode==='and'?'':'display:none')+'">'+
+      '<span class="fqp-field-label">Source IP (AND mode)</span>'+
+      '<input type="text" id="fqp-f0-ip2" placeholder="10.0.0.2" value="'+curIp2+'" oninput="syncFQP(\'f0-ip2\',\'fqp-f0-ip2\',\'f0\')"/></div>';
+  } else if(metaFields.length > 0) {
     metaFields.forEach(function(f) {
       var curVal = '';
       // Try to get current value from the original card input if it exists
@@ -3624,12 +3688,15 @@ function openFQP(cardId, btn) {
   body.innerHTML =
     '<div class="fqp-card-desc">'+meta.desc+'</div>'+
     (fieldsHTML ? '<div class="fqp-fields">'+fieldsHTML+'</div>' : '')+
-    '<div class="fqp-query-out" id="fqp-query-out">'+hl(q)+'</div>'+
+    '<div class="fqp-query-out" id="fqp-query-out"></div>'+
     '<div class="fqp-actions">'+
       '<button class="btn btn-primary" onclick="copyFQP()">&#8669; Copy query</button>'+
       '<button class="btn btn-danger" onclick="clearFQP()">&#10005; Clear</button>'+
       '<span class="copy-status" id="fqp-cs" style="font-size:11.5px;color:var(--green);opacity:0;transition:opacity 0.2s;">Copied</span>'+
     '</div>';
+  // Set query output separately to ensure hl() spans render as HTML not text
+  var qOut = document.getElementById('fqp-query-out');
+  if(qOut) qOut.innerHTML = hl(q);
 }
 
 function syncFQP(origId, fqpId, cardId) {
@@ -3638,8 +3705,15 @@ function syncFQP(origId, fqpId, cardId) {
   var origEl = document.getElementById(origId);
   if(fqpEl && origEl) {
     origEl.value = fqpEl.value;
-    // Trigger oninput on original to rebuild query
+    // Trigger oninput/onchange on original to rebuild query
     origEl.dispatchEvent(new Event('input', {bubbles:true}));
+    origEl.dispatchEvent(new Event('change', {bubbles:true}));
+  }
+  // Special: f0 mode change — show/hide AND IP field in panel
+  if(origId === 'f0-mode') {
+    var wrap = document.getElementById('fqp-f0-ip2-wrap');
+    if(wrap) wrap.style.display = (fqpEl && fqpEl.value === 'and') ? '' : 'none';
+    if(typeof f0ModeChange === 'function') f0ModeChange();
   }
   // Update panel query preview
   setTimeout(function(){
