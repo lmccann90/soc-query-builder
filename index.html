@@ -3998,7 +3998,7 @@ function confirmSaveQuery() {
   if(!name) { document.getElementById('save-name').focus(); showToast('Enter a name'); return; }
   var desc = document.getElementById('save-desc').value.trim();
   // Replace filter values with typed placeholders based on field name
-  var templatised = templatiseQuery(savedQueryPending);
+  var templatised = templatiseQuery(stripHtml(savedQueryPending));
   var arr = getSavedQueries();
   arr.unshift({
     id: Date.now(),
@@ -4132,12 +4132,18 @@ function updateSavedPreview(id) {
   if(preview) preview.innerHTML = hl(filled);
 }
 
+function stripHtml(s) {
+  var tmp = document.createElement('div');
+  tmp.innerHTML = s;
+  return tmp.textContent || tmp.innerText || '';
+}
+
 function copySavedQuery(id) {
   var arr = getSavedQueries();
   var q = arr.find(function(x){return x.id===id;});
   if(!q) return;
   var placeholders = extractPlaceholders(q.query);
-  var filled = q.query;
+  var filled = stripHtml(q.query); // strip any accidental HTML
   placeholders.forEach(function(ph) {
     var inp = document.getElementById('sv-'+id+'-'+ph);
     var val = inp && inp.value.trim() ? inp.value.trim() : ph;
@@ -4389,7 +4395,7 @@ window.cmpRender=cmpRender;window.cmpCopy=cmpCopy;window.composerReset=composerR
 window.openSaveModal=openSaveModal;window.closeSaveModal=closeSaveModal;
 window.confirmSaveQuery=confirmSaveQuery;
 window.copySavedQuery=copySavedQuery;window.loadSavedQuery=loadSavedQuery;
-window.deleteSavedQuery=deleteSavedQuery;window.updateSavedPreview=updateSavedPreview;
+window.deleteSavedQuery=deleteSavedQuery;window.updateSavedPreview=updateSavedPreview;window.stripHtml=stripHtml;
 window.openHowTo=openHowTo;window.closeHowTo=closeHowTo;
 </script>
 </body>
