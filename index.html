@@ -392,6 +392,37 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 .dedup-row select{background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--mono);font-size:11.5px;height:28px;padding:0 8px;outline:none;}
 .composer-reset-btn{font-size:11px;padding:3px 9px;border-radius:4px;border:1px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;font-family:var(--sans);transition:all 0.1s;}
 .composer-reset-btn:hover{color:var(--red);border-color:rgba(224,82,82,0.3);background:rgba(224,82,82,0.06);}
+
+/* SAVED QUERIES */
+.saved-empty{font-size:12px;color:var(--text3);padding:32px 0;text-align:center;}
+.saved-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px;transition:border-color 0.15s;}
+.saved-card:hover{border-color:var(--border2);}
+.saved-card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:6px;}
+.saved-card-name{font-size:13px;font-weight:500;color:var(--text);}
+.saved-card-desc{font-size:11.5px;color:var(--text2);margin-bottom:8px;line-height:1.5;}
+.saved-card-meta{font-size:10.5px;color:var(--text3);margin-bottom:10px;}
+.saved-card-query{background:var(--bg);border:1px solid var(--border);border-radius:6px;font-family:var(--mono);font-size:11px;color:var(--text2);padding:8px 12px;white-space:pre;overflow-x:auto;max-height:120px;overflow-y:auto;line-height:1.7;margin-bottom:10px;}
+.saved-card-actions{display:flex;gap:6px;flex-wrap:wrap;}
+.saved-load-btn{font-size:11.5px;padding:4px 12px;border-radius:5px;border:1px solid rgba(79,142,247,0.3);background:rgba(79,142,247,0.08);color:var(--accent);cursor:pointer;font-family:var(--sans);transition:all 0.12s;}
+.saved-load-btn:hover{background:rgba(79,142,247,0.16);}
+.saved-delete-btn{font-size:11.5px;padding:4px 10px;border-radius:5px;border:1px solid rgba(224,82,82,0.2);background:transparent;color:var(--text3);cursor:pointer;font-family:var(--sans);transition:all 0.12s;}
+.saved-delete-btn:hover{color:var(--red);border-color:rgba(224,82,82,0.4);background:rgba(224,82,82,0.06);}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:800;display:flex;align-items:center;justify-content:center;}
+.modal-box{background:var(--bg2);border:1px solid var(--border2);border-radius:12px;width:520px;max-width:92vw;box-shadow:0 8px 40px rgba(0,0,0,0.5);}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border);}
+.modal-title{font-size:13px;font-weight:500;color:var(--text);}
+.modal-body{padding:16px 18px;display:flex;flex-direction:column;gap:12px;}
+.modal-field{display:flex;flex-direction:column;gap:4px;}
+.modal-label{font-size:10.5px;font-weight:500;color:var(--text3);letter-spacing:0.04em;}
+.modal-input{background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--sans);font-size:12px;height:32px;padding:0 10px;outline:none;transition:border-color 0.15s;}
+.modal-input:focus{border-color:var(--accent);}
+.modal-input::placeholder{color:var(--text3);}
+.modal-query-preview{background:var(--bg);border:1px solid var(--border);border-radius:6px;font-family:var(--mono);font-size:11px;color:var(--text2);padding:8px 12px;white-space:pre;overflow-x:auto;max-height:160px;overflow-y:auto;line-height:1.7;}
+.modal-footer{display:flex;align-items:center;gap:8px;padding:12px 18px;border-top:1px solid var(--border);}
+.save-query-btn{font-size:11.5px;padding:4px 12px;border-radius:5px;border:1px solid rgba(62,207,142,0.3);background:rgba(62,207,142,0.08);color:var(--green);cursor:pointer;font-family:var(--sans);transition:all 0.12s;display:inline-flex;align-items:center;gap:5px;}
+.save-query-btn:hover{background:rgba(62,207,142,0.16);}
 </style>
 </head>
 <body>
@@ -464,6 +495,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
     <div class="sidebar-item" onclick="showSection('xql','exfil',this)"><span class="sidebar-dot" style="background:#f87171"></span>Exfiltration<span class="sidebar-count">5</span></div>
     <div style="height:1px;background:var(--border);margin:8px 16px;"></div>
     <div class="sidebar-item" onclick="showSection('xql','composer',this)"><span class="sidebar-dot" style="background:#a78bfa"></span>&#9998; Blank query builder</div>
+    <div class="sidebar-item" onclick="showSection('xql','saved',this)"><span class="sidebar-dot" style="background:#3ecf8e"></span>&#9733; Saved queries<span class="sidebar-count" id="saved-count">0</span></div>
   </nav>
   <main class="main" id="main-xql">
     <div class="platform-content active" id="pc-xql">
@@ -1132,6 +1164,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
                 <span class="composer-block-title">&#9654; Live query</span>
                 <div style="display:flex;gap:6px;">
                   <button class="btn btn-primary" onclick="cmpCopy()" style="font-size:11px;padding:4px 10px;">&#8669; Copy</button>
+                  <button class="save-query-btn" onclick="openSaveModal()">&#9733; Save</button>
+                  <button class="btn btn-danger" onclick="composerReset()" style="font-size:11px;padding:4px 10px;">&#10005; Clear</button>
                 </div>
               </div>
               <div class="composer-block-body" style="padding:12px;">
@@ -1208,8 +1242,48 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
         </div><!-- /composer-wrap -->
       </div><!-- /xql-sec-composer -->
 
+      <!-- SAVED QUERIES -->
+      <div class="section" id="xql-sec-saved">
+        <div class="section-header">
+          <h2>&#9733; Saved queries</h2>
+          <p>Queries you've saved from the blank query builder or any card. Click a saved query to load it back into the composer, or copy it directly.</p>
+        </div>
+        <div id="saved-queries-list">
+          <div class="saved-empty" id="saved-empty">No saved queries yet — build a query in the blank query builder and hit Save.</div>
+        </div>
+      </div>
+
     </div>
   </main>
+</div>
+
+<!-- SAVE QUERY MODAL -->
+<div class="modal-overlay" id="save-modal" style="display:none" onclick="if(event.target===this)closeSaveModal()">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span class="modal-title">&#9733; Save query</span>
+      <button class="fqp-close" onclick="closeSaveModal()">&#10005;</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-field">
+        <label class="modal-label">Name</label>
+        <input type="text" id="save-name" placeholder="e.g. Disconnected servers — water tenant" class="modal-input"/>
+      </div>
+      <div class="modal-field">
+        <label class="modal-label">Description (optional)</label>
+        <input type="text" id="save-desc" placeholder="e.g. Endpoints dataset, status contains LOST, 30D timeframe" class="modal-input"/>
+      </div>
+      <div class="modal-field">
+        <label class="modal-label">Query preview</label>
+        <div class="modal-query-preview" id="save-preview"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" onclick="confirmSaveQuery()">&#9733; Save</button>
+      <button class="btn" onclick="closeSaveModal()">Cancel</button>
+      <span class="copy-status" id="save-cs" style="font-size:11.5px;color:var(--green);opacity:0;transition:opacity 0.2s;">Saved!</span>
+    </div>
+  </div>
 </div>
 
 <!-- AQL LAYOUT -->
@@ -3301,6 +3375,7 @@ loadXsiamUrl();
 loadRecentQueries();
 loadFlowNotes();
 loadStepFindings();
+renderSavedQueries();
 
 /* =========================================================
    BLANK QUERY COMPOSER
@@ -3791,6 +3866,129 @@ function composerReset() {
   cmpRender();
 }
 
-</script>
+/* =========================================================
+   SAVED QUERIES
+   ========================================================= */
+var savedQueryPending = '';
+
+function getSavedQueries() {
+  try { return JSON.parse(localStorage.getItem('soc_saved_queries') || '[]'); } catch(e) { return []; }
+}
+
+function putSavedQueries(arr) {
+  try { localStorage.setItem('soc_saved_queries', JSON.stringify(arr)); } catch(e) {}
+}
+
+function openSaveModal() {
+  var out = document.getElementById('cmp-output');
+  if(!out) return;
+  var tmp = document.createElement('div');
+  tmp.innerHTML = out.innerHTML;
+  var q = (tmp.textContent || tmp.innerText || '').trim();
+  if(!q || q.startsWith('//')) { showToast('Build a query first'); return; }
+  savedQueryPending = q;
+  var prev = document.getElementById('save-preview');
+  if(prev) prev.innerHTML = hl(q);
+  document.getElementById('save-name').value = '';
+  document.getElementById('save-desc').value = '';
+  document.getElementById('save-cs').style.opacity = '0';
+  document.getElementById('save-modal').style.display = 'flex';
+  setTimeout(function(){ document.getElementById('save-name').focus(); }, 50);
+}
+
+function closeSaveModal() {
+  document.getElementById('save-modal').style.display = 'none';
+  savedQueryPending = '';
+}
+
+function confirmSaveQuery() {
+  var name = document.getElementById('save-name').value.trim();
+  if(!name) { document.getElementById('save-name').focus(); showToast('Enter a name'); return; }
+  var desc = document.getElementById('save-desc').value.trim();
+  var arr = getSavedQueries();
+  arr.unshift({
+    id: Date.now(),
+    name: name,
+    desc: desc,
+    query: savedQueryPending,
+    saved: new Date().toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'})
+  });
+  putSavedQueries(arr);
+  var cs = document.getElementById('save-cs');
+  if(cs){cs.style.opacity='1';setTimeout(function(){cs.style.opacity='0';closeSaveModal();renderSavedQueries();},1000);}
+  showToast('Query saved');
+  updateSavedCount();
+}
+
+function renderSavedQueries() {
+  var arr = getSavedQueries();
+  var list = document.getElementById('saved-queries-list');
+  var empty = document.getElementById('saved-empty');
+  if(!arr.length) {
+    if(empty) empty.style.display = 'block';
+    if(list) list.innerHTML = '<div class="saved-empty">No saved queries yet — build a query in the blank query builder and hit Save.</div>';
+    return;
+  }
+  list.innerHTML = arr.map(function(q) {
+    return '<div class="saved-card" id="sq-'+q.id+'">'
+      + '<div class="saved-card-header">'
+      + '<div>'
+      + '<div class="saved-card-name">'+escHtml(q.name)+'</div>'
+      + (q.desc ? '<div class="saved-card-desc">'+escHtml(q.desc)+'</div>' : '')
+      + '</div>'
+      + '<span style="font-size:10px;color:var(--text3);flex-shrink:0;">'+q.saved+'</span>'
+      + '</div>'
+      + '<div class="saved-card-query">'+hl(q.query)+'</div>'
+      + '<div class="saved-card-actions">'
+      + '<button class="btn btn-primary" style="font-size:11px;padding:4px 10px;" onclick="copySavedQuery('+q.id+')">&#8669; Copy</button>'
+      + '<button class="saved-load-btn" onclick="loadSavedQuery('+q.id+')">&#8617; Load into composer</button>'
+      + '<button class="saved-delete-btn" onclick="deleteSavedQuery('+q.id+')">&#128465; Delete</button>'
+      + '</div>'
+      + '</div>';
+  }).join('');
+  updateSavedCount();
+}
+
+function escHtml(s) {
+  return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function copySavedQuery(id) {
+  var arr = getSavedQueries();
+  var q = arr.find(function(x){return x.id===id;});
+  if(!q) return;
+  navigator.clipboard.writeText(q.query).then(function(){
+    showToast('Copied: '+q.name);
+    saveToRecent(q.name, q.query);
+  });
+}
+
+function loadSavedQuery(id) {
+  var arr = getSavedQueries();
+  var q = arr.find(function(x){return x.id===id;});
+  if(!q) return;
+  // Just populate the output and switch to composer view — full state restore isn't possible
+  // but the query is editable from there
+  composerReset();
+  document.getElementById('cmp-output').innerHTML = hl(q.query);
+  // Switch to composer section
+  var composerItem = document.querySelector('[onclick*="showSection(\'xql\',\'composer\'"]');
+  if(composerItem) composerItem.click();
+  showToast('Loaded — query shown in preview. Re-build filters to edit.');
+}
+
+function deleteSavedQuery(id) {
+  var arr = getSavedQueries().filter(function(x){return x.id!==id;});
+  putSavedQueries(arr);
+  renderSavedQueries();
+  showToast('Deleted');
+}
+
+function updateSavedCount() {
+  var arr = getSavedQueries();
+  var el = document.getElementById('saved-count');
+  if(el) el.textContent = arr.length;
+}
+
 </body>
 </html>
