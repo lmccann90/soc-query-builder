@@ -326,6 +326,72 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 .toast{position:fixed;bottom:24px;right:24px;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:10px 16px;font-size:13px;color:var(--text);display:flex;align-items:center;gap:8px;transform:translateY(12px);opacity:0;transition:all 0.2s;z-index:999;pointer-events:none;}
 .toast.show{opacity:1;transform:translateY(0);}
 .toast-dot{width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0;}
+
+/* QUERY COMPOSER */
+.composer-wrap{display:flex;gap:20px;align-items:flex-start;}
+.composer-left{flex:1;min-width:0;display:flex;flex-direction:column;gap:14px;}
+.composer-right{width:360px;flex-shrink:0;position:sticky;top:16px;}
+.composer-block{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.composer-block-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--border);background:var(--bg3);}
+.composer-block-title{font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text2);}
+.composer-block-body{padding:14px;}
+.composer-dataset-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;}
+.ds-btn{font-size:11.5px;padding:7px 12px;border-radius:6px;border:1px solid var(--border);background:var(--bg3);color:var(--text2);cursor:pointer;font-family:var(--sans);transition:all 0.12s;text-align:left;line-height:1.3;width:100%;}
+.ds-btn:hover{border-color:var(--border2);color:var(--text);background:var(--bg4);}
+.ds-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(79,142,247,0.1);}
+.ds-btn small{display:block;font-size:10px;color:var(--text3);margin-top:2px;}
+.ds-btn.active small{color:rgba(79,142,247,0.7);}
+.composer-config-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.composer-toggle{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--text2);cursor:pointer;padding:5px 10px;border-radius:6px;border:1px solid var(--border);background:var(--bg3);transition:all 0.12s;user-select:none;}
+.composer-toggle:hover{border-color:var(--border2);color:var(--text);}
+.composer-toggle.on{border-color:var(--accent);color:var(--accent);background:rgba(79,142,247,0.08);}
+.composer-toggle input[type=checkbox]{accent-color:var(--accent);width:13px;height:13px;pointer-events:none;}
+.composer-tf-input{background:var(--bg3);border:1px solid var(--border);border-radius:5px;color:var(--text);font-family:var(--mono);font-size:11.5px;height:26px;padding:0 8px;outline:none;width:42px;}
+.composer-tf-input:focus{border-color:var(--accent);}
+.filter-list{display:flex;flex-direction:column;gap:8px;}
+.filter-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.filter-row select,.filter-row input{background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--mono);font-size:11.5px;height:30px;padding:0 8px;outline:none;transition:border-color 0.12s;}
+.filter-row select:focus,.filter-row input:focus{border-color:var(--accent);}
+.filter-field-select{min-width:190px;}
+.filter-op-select{min-width:90px;}
+.filter-val-input{flex:1;min-width:120px;}
+.filter-remove{width:26px;height:26px;border-radius:4px;border:1px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.1s;line-height:1;}
+.filter-remove:hover{background:rgba(224,82,82,0.1);color:var(--red);border-color:rgba(224,82,82,0.3);}
+.add-filter-btn{font-size:11.5px;padding:5px 12px;border-radius:6px;border:1px solid rgba(79,142,247,0.3);background:rgba(79,142,247,0.06);color:var(--accent);cursor:pointer;font-family:var(--sans);transition:all 0.12s;margin-top:4px;display:inline-flex;align-items:center;gap:5px;}
+.add-filter-btn:hover{background:rgba(79,142,247,0.12);}
+.fields-grid{display:flex;flex-wrap:wrap;gap:6px;}
+.field-chip{font-size:10.5px;padding:4px 9px;border-radius:5px;border:1px solid var(--border);background:var(--bg3);color:var(--text2);cursor:pointer;font-family:var(--mono);transition:all 0.1s;user-select:none;}
+.field-chip:hover{border-color:var(--border2);color:var(--text);}
+.field-chip.on{border-color:var(--green);color:var(--green);background:rgba(62,207,142,0.08);}
+.fields-select-row{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;}
+.fields-mini-btn{font-size:10.5px;padding:3px 8px;border-radius:4px;border:1px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;font-family:var(--sans);transition:all 0.1s;}
+.fields-mini-btn:hover{background:var(--bg3);color:var(--text);}
+.alter-list{display:flex;flex-direction:column;gap:6px;}
+.alter-row{display:flex;gap:6px;align-items:center;}
+.alter-row input,.alter-row select{background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--mono);font-size:11.5px;height:28px;padding:0 8px;outline:none;transition:border-color 0.12s;}
+.alter-row input:focus,.alter-row select:focus{border-color:var(--accent);}
+.alter-alias{width:120px;flex-shrink:0;}
+.alter-expr{flex:1;}
+.sort-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.sort-row select,.sort-row input{background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--mono);font-size:11.5px;height:28px;padding:0 8px;outline:none;}
+.sort-dir-btn{font-size:11px;padding:4px 10px;border-radius:5px;border:1px solid var(--border);background:var(--bg3);color:var(--text2);cursor:pointer;font-family:var(--sans);transition:all 0.1s;}
+.sort-dir-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(79,142,247,0.08);}
+.composer-output{background:var(--bg);border:1px solid var(--border);border-radius:8px;font-family:var(--mono);font-size:11.5px;color:var(--text2);padding:14px 16px;white-space:pre;overflow-x:auto;overflow-y:auto;max-height:460px;line-height:1.8;margin-bottom:12px;min-height:80px;}
+.composer-output-label{font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);margin-bottom:6px;}
+.hints-panel{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.hints-header{padding:10px 14px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text3);}
+.hint-group{padding:10px 14px;border-bottom:1px solid var(--border);}
+.hint-group:last-child{border-bottom:none;}
+.hint-group-title{font-size:11.5px;font-weight:500;color:var(--text);margin-bottom:5px;display:flex;align-items:center;gap:6px;}
+.hint-tag{font-size:9.5px;font-weight:600;padding:2px 5px;border-radius:3px;text-transform:uppercase;letter-spacing:0.04em;}
+.hint-items{display:flex;flex-direction:column;gap:3px;}
+.hint-item{font-size:11px;color:var(--text2);line-height:1.5;}
+.hint-item strong{color:var(--text);font-weight:500;}
+.hint-item code{font-family:var(--mono);font-size:10px;color:var(--accent);background:rgba(79,142,247,0.08);padding:1px 4px;border-radius:3px;}
+.dedup-row{display:flex;align-items:center;gap:8px;}
+.dedup-row select{background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--mono);font-size:11.5px;height:28px;padding:0 8px;outline:none;}
+.composer-reset-btn{font-size:11px;padding:3px 9px;border-radius:4px;border:1px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;font-family:var(--sans);transition:all 0.1s;}
+.composer-reset-btn:hover{color:var(--red);border-color:rgba(224,82,82,0.3);background:rgba(224,82,82,0.06);}
 </style>
 </head>
 <body>
@@ -396,6 +462,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
     <div class="sidebar-item" onclick="showSection('xql','process',this)"><span class="sidebar-dot" style="background:#6ee7b7"></span>Process execution<span class="sidebar-count">7</span></div>
     <div class="sidebar-item" onclick="showSection('xql','admin',this)"><span class="sidebar-dot" style="background:#fca5a5"></span>Admin &amp; privileged<span class="sidebar-count">1</span></div>
     <div class="sidebar-item" onclick="showSection('xql','exfil',this)"><span class="sidebar-dot" style="background:#f87171"></span>Exfiltration<span class="sidebar-count">5</span></div>
+    <div style="height:1px;background:var(--border);margin:8px 16px;"></div>
+    <div class="sidebar-item" onclick="showSection('xql','composer',this)"><span class="sidebar-dot" style="background:#a78bfa"></span>&#9998; Blank query builder</div>
   </nav>
   <main class="main" id="main-xql">
     <div class="platform-content active" id="pc-xql">
@@ -925,6 +993,220 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
         <div class="search-no-results" id="xql-no-results"></div>
       </div>
 
+      <!-- BLANK QUERY COMPOSER -->
+      <div class="section" id="xql-sec-composer">
+        <div class="section-header">
+          <h2>&#9998; Blank query builder</h2>
+          <p>Build any XQL query from scratch — pick a dataset, add filters, choose fields. The query assembles live as you go.</p>
+        </div>
+        <div class="composer-wrap">
+          <div class="composer-left">
+
+            <!-- DATASET -->
+            <div class="composer-block">
+              <div class="composer-block-header">
+                <span class="composer-block-title">1 · Dataset</span>
+                <button class="composer-reset-btn" onclick="composerReset()">&#10005; Reset all</button>
+              </div>
+              <div class="composer-block-body">
+                <div class="composer-dataset-grid" id="cmp-datasets">
+                  <button class="ds-btn" onclick="cmpSetDataset('xdr_data',this)">xdr_data<small>Endpoint telemetry · processes, files, network, registry</small></button>
+                  <button class="ds-btn" onclick="cmpSetDataset('endpoints',this)">endpoints<small>Agent status · last seen, health, version</small></button>
+                  <button class="ds-btn" onclick="cmpSetDataset('panw_ngfw_traffic_raw',this)">panw_ngfw_traffic_raw<small>Firewall traffic logs</small></button>
+                  <button class="ds-btn" onclick="cmpSetDataset('panw_ngfw_threat_raw',this)">panw_ngfw_threat_raw<small>Firewall threat / WildFire logs</small></button>
+                  <button class="ds-btn" onclick="cmpSetDataset('alerts',this)">alerts<small>XSIAM alert records</small></button>
+                  <button class="ds-btn" onclick="cmpSetDataset('management_auditing',this)">management_auditing<small>XDR admin / policy actions</small></button>
+                  <button class="ds-btn" onclick="cmpSetDataset('pan_dss_raw',this)">pan_dss_raw<small>Directory sync · AD computers &amp; users</small></button>
+                  <button class="ds-btn" onclick="cmpSetDataset('xdr_data /* email */',this)">email events<small>xdr_data filtered to email dataset</small></button>
+                </div>
+              </div>
+            </div>
+
+            <!-- CONFIG (timeframe for endpoints-style) -->
+            <div class="composer-block" id="cmp-config-block">
+              <div class="composer-block-header"><span class="composer-block-title">2 · Config &amp; timeframe</span></div>
+              <div class="composer-block-body">
+                <div class="composer-config-row">
+                  <label class="composer-toggle" id="cmp-cfg-tf-toggle" onclick="cmpToggle('cfg-tf')">
+                    <input type="checkbox" id="cmp-chk-cfg-tf"> config timeframe =
+                    <input class="composer-tf-input" type="number" id="cmp-cfg-tf-val" value="30" min="1" max="90" oninput="cmpRender()" onclick="event.stopPropagation()"> D
+                  </label>
+                  <label class="composer-toggle" id="cmp-xql-tr-toggle" onclick="cmpToggle('xql-tr')">
+                    <input type="checkbox" id="cmp-chk-xql-tr"> XQL time range
+                  </label>
+                </div>
+                <div id="cmp-xql-tr-inputs" style="display:none;margin-top:10px;display:none;gap:10px;flex-wrap:wrap;align-items:center;">
+                  <span style="font-size:11px;color:var(--text3);">From</span>
+                  <input type="text" id="cmp-tr-from" placeholder="2026-06-25T00:00:00Z" style="background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--mono);font-size:11.5px;height:28px;padding:0 8px;outline:none;width:185px;" oninput="cmpRender()">
+                  <span style="font-size:11px;color:var(--text3);">To</span>
+                  <input type="text" id="cmp-tr-to" placeholder="2026-06-25T23:59:59Z" style="background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--mono);font-size:11.5px;height:28px;padding:0 8px;outline:none;width:185px;" oninput="cmpRender()">
+                </div>
+              </div>
+            </div>
+
+            <!-- FILTERS -->
+            <div class="composer-block">
+              <div class="composer-block-header">
+                <span class="composer-block-title">3 · Filters</span>
+                <button class="add-filter-btn" onclick="cmpAddFilter()">+ Add filter</button>
+              </div>
+              <div class="composer-block-body">
+                <div class="filter-list" id="cmp-filter-list">
+                  <div style="font-size:12px;color:var(--text3);">No filters yet — click &ldquo;Add filter&rdquo; to start.</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- FIELDS -->
+            <div class="composer-block">
+              <div class="composer-block-header"><span class="composer-block-title">4 · Fields (output columns)</span></div>
+              <div class="composer-block-body">
+                <div class="fields-select-row">
+                  <button class="fields-mini-btn" onclick="cmpFieldsAll(true)">Select all</button>
+                  <button class="fields-mini-btn" onclick="cmpFieldsAll(false)">Clear all</button>
+                  <button class="fields-mini-btn" onclick="cmpFieldsPreset('common')">Common</button>
+                  <button class="fields-mini-btn" onclick="cmpFieldsPreset('network')">Network</button>
+                  <button class="fields-mini-btn" onclick="cmpFieldsPreset('process')">Process</button>
+                  <button class="fields-mini-btn" onclick="cmpFieldsPreset('file')">File</button>
+                  <button class="fields-mini-btn" onclick="cmpFieldsPreset('identity')">Identity</button>
+                </div>
+                <div class="fields-grid" id="cmp-fields-grid"></div>
+              </div>
+            </div>
+
+            <!-- ALTER (optional) -->
+            <div class="composer-block">
+              <div class="composer-block-header">
+                <span class="composer-block-title">5 · Alter (optional)</span>
+                <button class="add-filter-btn" onclick="cmpAddAlter()">+ Add alter</button>
+              </div>
+              <div class="composer-block-body">
+                <div class="alter-list" id="cmp-alter-list">
+                  <div style="font-size:12px;color:var(--text3);">Optional — extract JSON fields (e.g. from evtlog_data_fields) or compute values.</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- DEDUP -->
+            <div class="composer-block">
+              <div class="composer-block-header"><span class="composer-block-title">6 · Dedup (optional)</span></div>
+              <div class="composer-block-body">
+                <div class="dedup-row">
+                  <label class="composer-toggle" id="cmp-dedup-toggle" onclick="cmpToggle('dedup')">
+                    <input type="checkbox" id="cmp-chk-dedup"> dedup by field
+                  </label>
+                  <select id="cmp-dedup-field" onchange="cmpRender()" style="display:none">
+                    <option value="">— pick field —</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- SORT & LIMIT -->
+            <div class="composer-block">
+              <div class="composer-block-header"><span class="composer-block-title">7 · Sort &amp; limit</span></div>
+              <div class="composer-block-body">
+                <div class="sort-row">
+                  <span style="font-size:12px;color:var(--text3);">Sort by</span>
+                  <select id="cmp-sort-field" onchange="cmpRender()">
+                    <option value="_time">_time</option>
+                    <option value="agent_hostname">agent_hostname</option>
+                    <option value="endpoint_name">endpoint_name</option>
+                    <option value="alert_count">alert_count</option>
+                    <option value="">— none —</option>
+                  </select>
+                  <button class="sort-dir-btn active" id="cmp-sort-desc" onclick="cmpSortDir('desc')">&#8595; desc</button>
+                  <button class="sort-dir-btn" id="cmp-sort-asc" onclick="cmpSortDir('asc')">&#8593; asc</button>
+                  <span style="font-size:12px;color:var(--text3);margin-left:8px;">Limit</span>
+                  <input type="number" id="cmp-limit" placeholder="200" min="1" style="width:72px;" oninput="cmpRender()">
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /composer-left -->
+
+          <div class="composer-right">
+            <!-- LIVE OUTPUT -->
+            <div class="composer-block" style="margin-bottom:14px;">
+              <div class="composer-block-header">
+                <span class="composer-block-title">&#9654; Live query</span>
+                <div style="display:flex;gap:6px;">
+                  <button class="btn btn-primary" onclick="cmpCopy()" style="font-size:11px;padding:4px 10px;">&#8669; Copy</button>
+                </div>
+              </div>
+              <div class="composer-block-body" style="padding:12px;">
+                <div class="composer-output" id="cmp-output">// Select a dataset to start building your query</div>
+                <span class="copy-status" id="cmp-cs" style="font-size:11.5px;color:var(--green);opacity:0;transition:opacity 0.2s;">Copied</span>
+              </div>
+            </div>
+
+            <!-- HINTS PANEL -->
+            <div class="hints-panel">
+              <div class="hints-header">&#128161; Tips by alert type</div>
+              <div class="hint-group">
+                <div class="hint-group-title"><span class="hint-tag" style="background:rgba(224,82,82,0.15);color:#e05252;">Malware / EDR</span></div>
+                <div class="hint-items">
+                  <div class="hint-item"><strong>Dataset:</strong> <code>xdr_data</code></div>
+                  <div class="hint-item"><strong>Filter:</strong> <code>event_type = ENUM.PROCESS</code> or <code>ENUM.FILE</code></div>
+                  <div class="hint-item"><strong>Key fields:</strong> <code>actor_process_image_name</code>, <code>actor_process_command_line</code>, <code>action_file_sha256</code>, <code>action_file_path</code></div>
+                  <div class="hint-item"><strong>Tip:</strong> Add hostname filter first, sort asc _time to see execution chain in order</div>
+                </div>
+              </div>
+              <div class="hint-group">
+                <div class="hint-group-title"><span class="hint-tag" style="background:rgba(245,166,35,0.15);color:#f5a623;">Firewall / Network</span></div>
+                <div class="hint-items">
+                  <div class="hint-item"><strong>Dataset:</strong> <code>panw_ngfw_traffic_raw</code></div>
+                  <div class="hint-item"><strong>Key fields:</strong> <code>source_ip</code>, <code>dest_ip</code>, <code>dest_port</code>, <code>app</code>, <code>action</code>, <code>bytes_sent</code>, <code>session_end_reason</code></div>
+                  <div class="hint-item"><strong>Tip:</strong> <code>session_end_reason = aged-out</code> = active session, <code>deny</code> = blocked</div>
+                </div>
+              </div>
+              <div class="hint-group">
+                <div class="hint-group-title"><span class="hint-tag" style="background:rgba(167,139,250,0.15);color:#a78bfa;">Identity / Logon</span></div>
+                <div class="hint-items">
+                  <div class="hint-item"><strong>Dataset:</strong> <code>xdr_data</code></div>
+                  <div class="hint-item"><strong>Filter:</strong> <code>event_type = EVENT_LOG</code> + <code>action_evtlog_event_id = 4624</code></div>
+                  <div class="hint-item"><strong>Key fields:</strong> <code>actor_effective_username</code>, <code>action_evtlog_data_fields</code></div>
+                  <div class="hint-item"><strong>Tip:</strong> Use alter to pull <code>LogonType</code>, <code>IpAddress</code> from evtlog_data_fields JSON</div>
+                </div>
+              </div>
+              <div class="hint-group">
+                <div class="hint-group-title"><span class="hint-tag" style="background:rgba(62,207,142,0.15);color:#3ecf8e;">Endpoint health</span></div>
+                <div class="hint-items">
+                  <div class="hint-item"><strong>Dataset:</strong> <code>endpoints</code></div>
+                  <div class="hint-item"><strong>Filter:</strong> use <code>contains</code> not <code>=</code> for <code>endpoint_status</code> / <code>endpoint_type</code> — tenant quirk</div>
+                  <div class="hint-item"><strong>Key fields:</strong> <code>endpoint_name</code>, <code>endpoint_status</code>, <code>last_seen</code>, <code>operating_system</code>, <code>agent_version</code></div>
+                  <div class="hint-item"><strong>Tip:</strong> Add <code>config timeframe = 30D</code> for protection pause queries</div>
+                </div>
+              </div>
+              <div class="hint-group">
+                <div class="hint-group-title"><span class="hint-tag" style="background:rgba(248,113,113,0.15);color:#f87171;">Lateral movement</span></div>
+                <div class="hint-items">
+                  <div class="hint-item"><strong>Dataset:</strong> <code>xdr_data</code></div>
+                  <div class="hint-item"><strong>Filter:</strong> <code>event_type = ENUM.NETWORK</code> + <code>action_remote_port = 3389</code> (RDP) or <code>445</code> (SMB)</div>
+                  <div class="hint-item"><strong>Key fields:</strong> <code>agent_hostname</code>, <code>action_remote_ip</code>, <code>actor_process_image_name</code></div>
+                </div>
+              </div>
+              <div class="hint-group">
+                <div class="hint-group-title"><span class="hint-tag" style="background:rgba(79,142,247,0.15);color:#4f8ef7;">C2 / Beaconing</span></div>
+                <div class="hint-items">
+                  <div class="hint-item"><strong>Dataset:</strong> <code>xdr_data</code></div>
+                  <div class="hint-item"><strong>Filter:</strong> <code>event_type = ENUM.NETWORK</code> + remote IP or domain keyword</div>
+                  <div class="hint-item"><strong>Key fields:</strong> <code>action_remote_ip</code>, <code>action_external_hostname</code>, <code>dns_query_name</code>, <code>action_remote_port</code></div>
+                  <div class="hint-item"><strong>Tip:</strong> Sort asc _time to see beacon intervals</div>
+                </div>
+              </div>
+              <div class="hint-group">
+                <div class="hint-group-title"><span class="hint-tag" style="background:rgba(245,166,35,0.15);color:#fcd34d;">Hash / IOC hunt</span></div>
+                <div class="hint-items">
+                  <div class="hint-item"><strong>Dataset:</strong> <code>xdr_data</code></div>
+                  <div class="hint-item"><strong>Filter:</strong> <code>action_file_sha256 = "HASH"</code> or <code>actor_process_image_sha256</code></div>
+                  <div class="hint-item"><strong>Tip:</strong> Leave hostname blank for fleet-wide hunt; dedup by <code>agent_hostname</code> to see spread</div>
+                </div>
+              </div>
+            </div><!-- /hints -->
+          </div><!-- /composer-right -->
+        </div><!-- /composer-wrap -->
+      </div><!-- /xql-sec-composer -->
 
     </div>
   </main>
@@ -2094,23 +2376,23 @@ var B={
     var procs=gvMulti('dll0-proc','PROCESS-NAME.exe');
     var hf=hosts.length>1?'| filter agent_hostname in ('+hosts.map(function(v){return'\"'+v+'\"';}).join(', ')+')':'| filter agent_hostname = \"'+hosts[0]+'\"';
     var pf=procs.length>1?'| filter actor_process_image_name in ('+procs.map(function(v){return'\"'+v+'\"';}).join(', ')+')':'| filter actor_process_image_name = \"'+procs[0]+'\"';
-    return 'dataset = xdr_data\n'+hf+'\n  and event_type = ENUM.LOAD_IMAGE\n'+pf+'\n| fields _time, agent_hostname, actor_process_image_name,\n         action_file_path, action_file_name,\n         action_module_sha256, actor_process_image_sha256\n| sort _time asc\n| limit '+gv('dll0-limit','100');},
+    return 'dataset = xdr_data\n'+hf+'\n| filter event_type = ENUM.LOAD_IMAGE\n'+pf+'\n| fields _time, agent_hostname, actor_process_image_name,\n         action_file_path, action_file_name,\n         action_module_sha256, actor_process_image_sha256\n| sort _time asc\n| limit '+gv('dll0-limit','100');},
   'iso0':function(){
     var hosts=gvMulti('iso0-host','HOSTNAME');
     var hf=hosts.length>1?'| filter agent_hostname in ('+hosts.map(function(v){return'\"'+v+'\"';}).join(', ')+')':'| filter agent_hostname = \"'+hosts[0]+'\"';
-    return 'dataset = xdr_data\n'+hf+'\n  and event_type = ENUM.PROCESS\n  and (actor_process_image_path ~= \"^[D-Fd-f]:\\\\\"\n   or action_process_image_path ~= \"^[D-Fd-f]:\\\\\"  )\n| fields _time, agent_hostname, actor_process_image_name,\n         actor_process_image_path, action_process_image_name,\n         action_process_image_path, actor_process_cmd_line,\n         action_process_image_sha256\n| sort _time asc\n| limit '+gv('iso0-limit','100');},
+    return 'dataset = xdr_data\n'+hf+'\n| filter event_type = ENUM.PROCESS\n| filter (actor_process_image_path ~= \"^[D-Fd-f]:\\\\\"\n   or action_process_image_path ~= \"^[D-Fd-f]:\\\\\"  )\n| fields _time, agent_hostname, actor_process_image_name,\n         actor_process_image_path, action_process_image_name,\n         action_process_image_path, actor_process_cmd_line,\n         action_process_image_sha256\n| sort _time asc\n| limit '+gv('iso0-limit','100');},
   'net0':function(){
     var hosts=gvMulti('net0-host','HOSTNAME');
     var procs=gvMulti('net0-proc','PROCESS-NAME.exe');
     var hf=hosts.length>1?'| filter agent_hostname in ('+hosts.map(function(v){return'\"'+v+'\"';}).join(', ')+')':'| filter agent_hostname = \"'+hosts[0]+'\"';
     var pf=procs.length>1?'| filter actor_process_image_name in ('+procs.map(function(v){return'\"'+v+'\"';}).join(', ')+')':'| filter actor_process_image_name = \"'+procs[0]+'\"';
-    return 'dataset = xdr_data\n'+hf+'\n  and '+pf.replace('| filter ','')+'\n  and event_type = ENUM.NETWORK\n| fields _time, actor_process_image_name, event_type,\n         action_remote_ip, action_remote_port,\n         action_local_ip, dns_query_name\n| sort _time asc\n| limit '+gv('net0-limit','100');},
+    return 'dataset = xdr_data\n'+hf+'\n'+pf+'\n| filter event_type = ENUM.NETWORK\n| fields _time, actor_process_image_name, event_type,\n         action_remote_ip, action_remote_port,\n         action_local_ip, dns_query_name\n| sort _time asc\n| limit '+gv('net0-limit','100');},
   'cmd0':function(){
     var hosts=gvMulti('cmd0-host','HOSTNAME');
     var procs=gvMulti('cmd0-proc','PROCESS-NAME.exe');
     var hf=hosts.length>1?'| filter agent_hostname in ('+hosts.map(function(v){return'\"'+v+'\"';}).join(', ')+')':'| filter agent_hostname = \"'+hosts[0]+'\"';
     var pf=procs.length>1?'| filter actor_process_image_name in ('+procs.map(function(v){return'\"'+v+'\"';}).join(', ')+')':'| filter actor_process_image_name = \"'+procs[0]+'\"';
-    return 'dataset = xdr_data\n'+hf+'\n  and '+pf.replace('| filter ','')+'\n  and event_type = ENUM.PROCESS\n| fields _time, agent_hostname, actor_process_image_name,\n         actor_process_cmd_line, action_process_image_name,\n         action_process_cmd_line, actor_process_image_sha256,\n         os_actor_process_image_name\n| sort _time asc\n| limit '+gv('cmd0-limit','100');},
+    return 'dataset = xdr_data\n'+hf+'\n'+pf+'\n| filter event_type = ENUM.PROCESS\n| fields _time, agent_hostname, actor_process_image_name,\n         actor_process_cmd_line, action_process_image_name,\n         action_process_cmd_line, actor_process_image_sha256,\n         os_actor_process_image_name\n| sort _time asc\n| limit '+gv('cmd0-limit','100');},
   'a0':function(){return 'dataset = pan_dss_raw\n| filter admin_count = "1"\n| dedup sam_account_name\n| view column order = populated';},
   'fw0':function(){var _h=gvMulti('fw0-fname','FILENAME');var _f=_h.length>1?'| filter action_file_name in ('+_h.map(function(v){return'"'+v+'"';}).join(', ')+')':'| filter action_file_name = "'+_h[0]+'"';return 'dataset = xdr_data\n'+_f+'\n| fields _time, agent_hostname, actor_process_image_name,\n         action_file_name, action_file_path,\n         action_file_sha256\n| dedup agent_hostname\n| sort desc _time\n| limit '+gv('fw0-limit','100');},
   'fw1':function(){var _h=gvMulti('fw1-fname','FILENAME');var _fline=_h.length>1?'| filter action_file_name in ('+_h.map(function(v){return'"'+v+'"';}).join(', ')+')\n    or actor_process_image_name in ('+_h.map(function(v){return'"'+v+'"';}).join(', ')+')':'| filter action_file_name = "'+_h[0]+'"\n    or actor_process_image_name = "'+_h[0]+'"';return 'dataset = xdr_data\n'+_fline+'\n| fields _time, agent_hostname, actor_process_image_name,\n         action_process_image_name,\n         action_process_image_command_line,\n         action_file_name, action_file_path\n| sort desc _time\n| limit 200';},
@@ -3019,6 +3301,441 @@ loadXsiamUrl();
 loadRecentQueries();
 loadFlowNotes();
 loadStepFindings();
+
+/* =========================================================
+   BLANK QUERY COMPOSER
+   ========================================================= */
+var cmpState = {
+  dataset: '',
+  cfgTf: false,
+  cfgTfVal: 30,
+  xqlTr: false,
+  trFrom: '',
+  trTo: '',
+  filters: [],
+  fields: [],
+  alters: [],
+  dedup: false,
+  dedupField: '',
+  sortField: '_time',
+  sortDir: 'desc',
+  limit: ''
+};
+var cmpFilterCount = 0;
+var cmpAlterCount = 0;
+
+// All known fields grouped by dataset
+var CMP_FIELDS = {
+  xdr_data: [
+    '_time','agent_hostname','actor_effective_username',
+    'actor_process_image_name','actor_process_command_line','actor_process_image_path',
+    'actor_process_image_sha256','actor_process_instance_id',
+    'action_process_image_name','action_process_image_path','action_process_cmd_line',
+    'action_process_image_sha256','action_file_name','action_file_path',
+    'action_file_sha256','action_file_wildfire_verdict','action_file_size',
+    'action_remote_ip','action_remote_port','action_local_ip','action_local_port',
+    'action_external_hostname','dns_query_name',
+    'event_type','event_sub_type',
+    'action_evtlog_event_id','action_evtlog_data_fields',
+    'causality_actor_process_image_name','os_actor_process_image_name',
+    'action_module_sha256'
+  ],
+  endpoints: [
+    'endpoint_name','endpoint_id','endpoint_status','endpoint_type',
+    'last_seen','agent_version','install_date','ip_address',
+    'operating_system','domain','manual_protection_pause',
+    'assigned_prevention_policy'
+  ],
+  panw_ngfw_traffic_raw: [
+    '_time','source_ip','dest_ip','dest_port','source_port',
+    'app','action','protocol','session_end_reason',
+    'bytes_sent','bytes_received','rule_matched',
+    '_reporting_device_name'
+  ],
+  panw_ngfw_threat_raw: [
+    '_time','file_name','sub_type','verdict','source_ip','dest_ip',
+    'source_user','partial_hash','app','threat_category',
+    'threat_name_firewall','_reporting_device_name'
+  ],
+  alerts: [
+    '_time','host_name','alert_name','alert_id','severity',
+    'category','detection_timestamp','actor_process_image_name',
+    'source_ip','dest_ip','username','mitre_tactic','mitre_technique'
+  ],
+  management_auditing: [
+    '_time','description','audit_owner_name','audit_owner_email',
+    'resource','sub_type','result','timestamp'
+  ],
+  pan_dss_raw: [
+    'name','domain_name','type','sam_account_name','admin_count',
+    'member_of','last_logon','last_logon_timestamp'
+  ]
+};
+// email is xdr_data fields
+CMP_FIELDS['xdr_data /* email */'] = CMP_FIELDS.xdr_data;
+
+var CMP_FILTER_FIELDS = {
+  xdr_data: [
+    {v:'agent_hostname', l:'agent_hostname'},
+    {v:'actor_effective_username', l:'actor_effective_username'},
+    {v:'actor_process_image_name', l:'actor_process_image_name'},
+    {v:'actor_process_command_line', l:'actor_process_command_line'},
+    {v:'actor_process_image_path', l:'actor_process_image_path'},
+    {v:'actor_process_image_sha256', l:'actor_process_image_sha256'},
+    {v:'action_process_image_name', l:'action_process_image_name'},
+    {v:'action_file_name', l:'action_file_name'},
+    {v:'action_file_path', l:'action_file_path'},
+    {v:'action_file_sha256', l:'action_file_sha256 (hash)'},
+    {v:'action_file_wildfire_verdict', l:'action_file_wildfire_verdict'},
+    {v:'action_remote_ip', l:'action_remote_ip'},
+    {v:'action_remote_port', l:'action_remote_port'},
+    {v:'action_local_ip', l:'action_local_ip'},
+    {v:'action_external_hostname', l:'action_external_hostname'},
+    {v:'dns_query_name', l:'dns_query_name'},
+    {v:'event_type', l:'event_type (ENUM.PROCESS/FILE/NETWORK/LOAD_IMAGE/EVENT_LOG)'},
+    {v:'action_evtlog_event_id', l:'action_evtlog_event_id (Windows event ID)'},
+    {v:'causality_actor_process_image_name', l:'causality_actor_process_image_name (parent)'}
+  ],
+  endpoints: [
+    {v:'endpoint_name', l:'endpoint_name'},
+    {v:'endpoint_status', l:'endpoint_status (use contains)'},
+    {v:'endpoint_type', l:'endpoint_type (use contains)'},
+    {v:'ip_address', l:'ip_address'},
+    {v:'operating_system', l:'operating_system'},
+    {v:'domain', l:'domain'},
+    {v:'manual_protection_pause', l:'manual_protection_pause'},
+    {v:'agent_version', l:'agent_version'},
+    {v:'assigned_prevention_policy', l:'assigned_prevention_policy'}
+  ],
+  panw_ngfw_traffic_raw: [
+    {v:'source_ip', l:'source_ip'},
+    {v:'dest_ip', l:'dest_ip'},
+    {v:'dest_port', l:'dest_port'},
+    {v:'app', l:'app'},
+    {v:'action', l:'action (allow/deny)'},
+    {v:'protocol', l:'protocol'},
+    {v:'session_end_reason', l:'session_end_reason'},
+    {v:'_reporting_device_name', l:'_reporting_device_name'}
+  ],
+  panw_ngfw_threat_raw: [
+    {v:'file_name', l:'file_name'},
+    {v:'verdict', l:'verdict'},
+    {v:'source_ip', l:'source_ip'},
+    {v:'dest_ip', l:'dest_ip'},
+    {v:'source_user', l:'source_user'},
+    {v:'partial_hash', l:'partial_hash'},
+    {v:'threat_category', l:'threat_category'},
+    {v:'threat_name_firewall', l:'threat_name_firewall'}
+  ],
+  alerts: [
+    {v:'host_name', l:'host_name'},
+    {v:'alert_name', l:'alert_name'},
+    {v:'severity', l:'severity'},
+    {v:'category', l:'category'},
+    {v:'mitre_tactic', l:'mitre_tactic'},
+    {v:'actor_process_image_name', l:'actor_process_image_name'}
+  ],
+  management_auditing: [
+    {v:'description', l:'description'},
+    {v:'audit_owner_name', l:'audit_owner_name'},
+    {v:'resource', l:'resource'},
+    {v:'sub_type', l:'sub_type'},
+    {v:'result', l:'result'}
+  ],
+  pan_dss_raw: [
+    {v:'name', l:'name (computer name)'},
+    {v:'domain_name', l:'domain_name'},
+    {v:'type', l:'type (computer/user)'},
+    {v:'sam_account_name', l:'sam_account_name'},
+    {v:'admin_count', l:'admin_count'}
+  ]
+};
+CMP_FILTER_FIELDS['xdr_data /* email */'] = CMP_FILTER_FIELDS.xdr_data;
+
+var CMP_PRESETS = {
+  common:   ['_time','agent_hostname','actor_effective_username','actor_process_image_name','event_type'],
+  network:  ['_time','agent_hostname','actor_process_image_name','action_remote_ip','action_remote_port','action_local_ip','action_external_hostname','dns_query_name'],
+  process:  ['_time','agent_hostname','actor_effective_username','actor_process_image_name','actor_process_command_line','actor_process_image_sha256','causality_actor_process_image_name'],
+  file:     ['_time','agent_hostname','actor_process_image_name','action_file_name','action_file_path','action_file_sha256','action_file_wildfire_verdict'],
+  identity: ['_time','agent_hostname','actor_effective_username','action_evtlog_event_id','action_evtlog_data_fields']
+};
+
+function cmpSetDataset(ds, btn) {
+  cmpState.dataset = ds;
+  document.querySelectorAll('.ds-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  cmpState.fields = [];
+  cmpState.filters = [];
+  cmpFilterCount = 0;
+  cmpAlterCount = 0;
+  cmpState.alters = [];
+  document.getElementById('cmp-filter-list').innerHTML = '<div style="font-size:12px;color:var(--text3);">No filters yet — click &ldquo;Add filter&rdquo; to start.</div>';
+  document.getElementById('cmp-alter-list').innerHTML = '<div style="font-size:12px;color:var(--text3);">Optional — extract JSON fields (e.g. from evtlog_data_fields) or compute values.</div>';
+  cmpBuildFieldsGrid();
+  cmpUpdateDedupSelect();
+  cmpUpdateSortSelect();
+  cmpRender();
+}
+
+function cmpBuildFieldsGrid() {
+  var ds = cmpState.dataset;
+  var fields = CMP_FIELDS[ds] || [];
+  var grid = document.getElementById('cmp-fields-grid');
+  if(!fields.length){grid.innerHTML='<span style="font-size:12px;color:var(--text3);">Select a dataset first.</span>';return;}
+  grid.innerHTML = fields.map(function(f){
+    var on = cmpState.fields.indexOf(f) > -1;
+    return '<span class="field-chip'+(on?' on':'')+'" onclick="cmpToggleField(\''+f+'\',this)">'+f+'</span>';
+  }).join('');
+}
+
+function cmpToggleField(f, el) {
+  var idx = cmpState.fields.indexOf(f);
+  if(idx > -1){cmpState.fields.splice(idx,1);el.classList.remove('on');}
+  else{cmpState.fields.push(f);el.classList.add('on');}
+  cmpRender();
+}
+
+function cmpFieldsAll(on) {
+  var ds = cmpState.dataset;
+  cmpState.fields = on ? (CMP_FIELDS[ds]||[]).slice() : [];
+  cmpBuildFieldsGrid();
+  cmpRender();
+}
+
+function cmpFieldsPreset(key) {
+  var ds = cmpState.dataset;
+  var available = CMP_FIELDS[ds] || [];
+  var preset = CMP_PRESETS[key] || [];
+  preset.forEach(function(f){
+    if(available.indexOf(f) > -1 && cmpState.fields.indexOf(f) === -1) cmpState.fields.push(f);
+  });
+  cmpBuildFieldsGrid();
+  cmpRender();
+}
+
+function cmpToggle(key) {
+  if(key === 'cfg-tf') {
+    cmpState.cfgTf = !cmpState.cfgTf;
+    var t = document.getElementById('cmp-cfg-tf-toggle');
+    var chk = document.getElementById('cmp-chk-cfg-tf');
+    if(t) t.classList.toggle('on', cmpState.cfgTf);
+    if(chk) chk.checked = cmpState.cfgTf;
+  } else if(key === 'xql-tr') {
+    cmpState.xqlTr = !cmpState.xqlTr;
+    var t2 = document.getElementById('cmp-xql-tr-toggle');
+    var chk2 = document.getElementById('cmp-chk-xql-tr');
+    var inp = document.getElementById('cmp-xql-tr-inputs');
+    if(t2) t2.classList.toggle('on', cmpState.xqlTr);
+    if(chk2) chk2.checked = cmpState.xqlTr;
+    if(inp) inp.style.display = cmpState.xqlTr ? 'flex' : 'none';
+  } else if(key === 'dedup') {
+    cmpState.dedup = !cmpState.dedup;
+    var t3 = document.getElementById('cmp-dedup-toggle');
+    var chk3 = document.getElementById('cmp-chk-dedup');
+    var sel = document.getElementById('cmp-dedup-field');
+    if(t3) t3.classList.toggle('on', cmpState.dedup);
+    if(chk3) chk3.checked = cmpState.dedup;
+    if(sel) sel.style.display = cmpState.dedup ? 'block' : 'none';
+  }
+  cmpRender();
+}
+
+function cmpAddFilter() {
+  var ds = cmpState.dataset;
+  var fieldOpts = CMP_FILTER_FIELDS[ds] || [];
+  if(!ds) { showToast('Pick a dataset first'); return; }
+  var id = 'cmpf' + (cmpFilterCount++);
+  var list = document.getElementById('cmp-filter-list');
+  // Clear placeholder
+  var placeholder = list.querySelector('div[style]');
+  if(placeholder) placeholder.remove();
+  var row = document.createElement('div');
+  row.className = 'filter-row';
+  row.id = id;
+  var fieldSel = '<select class="filter-field-select" id="'+id+'-field" onchange="cmpRender()">'
+    + fieldOpts.map(function(f){return '<option value="'+f.v+'">'+f.l+'</option>';}).join('')
+    + '<option value="__custom__">— custom field —</option>'
+    + '</select>';
+  var opSel = '<select class="filter-op-select" id="'+id+'-op" onchange="cmpRender()">'
+    + ['contains','=','!=','~=','in()','not contains'].map(function(o){return '<option>'+o+'</option>';}).join('')
+    + '</select>';
+  row.innerHTML = fieldSel + opSel
+    + '<input class="filter-val-input" type="text" id="'+id+'-val" placeholder="value" oninput="cmpRender()"/>'
+    + '<button class="filter-remove" onclick="document.getElementById(\''+id+'\').remove();cmpRender();" title="Remove">&#215;</button>';
+  list.appendChild(row);
+  cmpState.filters.push(id);
+  cmpRender();
+}
+
+function cmpAddAlter() {
+  var id = 'cmpa' + (cmpAlterCount++);
+  var list = document.getElementById('cmp-alter-list');
+  var placeholder = list.querySelector('div[style]');
+  if(placeholder) placeholder.remove();
+  var row = document.createElement('div');
+  row.className = 'alter-row';
+  row.id = id;
+  row.innerHTML = '<input class="alter-alias" type="text" id="'+id+'-alias" placeholder="FieldAlias" oninput="cmpRender()"/>'
+    + '<span style="font-size:11px;color:var(--text3);flex-shrink:0;">=</span>'
+    + '<input class="alter-expr" type="text" id="'+id+'-expr" placeholder="json_extract(action_evtlog_data_fields, \'$.TargetUserName\')" oninput="cmpRender()"/>'
+    + '<button class="filter-remove" onclick="document.getElementById(\''+id+'\').remove();cmpRender();" title="Remove">&#215;</button>';
+  list.appendChild(row);
+  cmpState.alters.push(id);
+  cmpRender();
+}
+
+function cmpUpdateDedupSelect() {
+  var ds = cmpState.dataset;
+  var fields = CMP_FIELDS[ds] || [];
+  var sel = document.getElementById('cmp-dedup-field');
+  if(!sel) return;
+  sel.innerHTML = '<option value="">— pick field —</option>'
+    + fields.map(function(f){return '<option value="'+f+'">'+f+'</option>';}).join('');
+}
+
+function cmpUpdateSortSelect() {
+  var ds = cmpState.dataset;
+  var fields = CMP_FIELDS[ds] || [];
+  var sel = document.getElementById('cmp-sort-field');
+  if(!sel) return;
+  sel.innerHTML = fields.map(function(f){return '<option value="'+f+'">'+f+'</option>';}).join('')
+    + '<option value="">— none —</option>';
+  // Default _time if available
+  if(fields.indexOf('_time') > -1) sel.value = '_time';
+}
+
+function cmpSortDir(d) {
+  cmpState.sortDir = d;
+  document.getElementById('cmp-sort-desc').classList.toggle('active', d==='desc');
+  document.getElementById('cmp-sort-asc').classList.toggle('active', d==='asc');
+  cmpRender();
+}
+
+function cmpRender() {
+  var ds = cmpState.dataset;
+  if(!ds){
+    document.getElementById('cmp-output').innerHTML = hl('// Select a dataset to start building your query');
+    return;
+  }
+  var lines = [];
+  // config timeframe
+  var cfgTfVal = document.getElementById('cmp-cfg-tf-val');
+  if(cmpState.cfgTf && cfgTfVal) lines.push('config timeframe = '+cfgTfVal.value+'D');
+  // dataset
+  lines.push('dataset = '+ds);
+  // XQL time range
+  var trFrom = document.getElementById('cmp-tr-from');
+  var trTo = document.getElementById('cmp-tr-to');
+  if(cmpState.xqlTr && trFrom && trTo && (trFrom.value || trTo.value)) {
+    var tf='', tt='';
+    if(trFrom.value) tf=trFrom.value; else tf='YYYY-MM-DDTHH:MM:SSZ';
+    if(trTo.value) tt=trTo.value; else tt='YYYY-MM-DDTHH:MM:SSZ';
+    lines.push('| filter _time >= "'+tf+'"');
+    lines.push('    and _time <= "'+tt+'"');
+  }
+  // filters
+  var filterEls = document.getElementById('cmp-filter-list').querySelectorAll('.filter-row');
+  filterEls.forEach(function(row){
+    var fid = row.id;
+    var fieldEl = document.getElementById(fid+'-field');
+    var opEl = document.getElementById(fid+'-op');
+    var valEl = document.getElementById(fid+'-val');
+    if(!fieldEl||!opEl||!valEl) return;
+    var field = fieldEl.value==='__custom__' ? valEl.getAttribute('data-custom')||'FIELD' : fieldEl.value;
+    var op = opEl.value;
+    var val = valEl.value || 'VALUE';
+    var line;
+    if(op === 'in()') {
+      var parts = val.split(',').map(function(v){return '"'+v.trim()+'"';});
+      line = '| filter '+field+' in ('+parts.join(', ')+')';
+    } else if(op === 'contains' || op === 'not contains') {
+      line = '| filter '+field+' '+op+' "'+val+'"';
+    } else if(op === '~=') {
+      line = '| filter '+field+' ~= "(?i)'+val+'"';
+    } else {
+      // = or !=
+      var numVal = !isNaN(val) && val !== '';
+      line = '| filter '+field+' '+op+' '+(numVal ? val : '"'+val+'"');
+    }
+    lines.push(line);
+  });
+  // alters
+  var alterEls = document.getElementById('cmp-alter-list').querySelectorAll('.alter-row');
+  alterEls.forEach(function(row){
+    var aid = row.id;
+    var aliasEl = document.getElementById(aid+'-alias');
+    var exprEl = document.getElementById(aid+'-expr');
+    if(!aliasEl||!exprEl) return;
+    var alias = aliasEl.value || 'FieldAlias';
+    var expr = exprEl.value || 'EXPRESSION';
+    lines.push('| alter '+alias+' = '+expr);
+  });
+  // fields
+  if(cmpState.fields.length) {
+    // Format nicely across lines
+    var flds = cmpState.fields.slice();
+    if(flds.length <= 3) {
+      lines.push('| fields '+flds.join(', '));
+    } else {
+      lines.push('| fields '+flds[0]+',');
+      for(var i=1;i<flds.length;i++){
+        lines.push('         '+flds[i]+(i<flds.length-1?',':''));
+      }
+    }
+  }
+  // dedup
+  var dedupSel = document.getElementById('cmp-dedup-field');
+  if(cmpState.dedup && dedupSel && dedupSel.value) {
+    lines.push('| dedup '+dedupSel.value);
+  }
+  // sort
+  var sortSel = document.getElementById('cmp-sort-field');
+  var sortField = sortSel ? sortSel.value : '_time';
+  if(sortField) lines.push('| sort '+cmpState.sortDir+' '+sortField);
+  // limit
+  var limitEl = document.getElementById('cmp-limit');
+  var limitVal = limitEl ? limitEl.value.trim() : '';
+  if(limitVal) lines.push('| limit '+limitVal);
+
+  document.getElementById('cmp-output').innerHTML = hl(lines.join('\n'));
+}
+
+function cmpCopy() {
+  var out = document.getElementById('cmp-output');
+  if(!out) return;
+  // strip HTML tags to get plain text
+  var tmp = document.createElement('div');
+  tmp.innerHTML = out.innerHTML;
+  var q = tmp.textContent || tmp.innerText || '';
+  navigator.clipboard.writeText(q.trim()).then(function(){
+    var cs = document.getElementById('cmp-cs');
+    if(cs){cs.style.opacity='1';setTimeout(function(){cs.style.opacity='0';},1800);}
+    showToast('Query copied');
+    saveToRecent('Custom query', q.trim());
+  });
+}
+
+function composerReset() {
+  cmpState = {dataset:'',cfgTf:false,cfgTfVal:30,xqlTr:false,trFrom:'',trTo:'',
+    filters:[],fields:[],alters:[],dedup:false,dedupField:'',sortField:'_time',sortDir:'desc',limit:''};
+  cmpFilterCount = 0; cmpAlterCount = 0;
+  document.querySelectorAll('.ds-btn').forEach(function(b){b.classList.remove('active');});
+  document.getElementById('cmp-filter-list').innerHTML = '<div style="font-size:12px;color:var(--text3);">No filters yet — click &ldquo;Add filter&rdquo; to start.</div>';
+  document.getElementById('cmp-alter-list').innerHTML = '<div style="font-size:12px;color:var(--text3);">Optional — extract JSON fields (e.g. from evtlog_data_fields) or compute values.</div>';
+  document.getElementById('cmp-fields-grid').innerHTML = '';
+  var chkTf=document.getElementById('cmp-chk-cfg-tf'); if(chkTf) chkTf.checked=false;
+  var chkTr=document.getElementById('cmp-chk-xql-tr'); if(chkTr) chkTr.checked=false;
+  var chkD=document.getElementById('cmp-chk-dedup'); if(chkD) chkD.checked=false;
+  var trInp=document.getElementById('cmp-xql-tr-inputs'); if(trInp) trInp.style.display='none';
+  var dSel=document.getElementById('cmp-dedup-field'); if(dSel) dSel.style.display='none';
+  document.getElementById('cmp-cfg-tf-toggle').classList.remove('on');
+  document.getElementById('cmp-xql-tr-toggle').classList.remove('on');
+  document.getElementById('cmp-dedup-toggle').classList.remove('on');
+  var lim=document.getElementById('cmp-limit'); if(lim) lim.value='';
+  cmpSortDir('desc');
+  cmpRender();
+}
+
 </script>
 </body>
 </html>
