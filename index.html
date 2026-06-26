@@ -4080,5 +4080,37 @@ function closeHowTo() {
   document.getElementById('howto-panel').classList.remove('open');
 }
 
+// Expose all functions to window for inline onclick handlers
+window.getTF=getTF;window.setTF=setTF;window.setCustomTF=setCustomTF;
+window.gv=gv;window.rc=rc;window.cc=cc;
+window.f0ModeChange=f0ModeChange;window.t0ModeChange=t0ModeChange;
+window.addProc=addProc;window.removeProc=removeProc;
+window.renderAll=renderAll;window.renderAQL=renderAQL;
+window.showToast=showToast;window.showPlatform=showPlatform;window.showSection=showSection;
+window.resetAll=resetAll;window.resetFindings=resetFindings;
+window.exportHTML=exportHTML;window.toggleSettings=toggleSettings;
+window.saveXsiamUrl=saveXsiamUrl;window.loadXsiamUrl=loadXsiamUrl;
+window.showFlow=showFlow;window.toggleStep=toggleStep;
+window.xqlSearch=xqlSearch;window.searchFlows=searchFlows;
+window.goToFlow=goToFlow;window.goToQueryCard=goToQueryCard;
+window.togglePivotMenu=togglePivotMenu;
+window.refreshAllFeeds=refreshAllFeeds;
+window.multiAdd=multiAdd;window.multiRemove=multiRemove;
+window.reCopyQuery=reCopyQuery;window.toggleRecentlyUsed=toggleRecentlyUsed;
+window.saveFlowNote=saveFlowNote;window.copyAllFlow=copyAllFlow;
+window.openFQP=openFQP;window.syncFQP=syncFQP;window.copyFQP=copyFQP;
+window.clearFQP=clearFQP;window.closeFQP=closeFQP;
+window.saveStepFinding=saveStepFinding;window.compileFindings=compileFindings;
+window.cmpSetDataset=cmpSetDataset;window.cmpToggleField=cmpToggleField;
+window.cmpFieldsAll=cmpFieldsAll;window.cmpFieldsPreset=cmpFieldsPreset;
+window.cmpToggle=cmpToggle;window.cmpAddFilter=cmpAddFilter;
+window.cmpAddAlter=cmpAddAlter;window.cmpSortDir=cmpSortDir;
+window.cmpRender=cmpRender;window.cmpCopy=cmpCopy;window.composerReset=composerReset;
+window.openSaveModal=openSaveModal;window.closeSaveModal=closeSaveModal;
+window.confirmSaveQuery=confirmSaveQuery;
+window.copySavedQuery=copySavedQuery;window.loadSavedQuery=loadSavedQuery;
+window.deleteSavedQuery=deleteSavedQuery;
+window.openHowTo=openHowTo;window.closeHowTo=closeHowTo;
+</script>
 </body>
 </html>
