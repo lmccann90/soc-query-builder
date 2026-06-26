@@ -1072,9 +1072,10 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="composer-block-header"><span class="composer-block-title">2 · Config &amp; timeframe</span></div>
               <div class="composer-block-body">
                 <div class="composer-config-row">
-                  <div class="composer-toggle" id="cmp-cfg-tf-toggle" onclick="cmpToggle('cfg-tf')">
+                  <div class="composer-toggle" id="cmp-cfg-tf-toggle" onclick="cmpToggle('cfg-tf')" style="display:none">
                     <span id="cmp-chk-cfg-tf" style="font-size:13px;">☐</span> config timeframe =
                     <input class="composer-tf-input" type="number" id="cmp-cfg-tf-val" value="30" min="1" max="90" oninput="cmpRender()" onclick="event.stopPropagation()"> D
+                    <span style="font-size:10px;color:var(--text3);margin-left:4px;">(endpoints / auditing only)</span>
                   </div>
                   <div class="composer-toggle" id="cmp-xql-tr-toggle" onclick="cmpToggle('xql-tr')">
                     <span id="cmp-chk-xql-tr" style="font-size:13px;">☐</span> XQL time range
@@ -3689,6 +3690,16 @@ function cmpSetDataset(ds, btn) {
   cmpState.alters = [];
   document.getElementById('cmp-filter-list').innerHTML = '<div style="font-size:12px;color:var(--text3);">No filters yet — click &ldquo;Add filter&rdquo; to start.</div>';
   document.getElementById('cmp-alter-list').innerHTML = '<div style="font-size:12px;color:var(--text3);">Optional — extract JSON fields (e.g. from evtlog_data_fields) or compute values.</div>';
+  // Show/hide config timeframe based on dataset compatibility
+  var cfgTfToggle = document.getElementById('cmp-cfg-tf-toggle');
+  var cfgCompatible = ['endpoints','management_auditing'].indexOf(ds) > -1;
+  if(cfgTfToggle) cfgTfToggle.style.display = cfgCompatible ? 'flex' : 'none';
+  if(!cfgCompatible && cmpState.cfgTf) {
+    cmpState.cfgTf = false;
+    var chkTf = document.getElementById('cmp-chk-cfg-tf');
+    if(chkTf) chkTf.textContent = '☐';
+    if(cfgTfToggle) cfgTfToggle.classList.remove('on');
+  }
   cmpBuildFieldsGrid();
   cmpUpdateDedupSelect();
   cmpUpdateSortSelect();
