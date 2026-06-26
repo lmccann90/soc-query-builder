@@ -4074,8 +4074,9 @@ function renderSavedQueries() {
     return;
   }
   list.innerHTML = arr.map(function(q) {
-    // Detect placeholders in query
-    var placeholders = extractPlaceholders(q.query);
+    // Always strip any accidental HTML from stored query
+    var cleanQuery = stripHtml(q.query);
+    var placeholders = extractPlaceholders(cleanQuery);
     var inputsHtml = '';
     if(placeholders.length) {
       inputsHtml = '<div class="saved-vars">'
@@ -4097,7 +4098,7 @@ function renderSavedQueries() {
       + '<span style="font-size:10px;color:var(--text3);flex-shrink:0;">'+q.saved+'</span>'
       + '</div>'
       + inputsHtml
-      + '<div class="saved-card-query" id="sq-preview-'+q.id+'">'+hl(q.query)+'</div>'
+      + '<div class="saved-card-query" id="sq-preview-'+q.id+'">'+hl(cleanQuery)+'</div>'
       + '<div class="saved-card-actions">'
       + '<button class="btn btn-primary" style="font-size:11px;padding:4px 10px;" onclick="copySavedQuery('+q.id+')">&#8669; Copy</button>'
       + '<button class="saved-delete-btn" onclick="deleteSavedQuery('+q.id+')">&#128465; Delete</button>'
@@ -4121,8 +4122,9 @@ function updateSavedPreview(id) {
   var arr = getSavedQueries();
   var q = arr.find(function(x){return x.id===id;});
   if(!q) return;
-  var placeholders = extractPlaceholders(q.query);
-  var filled = q.query;
+  var cleanQuery = stripHtml(q.query);
+  var placeholders = extractPlaceholders(cleanQuery);
+  var filled = cleanQuery;
   placeholders.forEach(function(ph) {
     var inp = document.getElementById('sv-'+id+'-'+ph);
     var val = inp && inp.value.trim() ? inp.value.trim() : ph;
@@ -4142,8 +4144,9 @@ function copySavedQuery(id) {
   var arr = getSavedQueries();
   var q = arr.find(function(x){return x.id===id;});
   if(!q) return;
-  var placeholders = extractPlaceholders(q.query);
-  var filled = stripHtml(q.query); // strip any accidental HTML
+  var cleanQuery = stripHtml(q.query);
+  var placeholders = extractPlaceholders(cleanQuery);
+  var filled = cleanQuery;
   placeholders.forEach(function(ph) {
     var inp = document.getElementById('sv-'+id+'-'+ph);
     var val = inp && inp.value.trim() ? inp.value.trim() : ph;
