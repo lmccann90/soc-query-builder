@@ -3829,10 +3829,13 @@ function cmpSortDir(d) {
   cmpRender();
 }
 
+var cmpRawQuery = '';
+
 function cmpRender() {
   var ds = cmpState.dataset;
   if(!ds){
-    document.getElementById('cmp-output').innerHTML = hl('// Select a dataset to start building your query');
+    cmpRawQuery = '';
+  document.getElementById('cmp-output').innerHTML = hl('// Select a dataset to start building your query');
     return;
   }
   var lines = [];
@@ -3915,21 +3918,17 @@ function cmpRender() {
   var limitVal = limitEl ? limitEl.value.trim() : '';
   if(limitVal) lines.push('| limit '+limitVal);
 
-  document.getElementById('cmp-output').innerHTML = hl(lines.join('\n'));
+  cmpRawQuery = lines.join('\n');
+  document.getElementById('cmp-output').innerHTML = hl(cmpRawQuery);
 }
 
 function cmpCopy() {
-  var out = document.getElementById('cmp-output');
-  if(!out) return;
-  // strip HTML tags to get plain text
-  var tmp = document.createElement('div');
-  tmp.innerHTML = out.innerHTML;
-  var q = tmp.textContent || tmp.innerText || '';
-  navigator.clipboard.writeText(q.trim()).then(function(){
+  if(!cmpRawQuery || cmpRawQuery.startsWith('//')) { showToast('Build a query first'); return; }
+  navigator.clipboard.writeText(cmpRawQuery).then(function(){
     var cs = document.getElementById('cmp-cs');
     if(cs){cs.style.opacity='1';setTimeout(function(){cs.style.opacity='0';},1800);}
     showToast('Query copied');
-    saveToRecent('Custom query', q.trim());
+    saveToRecent('Custom query', cmpRawQuery);
   });
 }
 
@@ -3968,15 +3967,10 @@ function putSavedQueries(arr) {
 }
 
 function openSaveModal() {
-  var out = document.getElementById('cmp-output');
-  if(!out) return;
-  var tmp = document.createElement('div');
-  tmp.innerHTML = out.innerHTML;
-  var q = (tmp.textContent || tmp.innerText || '').trim();
-  if(!q || q.startsWith('//')) { showToast('Build a query first'); return; }
-  savedQueryPending = q;
+  if(!cmpRawQuery || cmpRawQuery.startsWith('//')) { showToast('Build a query first'); return; }
+  savedQueryPending = cmpRawQuery;
   var prev = document.getElementById('save-preview');
-  if(prev) prev.innerHTML = hl(q);
+  if(prev) prev.innerHTML = hl(savedQueryPending);
   document.getElementById('save-name').value = '';
   document.getElementById('save-desc').value = '';
   document.getElementById('save-cs').style.opacity = '0';
