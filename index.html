@@ -1027,15 +1027,15 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="composer-block-header"><span class="composer-block-title">2 · Config &amp; timeframe</span></div>
               <div class="composer-block-body">
                 <div class="composer-config-row">
-                  <label class="composer-toggle" id="cmp-cfg-tf-toggle" onclick="cmpToggle('cfg-tf')">
-                    <input type="checkbox" id="cmp-chk-cfg-tf"> config timeframe =
+                  <div class="composer-toggle" id="cmp-cfg-tf-toggle" onclick="cmpToggle('cfg-tf')">
+                    <span id="cmp-chk-cfg-tf" style="font-size:13px;">☐</span> config timeframe =
                     <input class="composer-tf-input" type="number" id="cmp-cfg-tf-val" value="30" min="1" max="90" oninput="cmpRender()" onclick="event.stopPropagation()"> D
-                  </label>
-                  <label class="composer-toggle" id="cmp-xql-tr-toggle" onclick="cmpToggle('xql-tr')">
-                    <input type="checkbox" id="cmp-chk-xql-tr"> XQL time range
-                  </label>
+                  </div>
+                  <div class="composer-toggle" id="cmp-xql-tr-toggle" onclick="cmpToggle('xql-tr')">
+                    <span id="cmp-chk-xql-tr" style="font-size:13px;">☐</span> XQL time range
+                  </div>
                 </div>
-                <div id="cmp-xql-tr-inputs" style="display:none;margin-top:10px;display:none;gap:10px;flex-wrap:wrap;align-items:center;">
+                <div id="cmp-xql-tr-inputs" style="display:none;margin-top:10px;gap:10px;flex-wrap:wrap;align-items:center;">
                   <span style="font-size:11px;color:var(--text3);">From</span>
                   <input type="text" id="cmp-tr-from" placeholder="2026-06-25T00:00:00Z" style="background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--mono);font-size:11.5px;height:28px;padding:0 8px;outline:none;width:185px;" oninput="cmpRender()">
                   <span style="font-size:11px;color:var(--text3);">To</span>
@@ -1092,9 +1092,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <div class="composer-block-header"><span class="composer-block-title">6 · Dedup (optional)</span></div>
               <div class="composer-block-body">
                 <div class="dedup-row">
-                  <label class="composer-toggle" id="cmp-dedup-toggle" onclick="cmpToggle('dedup')">
-                    <input type="checkbox" id="cmp-chk-dedup"> dedup by field
-                  </label>
+                  <div class="composer-toggle" id="cmp-dedup-toggle" onclick="cmpToggle('dedup')">
+                    <span id="cmp-chk-dedup" style="font-size:13px;">☐</span> dedup by field
+                  </div>
                   <select id="cmp-dedup-field" onchange="cmpRender()" style="display:none">
                     <option value="">— pick field —</option>
                   </select>
@@ -3327,48 +3327,91 @@ var cmpAlterCount = 0;
 // All known fields grouped by dataset
 var CMP_FIELDS = {
   xdr_data: [
-    '_time','agent_hostname','actor_effective_username',
-    'actor_process_image_name','actor_process_command_line','actor_process_image_path',
+    // time & host
+    '_time','agent_hostname','agent_id','agent_ip_addresses',
+    // user
+    'actor_effective_username','actor_effective_user_sid',
+    // process (actor = the process that caused the event)
+    'actor_process_image_name','actor_process_image_path',
+    'actor_process_command_line','actor_process_cmd_line',
     'actor_process_image_sha256','actor_process_instance_id',
-    'action_process_image_name','action_process_image_path','action_process_cmd_line',
-    'action_process_image_sha256','action_file_name','action_file_path',
-    'action_file_sha256','action_file_wildfire_verdict','action_file_size',
-    'action_remote_ip','action_remote_port','action_local_ip','action_local_port',
+    'actor_process_os_pid','actor_process_signature_vendor',
+    // parent / causality
+    'causality_actor_process_image_name','causality_actor_process_image_path',
+    'causality_actor_process_command_line','causality_actor_process_image_sha256',
+    'os_actor_process_image_name','os_actor_process_image_path',
+    // child / action process
+    'action_process_image_name','action_process_image_path',
+    'action_process_cmd_line','action_process_image_command_line',
+    'action_process_image_sha256','action_process_instance_id',
+    // file
+    'action_file_name','action_file_path','action_file_extension',
+    'action_file_sha256','action_file_size',
+    'action_file_wildfire_verdict','action_file_macro_sha256',
+    // network
+    'action_remote_ip','action_remote_port',
+    'action_local_ip','action_local_port',
     'action_external_hostname','dns_query_name',
+    'action_network_protocol','action_pkts_sent','action_pkts_received',
+    // registry
+    'action_registry_key_name','action_registry_value_name',
+    'action_registry_data','action_registry_full_key',
+    // DLL / module
+    'action_file_name','action_module_sha256',
+    // event classification
     'event_type','event_sub_type',
+    // Windows event log
     'action_evtlog_event_id','action_evtlog_data_fields',
-    'causality_actor_process_image_name','os_actor_process_image_name',
-    'action_module_sha256'
+    'action_evtlog_source','action_evtlog_description',
+    // alert linkage
+    'alert_id','alert_name','alert_category','alert_action_status'
   ],
   endpoints: [
-    'endpoint_name','endpoint_id','endpoint_status','endpoint_type',
-    'last_seen','agent_version','install_date','ip_address',
-    'operating_system','domain','manual_protection_pause',
-    'assigned_prevention_policy'
+    'endpoint_name','endpoint_id','endpoint_type','endpoint_status',
+    'ip_address','ipv6_address','mac_address',
+    'operating_system','os_version',
+    'domain','alias',
+    'agent_version','content_version','install_date','last_seen',
+    'manual_protection_pause','assigned_prevention_policy',
+    'group_name','scan_status','is_isolated'
   ],
   panw_ngfw_traffic_raw: [
-    '_time','source_ip','dest_ip','dest_port','source_port',
+    '_time','source_ip','dest_ip','source_port','dest_port',
     'app','action','protocol','session_end_reason',
-    'bytes_sent','bytes_received','rule_matched',
-    '_reporting_device_name'
+    'bytes_sent','bytes_received','packets_sent','packets_received',
+    'rule_matched','nat_source_ip','nat_dest_ip',
+    'source_user','dest_user','source_zone','dest_zone',
+    '_reporting_device_name','log_subtype'
   ],
   panw_ngfw_threat_raw: [
-    '_time','file_name','sub_type','verdict','source_ip','dest_ip',
-    'source_user','partial_hash','app','threat_category',
-    'threat_name_firewall','_reporting_device_name'
+    '_time','file_name','sub_type','verdict',
+    'source_ip','dest_ip','source_port','dest_port',
+    'source_user','dest_user',
+    'app','protocol','rule_matched',
+    'partial_hash','threat_category','threat_name_firewall',
+    'severity','action','url','filedigest',
+    '_reporting_device_name'
   ],
   alerts: [
-    '_time','host_name','alert_name','alert_id','severity',
-    'category','detection_timestamp','actor_process_image_name',
-    'source_ip','dest_ip','username','mitre_tactic','mitre_technique'
+    '_time','alert_id','alert_name','severity','category',
+    'host_name','source_ip','dest_ip','username',
+    'actor_process_image_name','causality_actor_process_image_name',
+    'action_file_name','action_file_sha256',
+    'mitre_tactic','mitre_technique','mitre_tactic_id','mitre_technique_id',
+    'detection_timestamp','alert_action_status','starred',
+    'end_match_attempt_ts','case_id'
   ],
   management_auditing: [
     '_time','description','audit_owner_name','audit_owner_email',
-    'resource','sub_type','result','timestamp'
+    'resource','sub_type','result','timestamp',
+    'audit_session_id','request_data'
   ],
   pan_dss_raw: [
-    'name','domain_name','type','sam_account_name','admin_count',
-    'member_of','last_logon','last_logon_timestamp'
+    'name','domain_name','type','sam_account_name',
+    'admin_count','member_of','distinguished_name',
+    'last_logon','last_logon_timestamp','password_last_set',
+    'user_account_control','object_sid','manager','department',
+    'email','display_name'
   ]
 };
 // email is xdr_data fields
@@ -3380,21 +3423,33 @@ var CMP_FILTER_FIELDS = {
     {v:'actor_effective_username', l:'actor_effective_username'},
     {v:'actor_process_image_name', l:'actor_process_image_name'},
     {v:'actor_process_command_line', l:'actor_process_command_line'},
+    {v:'actor_process_cmd_line', l:'actor_process_cmd_line'},
     {v:'actor_process_image_path', l:'actor_process_image_path'},
-    {v:'actor_process_image_sha256', l:'actor_process_image_sha256'},
-    {v:'action_process_image_name', l:'action_process_image_name'},
+    {v:'actor_process_image_sha256', l:'actor_process_image_sha256 (hash)'},
+    {v:'action_process_image_name', l:'action_process_image_name (child proc)'},
+    {v:'action_process_image_path', l:'action_process_image_path'},
+    {v:'action_process_cmd_line', l:'action_process_cmd_line'},
+    {v:'causality_actor_process_image_name', l:'causality_actor_process_image_name (parent)'},
+    {v:'os_actor_process_image_name', l:'os_actor_process_image_name'},
     {v:'action_file_name', l:'action_file_name'},
     {v:'action_file_path', l:'action_file_path'},
+    {v:'action_file_extension', l:'action_file_extension'},
     {v:'action_file_sha256', l:'action_file_sha256 (hash)'},
     {v:'action_file_wildfire_verdict', l:'action_file_wildfire_verdict'},
+    {v:'action_module_sha256', l:'action_module_sha256 (DLL hash)'},
     {v:'action_remote_ip', l:'action_remote_ip'},
     {v:'action_remote_port', l:'action_remote_port'},
     {v:'action_local_ip', l:'action_local_ip'},
+    {v:'action_local_port', l:'action_local_port'},
     {v:'action_external_hostname', l:'action_external_hostname'},
     {v:'dns_query_name', l:'dns_query_name'},
+    {v:'action_registry_key_name', l:'action_registry_key_name'},
+    {v:'action_registry_value_name', l:'action_registry_value_name'},
     {v:'event_type', l:'event_type (ENUM.PROCESS/FILE/NETWORK/LOAD_IMAGE/EVENT_LOG)'},
+    {v:'event_sub_type', l:'event_sub_type'},
     {v:'action_evtlog_event_id', l:'action_evtlog_event_id (Windows event ID)'},
-    {v:'causality_actor_process_image_name', l:'causality_actor_process_image_name (parent)'}
+    {v:'alert_name', l:'alert_name'},
+    {v:'alert_category', l:'alert_category'}
   ],
   endpoints: [
     {v:'endpoint_name', l:'endpoint_name'},
@@ -3519,14 +3574,14 @@ function cmpToggle(key) {
     var t = document.getElementById('cmp-cfg-tf-toggle');
     var chk = document.getElementById('cmp-chk-cfg-tf');
     if(t) t.classList.toggle('on', cmpState.cfgTf);
-    if(chk) chk.checked = cmpState.cfgTf;
+    if(chk) chk.textContent = cmpState.cfgTf ? '☑' : '☐';
   } else if(key === 'xql-tr') {
     cmpState.xqlTr = !cmpState.xqlTr;
     var t2 = document.getElementById('cmp-xql-tr-toggle');
     var chk2 = document.getElementById('cmp-chk-xql-tr');
     var inp = document.getElementById('cmp-xql-tr-inputs');
     if(t2) t2.classList.toggle('on', cmpState.xqlTr);
-    if(chk2) chk2.checked = cmpState.xqlTr;
+    if(chk2) chk2.textContent = cmpState.xqlTr ? '☑' : '☐';
     if(inp) inp.style.display = cmpState.xqlTr ? 'flex' : 'none';
   } else if(key === 'dedup') {
     cmpState.dedup = !cmpState.dedup;
@@ -3534,7 +3589,7 @@ function cmpToggle(key) {
     var chk3 = document.getElementById('cmp-chk-dedup');
     var sel = document.getElementById('cmp-dedup-field');
     if(t3) t3.classList.toggle('on', cmpState.dedup);
-    if(chk3) chk3.checked = cmpState.dedup;
+    if(chk3) chk3.textContent = cmpState.dedup ? '☑' : '☐';
     if(sel) sel.style.display = cmpState.dedup ? 'block' : 'none';
   }
   cmpRender();
@@ -3723,9 +3778,9 @@ function composerReset() {
   document.getElementById('cmp-filter-list').innerHTML = '<div style="font-size:12px;color:var(--text3);">No filters yet — click &ldquo;Add filter&rdquo; to start.</div>';
   document.getElementById('cmp-alter-list').innerHTML = '<div style="font-size:12px;color:var(--text3);">Optional — extract JSON fields (e.g. from evtlog_data_fields) or compute values.</div>';
   document.getElementById('cmp-fields-grid').innerHTML = '';
-  var chkTf=document.getElementById('cmp-chk-cfg-tf'); if(chkTf) chkTf.checked=false;
-  var chkTr=document.getElementById('cmp-chk-xql-tr'); if(chkTr) chkTr.checked=false;
-  var chkD=document.getElementById('cmp-chk-dedup'); if(chkD) chkD.checked=false;
+  var chkTf=document.getElementById('cmp-chk-cfg-tf'); if(chkTf) chkTf.textContent='☐';
+  var chkTr=document.getElementById('cmp-chk-xql-tr'); if(chkTr) chkTr.textContent='☐';
+  var chkD=document.getElementById('cmp-chk-dedup'); if(chkD) chkD.textContent='☐';
   var trInp=document.getElementById('cmp-xql-tr-inputs'); if(trInp) trInp.style.display='none';
   var dSel=document.getElementById('cmp-dedup-field'); if(dSel) dSel.style.display='none';
   document.getElementById('cmp-cfg-tf-toggle').classList.remove('on');
