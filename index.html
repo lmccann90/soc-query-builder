@@ -409,6 +409,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 .saved-delete-btn:hover{color:var(--red);border-color:rgba(224,82,82,0.4);background:rgba(224,82,82,0.06);}
 
 /* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:800;display:flex;align-items:center;justify-content:center;}
 .modal-box{background:var(--bg2);border:1px solid var(--border2);border-radius:12px;width:520px;max-width:92vw;box-shadow:0 8px 40px rgba(0,0,0,0.5);}
 .modal-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border);}
 .modal-title{font-size:13px;font-weight:500;color:var(--text);}
@@ -422,13 +423,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 .modal-footer{display:flex;align-items:center;gap:8px;padding:12px 18px;border-top:1px solid var(--border);}
 .save-query-btn{font-size:11.5px;padding:4px 12px;border-radius:5px;border:1px solid rgba(62,207,142,0.3);background:rgba(62,207,142,0.08);color:var(--green);cursor:pointer;font-family:var(--sans);transition:all 0.12s;display:inline-flex;align-items:center;gap:5px;}
 .save-query-btn:hover{background:rgba(62,207,142,0.16);}
-
-/* HOW TO USE PANEL */
-.howto-panel{position:fixed;top:0;right:-400px;width:380px;height:100vh;background:var(--bg2);border-left:1px solid var(--border2);z-index:600;display:flex;flex-direction:column;transition:right 0.25s ease;box-shadow:-4px 0 24px rgba(0,0,0,0.4);}
-.howto-panel.open{right:0;}
-.howto-panel-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border);flex-shrink:0;}
-.howto-panel-title{font-size:13px;font-weight:500;color:var(--text);}
-.howto-panel-body{flex:1;overflow-y:auto;}
 </style>
 </head>
 <body>
@@ -440,7 +434,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
   </div>
   <div class="topbar-right">
     <button class="btn" onclick="toggleSettings()" id="settings-btn">&#9881; Settings</button>
-    <button class="btn" onclick="openHowTo()" style="border-color:rgba(167,139,250,0.4);color:#a78bfa;">&#63; How to use</button>
     <a href="#" class="xsiam-link" id="xsiam-link" style="display:none" target="_blank">&#8599; Open XSIAM</a>
     <button class="ru-toggle" onclick="toggleRecentlyUsed()" id="ru-toggle-btn">&#9719; Recent (0)</button>
     <button class="btn btn-danger" onclick="resetAll()">&#8635; Reset all</button>
@@ -1265,7 +1258,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 </div>
 
 <!-- SAVE QUERY MODAL -->
-<div id="save-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:800;align-items:center;justify-content:center;" onclick="if(event.target===this)closeSaveModal()">
+<div class="modal-overlay" id="save-modal" style="display:none" onclick="if(event.target===this)closeSaveModal()">
   <div class="modal-box">
     <div class="modal-header">
       <span class="modal-title">&#9733; Save query</span>
@@ -1290,81 +1283,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
       <button class="btn" onclick="closeSaveModal()">Cancel</button>
       <span class="copy-status" id="save-cs" style="font-size:11.5px;color:var(--green);opacity:0;transition:opacity 0.2s;">Saved!</span>
     </div>
-  </div>
-</div>
-
-<!-- HOW TO USE PANEL -->
-<div class="howto-panel" id="howto-panel">
-  <div class="howto-panel-header">
-    <span class="howto-panel-title">&#63; How to use</span>
-    <button class="fqp-close" onclick="closeHowTo()">&#10005;</button>
-  </div>
-  <div class="howto-panel-body">
-
-    <div class="howto-section">
-      <div class="howto-section-title">Overview</div>
-      <div class="howto-text">A SOC tool for building XQL and AQL queries without typing them from scratch. Four tabs: XQL queries, AQL queries, Investigation Flows, and Threat Intel.</div>
-    </div>
-
-    <div class="howto-section">
-      <div class="howto-section-title">XQL tab</div>
-      <div class="howto-text">Queries grouped by category in the left sidebar. Click a category, fill in any fields (hostname, IP, username, hash), then click <strong>Copy query</strong> to copy to clipboard.</div>
-      <div class="howto-text">Most fields support multiple values — use <strong>+ Add another</strong>. The query auto-builds an <code>in()</code> list.</div>
-      <div class="howto-text">The <strong>Pivot</strong> button links to the relevant investigation flow.</div>
-    </div>
-
-    <div class="howto-section">
-      <div class="howto-section-title">Blank query builder</div>
-      <div class="howto-text">Bottom of the XQL sidebar. Build any query from scratch using dropdowns — no typing required.</div>
-      <div class="howto-steps">
-        <div class="howto-step"><span class="howto-num">1</span>Pick a dataset</div>
-        <div class="howto-step"><span class="howto-num">2</span>Toggle timeframe if needed</div>
-        <div class="howto-step"><span class="howto-num">3</span>Add filters — field, operator, value</div>
-        <div class="howto-step"><span class="howto-num">4</span>Tick output fields or use a preset</div>
-        <div class="howto-step"><span class="howto-num">5</span>Add alter expressions if needed</div>
-        <div class="howto-step"><span class="howto-num">6</span>Set sort and limit</div>
-        <div class="howto-step"><span class="howto-num">7</span>Copy or Save from the preview panel</div>
-      </div>
-    </div>
-
-    <div class="howto-section">
-      <div class="howto-section-title">Saved queries</div>
-      <div class="howto-text">Save any built query with a name and description. Lives in the Saved queries section at the bottom of the XQL sidebar. Persists between sessions.</div>
-    </div>
-
-    <div class="howto-section">
-      <div class="howto-section-title">AQL tab</div>
-      <div class="howto-text">Same as XQL but for QRadar. Set the timeframe bar before copying.</div>
-      <div class="howto-note">&#9888; AQL = QRadar only. XQL = XSIAM only.</div>
-    </div>
-
-    <div class="howto-section">
-      <div class="howto-section-title">Investigation Flows</div>
-      <div class="howto-text">Step-by-step triage guides for common alert types. Tick steps as you go, jot findings in each step's box, then hit <strong>Compile findings</strong> to generate a summary for your ticket.</div>
-      <div class="howto-text">Search by alert name at the top of the sidebar to find the right flow quickly.</div>
-    </div>
-
-    <div class="howto-section">
-      <div class="howto-section-title">Threat Intel tab</div>
-      <div class="howto-text">Live RSS feeds from CISA, BleepingComputer, Krebs, Unit 42, NCSC and others. Click any title to open. Hit Refresh all to pull latest.</div>
-    </div>
-
-    <div class="howto-section">
-      <div class="howto-section-title">Other features</div>
-      <div class="howto-items">
-        <div class="howto-item"><strong>Recent</strong> — last 10 copied queries, one-click recopy</div>
-        <div class="howto-item"><strong>Settings</strong> — paste XSIAM URL to get the Open XSIAM button</div>
-        <div class="howto-item"><strong>Save as file</strong> — downloads a local backup</div>
-        <div class="howto-item"><strong>Reset all</strong> — clears query field inputs only</div>
-        <div class="howto-item"><strong>Clear findings</strong> — wipes step findings and notes</div>
-      </div>
-    </div>
-
-    <div class="howto-section" style="border-bottom:none;">
-      <div class="howto-section-title">Water tenant quirk</div>
-      <div class="howto-note">&#9888; Always use <code>contains</code> not <code>=</code> for <code>endpoint_status</code> and <code>endpoint_type</code> on water.nigov.net — equality operators fail silently.</div>
-    </div>
-
   </div>
 </div>
 
@@ -4072,45 +3990,5 @@ function updateSavedCount() {
   if(el) el.textContent = arr.length;
 }
 
-function openHowTo() {
-  document.getElementById('howto-panel').classList.add('open');
-}
-
-function closeHowTo() {
-  document.getElementById('howto-panel').classList.remove('open');
-}
-
-// Expose all functions to window for inline onclick handlers
-window.getTF=getTF;window.setTF=setTF;window.setCustomTF=setCustomTF;
-window.gv=gv;window.rc=rc;window.cc=cc;
-window.f0ModeChange=f0ModeChange;window.t0ModeChange=t0ModeChange;
-window.addProc=addProc;window.removeProc=removeProc;
-window.renderAll=renderAll;window.renderAQL=renderAQL;
-window.showToast=showToast;window.showPlatform=showPlatform;window.showSection=showSection;
-window.resetAll=resetAll;window.resetFindings=resetFindings;
-window.exportHTML=exportHTML;window.toggleSettings=toggleSettings;
-window.saveXsiamUrl=saveXsiamUrl;window.loadXsiamUrl=loadXsiamUrl;
-window.showFlow=showFlow;window.toggleStep=toggleStep;
-window.xqlSearch=xqlSearch;window.searchFlows=searchFlows;
-window.goToFlow=goToFlow;window.goToQueryCard=goToQueryCard;
-window.togglePivotMenu=togglePivotMenu;
-window.refreshAllFeeds=refreshAllFeeds;
-window.multiAdd=multiAdd;window.multiRemove=multiRemove;
-window.reCopyQuery=reCopyQuery;window.toggleRecentlyUsed=toggleRecentlyUsed;
-window.saveFlowNote=saveFlowNote;window.copyAllFlow=copyAllFlow;
-window.openFQP=openFQP;window.syncFQP=syncFQP;window.copyFQP=copyFQP;
-window.clearFQP=clearFQP;window.closeFQP=closeFQP;
-window.saveStepFinding=saveStepFinding;window.compileFindings=compileFindings;
-window.cmpSetDataset=cmpSetDataset;window.cmpToggleField=cmpToggleField;
-window.cmpFieldsAll=cmpFieldsAll;window.cmpFieldsPreset=cmpFieldsPreset;
-window.cmpToggle=cmpToggle;window.cmpAddFilter=cmpAddFilter;
-window.cmpAddAlter=cmpAddAlter;window.cmpSortDir=cmpSortDir;
-window.cmpRender=cmpRender;window.cmpCopy=cmpCopy;window.composerReset=composerReset;
-window.openSaveModal=openSaveModal;window.closeSaveModal=closeSaveModal;
-window.confirmSaveQuery=confirmSaveQuery;
-window.copySavedQuery=copySavedQuery;window.loadSavedQuery=loadSavedQuery;
-window.deleteSavedQuery=deleteSavedQuery;
-window.openHowTo=openHowTo;window.closeHowTo=closeHowTo;
-</script>
 </body>
 </html>
