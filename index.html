@@ -423,6 +423,22 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 .modal-footer{display:flex;align-items:center;gap:8px;padding:12px 18px;border-top:1px solid var(--border);}
 .save-query-btn{font-size:11.5px;padding:4px 12px;border-radius:5px;border:1px solid rgba(62,207,142,0.3);background:rgba(62,207,142,0.08);color:var(--green);cursor:pointer;font-family:var(--sans);transition:all 0.12s;display:inline-flex;align-items:center;gap:5px;}
 .save-query-btn:hover{background:rgba(62,207,142,0.16);}
+
+/* HOW TO USE MODAL */
+.howto-section{padding:16px 18px;border-bottom:1px solid var(--border);}
+.howto-section-title{font-size:12px;font-weight:600;color:var(--text);margin-bottom:8px;letter-spacing:0.01em;}
+.howto-text{font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:6px;}
+.howto-text:last-child{margin-bottom:0;}
+.howto-text strong{color:var(--text);font-weight:500;}
+.howto-text code{font-family:var(--mono);font-size:10.5px;color:var(--accent);background:rgba(79,142,247,0.08);padding:1px 4px;border-radius:3px;}
+.howto-note{font-size:11.5px;color:var(--amber);background:rgba(245,166,35,0.07);border:1px solid rgba(245,166,35,0.2);border-radius:6px;padding:8px 12px;margin-top:8px;line-height:1.5;}
+.howto-note code{font-family:var(--mono);font-size:10.5px;color:var(--accent);background:rgba(79,142,247,0.08);padding:1px 4px;border-radius:3px;}
+.howto-steps{display:flex;flex-direction:column;gap:5px;margin:10px 0;}
+.howto-step{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--text2);}
+.howto-num{width:20px;height:20px;border-radius:50%;background:rgba(79,142,247,0.15);color:var(--accent);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.howto-items{display:flex;flex-direction:column;gap:7px;margin-top:4px;}
+.howto-item{font-size:12px;color:var(--text2);line-height:1.5;}
+.howto-item strong{color:var(--text);font-weight:500;}
 </style>
 </head>
 <body>
@@ -434,6 +450,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
   </div>
   <div class="topbar-right">
     <button class="btn" onclick="toggleSettings()" id="settings-btn">&#9881; Settings</button>
+    <button class="btn" onclick="openHowTo()" style="border-color:rgba(167,139,250,0.4);color:#a78bfa;">&#63; How to use</button>
     <a href="#" class="xsiam-link" id="xsiam-link" style="display:none" target="_blank">&#8599; Open XSIAM</a>
     <button class="ru-toggle" onclick="toggleRecentlyUsed()" id="ru-toggle-btn">&#9719; Recent (0)</button>
     <button class="btn btn-danger" onclick="resetAll()">&#8635; Reset all</button>
@@ -1282,6 +1299,91 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
       <button class="btn btn-primary" onclick="confirmSaveQuery()">&#9733; Save</button>
       <button class="btn" onclick="closeSaveModal()">Cancel</button>
       <span class="copy-status" id="save-cs" style="font-size:11.5px;color:var(--green);opacity:0;transition:opacity 0.2s;">Saved!</span>
+    </div>
+  </div>
+</div>
+
+<!-- HOW TO USE MODAL -->
+<div class="modal-overlay" id="howto-modal" style="display:none" onclick="if(event.target===this)closeHowTo()">
+  <div class="modal-box" style="width:680px;max-height:85vh;display:flex;flex-direction:column;">
+    <div class="modal-header">
+      <span class="modal-title">&#63; How to use the Query Builder</span>
+      <button class="fqp-close" onclick="closeHowTo()">&#10005;</button>
+    </div>
+    <div style="overflow-y:auto;flex:1;">
+      <div class="modal-body" style="gap:0;padding:0;">
+
+        <div class="howto-section">
+          <div class="howto-section-title">Overview</div>
+          <div class="howto-text">The Query Builder is a SOC tool for building and running XQL and AQL queries without having to type them from scratch. It has four main areas: XQL queries, AQL queries, Investigation Flows, and Threat Intel. Use the tabs at the top to switch between them.</div>
+        </div>
+
+        <div class="howto-section">
+          <div class="howto-section-title">XQL tab</div>
+          <div class="howto-text">Queries are grouped into categories in the left sidebar — cloud, identity, firewall, endpoint, process, threat IOC, etc. Click a category to see the relevant cards.</div>
+          <div class="howto-text">Each card has a short description of what the query does and when to use it. Fill in any fields (hostname, IP, username, hash etc), then click <strong>Copy query</strong> to copy it straight to your clipboard, ready to paste into XSIAM.</div>
+          <div class="howto-text">Most fields support multiple values — click <strong>+ Add another</strong> to add more hostnames, IPs, or hashes. The query automatically builds an <code>in()</code> list or <code>or</code> chain.</div>
+          <div class="howto-text">The <strong>Pivot</strong> button on each card links directly to the relevant investigation flow if you want to work through a structured triage.</div>
+        </div>
+
+        <div class="howto-section">
+          <div class="howto-section-title">Blank query builder</div>
+          <div class="howto-text">At the bottom of the XQL sidebar. Lets you build a query from scratch without typing — pick a dataset, add filters one by one using dropdowns, tick the fields you want in the output, optionally add alter expressions, dedup, sort and limit. The query builds live in the preview panel on the right.</div>
+          <div class="howto-steps">
+            <div class="howto-step"><span class="howto-num">1</span>Pick a dataset</div>
+            <div class="howto-step"><span class="howto-num">2</span>Toggle config timeframe or XQL time range if needed</div>
+            <div class="howto-step"><span class="howto-num">3</span>Add filters — field, operator, value. Add as many as you need</div>
+            <div class="howto-step"><span class="howto-num">4</span>Tick the fields you want in the output, or use the preset buttons</div>
+            <div class="howto-step"><span class="howto-num">5</span>Optionally add alter expressions to extract JSON fields</div>
+            <div class="howto-step"><span class="howto-num">6</span>Set sort direction and limit</div>
+            <div class="howto-step"><span class="howto-num">7</span>Copy or Save the query from the panel on the right</div>
+          </div>
+          <div class="howto-text">The tips panel on the right gives field suggestions for common alert types — malware, firewall, identity, C2, etc.</div>
+        </div>
+
+        <div class="howto-section">
+          <div class="howto-section-title">Saved queries</div>
+          <div class="howto-text">Any query built in the composer can be saved with a name and description. Saved queries appear in the <strong>Saved queries</strong> section at the bottom of the XQL sidebar. From there you can copy, load back into the composer, or delete them. Saved queries persist in your browser — they survive closing and reopening the tool.</div>
+        </div>
+
+        <div class="howto-section">
+          <div class="howto-section-title">AQL tab</div>
+          <div class="howto-text">Works the same way as XQL. Queries are pre-built for QRadar — fill in the relevant fields and copy. The timeframe bar at the top controls how far back all AQL queries look. Set it before copying.</div>
+          <div class="howto-note">&#9888; AQL queries are for QRadar only. XQL queries are for XSIAM only. Don't mix them up.</div>
+        </div>
+
+        <div class="howto-section">
+          <div class="howto-section-title">Investigation Flows</div>
+          <div class="howto-text">Structured triage guides for common alert types — malware, C2, lateral movement, privilege escalation, persistence, recon, and more. Each flow has a set of steps with a description of what to check, what to look for, and a button to load the relevant query directly into the query panel on the right.</div>
+          <div class="howto-text">Tick steps off as you complete them. Use the findings box under each step to jot notes. When you're done, hit <strong>Compile findings</strong> to pull all your notes into a formatted summary you can paste into a FreshService ticket.</div>
+          <div class="howto-text">The flow search bar at the top of the sidebar filters by alert name — paste in the alert name from XSIAM to find the right flow quickly.</div>
+        </div>
+
+        <div class="howto-section">
+          <div class="howto-section-title">Threat Intel tab</div>
+          <div class="howto-text">Live RSS feeds from key threat intel sources — CISA, BleepingComputer, Krebs on Security, Unit 42, NCSC, and others. Refreshes automatically on load. Click any article title to open it in a new tab. Hit <strong>Refresh all</strong> to manually pull the latest.</div>
+        </div>
+
+        <div class="howto-section">
+          <div class="howto-section-title">Other features</div>
+          <div class="howto-items">
+            <div class="howto-item"><strong>Recent queries</strong> — the Recent button in the topbar shows the last 10 queries you copied, with timestamps. Click to recopy any of them.</div>
+            <div class="howto-item"><strong>Settings</strong> — paste your XSIAM tenant URL here. Once saved, an Open XSIAM button appears in the topbar.</div>
+            <div class="howto-item"><strong>Save as file</strong> — downloads the current version of the tool as a standalone HTML file. Use this to keep a local backup or share with the team.</div>
+            <div class="howto-item"><strong>Reset all</strong> — clears all query field inputs. Doesn't affect saved queries, findings, or notes.</div>
+            <div class="howto-item"><strong>Clear findings</strong> — wipes all step findings and investigation notes from browser storage.</div>
+          </div>
+        </div>
+
+        <div class="howto-section" style="border-bottom:none;">
+          <div class="howto-section-title">XSIAM quirks (water tenant)</div>
+          <div class="howto-note">&#9888; On the water.nigov.net tenant, always use <code>contains</code> instead of <code>=</code> or <code>!=</code> for <code>endpoint_status</code> and <code>endpoint_type</code> — equality operators fail silently. This is a known tenant-specific issue.</div>
+        </div>
+
+      </div>
+    </div>
+    <div class="modal-footer" style="justify-content:flex-end;">
+      <button class="btn btn-primary" onclick="closeHowTo()">Got it</button>
     </div>
   </div>
 </div>
@@ -3988,6 +4090,14 @@ function updateSavedCount() {
   var arr = getSavedQueries();
   var el = document.getElementById('saved-count');
   if(el) el.textContent = arr.length;
+}
+
+function openHowTo() {
+  document.getElementById('howto-modal').style.display = 'flex';
+}
+
+function closeHowTo() {
+  document.getElementById('howto-modal').style.display = 'none';
 }
 
 </body>
