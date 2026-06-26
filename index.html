@@ -407,6 +407,12 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 .saved-load-btn:hover{background:rgba(79,142,247,0.16);}
 .saved-delete-btn{font-size:11.5px;padding:4px 10px;border-radius:5px;border:1px solid rgba(224,82,82,0.2);background:transparent;color:var(--text3);cursor:pointer;font-family:var(--sans);transition:all 0.12s;}
 .saved-delete-btn:hover{color:var(--red);border-color:rgba(224,82,82,0.4);background:rgba(224,82,82,0.06);}
+.saved-vars{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:10px 12px;margin-bottom:8px;display:flex;flex-direction:column;gap:7px;}
+.saved-vars-label{font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text3);margin-bottom:2px;}
+.saved-var-row{display:flex;align-items:center;gap:8px;}
+.saved-var-name{font-size:10.5px;font-family:var(--mono);color:var(--amber);width:130px;flex-shrink:0;}
+.saved-var-input{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:5px;color:var(--text);font-family:var(--mono);font-size:11.5px;height:28px;padding:0 8px;outline:none;transition:border-color 0.12s;}
+.saved-var-input:focus{border-color:var(--accent);}
 
 /* MODAL */
 .modal-box{background:var(--bg2);border:1px solid var(--border2);border-radius:12px;width:520px;max-width:92vw;box-shadow:0 8px 40px rgba(0,0,0,0.5);}
@@ -3991,12 +3997,14 @@ function confirmSaveQuery() {
   var name = document.getElementById('save-name').value.trim();
   if(!name) { document.getElementById('save-name').focus(); showToast('Enter a name'); return; }
   var desc = document.getElementById('save-desc').value.trim();
+  // Replace filter values with typed placeholders based on field name
+  var templatised = templatiseQuery(savedQueryPending);
   var arr = getSavedQueries();
   arr.unshift({
     id: Date.now(),
     name: name,
     desc: desc,
-    query: savedQueryPending,
+    query: templatised,
     saved: new Date().toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'})
   });
   putSavedQueries(arr);
@@ -4006,16 +4014,80 @@ function confirmSaveQuery() {
   updateSavedCount();
 }
 
+// Map field names to placeholder labels
+var PLACEHOLDER_MAP = {
+  'agent_hostname': 'HOSTNAME',
+  'endpoint_name': 'HOSTNAME',
+  'action_remote_ip': 'IP_ADDRESS',
+  'action_local_ip': 'IP_ADDRESS',
+  'source_ip': 'IP_ADDRESS',
+  'dest_ip': 'IP_ADDRESS',
+  'action_file_sha256': 'SHA256_HASH',
+  'actor_process_image_sha256': 'SHA256_HASH',
+  'action_module_sha256': 'SHA256_HASH',
+  'actor_effective_username': 'USERNAME',
+  'source_user': 'USERNAME',
+  'actor_process_image_name': 'PROCESS_NAME',
+  'action_process_image_name': 'PROCESS_NAME',
+  'action_file_name': 'FILENAME',
+  'action_file_path': 'FILE_PATH',
+  'action_external_hostname': 'DOMAIN',
+  'dns_query_name': 'DOMAIN',
+  'action_registry_key_name': 'REGISTRY_KEY',
+  'action_evtlog_event_id': 'EVENT_ID',
+  'dest_port': 'PORT',
+  'action_remote_port': 'PORT',
+  'manual_protection_pause': 'PAUSE_STATUS',
+  'endpoint_status': 'STATUS',
+  'endpoint_type': 'TYPE',
+  'alert_name': 'ALERT_NAME'
+};
+
+function templatiseQuery(q) {
+  // For each | filter line, replace the value part with a typed placeholder
+  return q.replace(/\| filter ([^\n]+)/g, function(match, expr) {
+    return '| filter ' + templatiseExpr(expr);
+  });
+}
+
+function templatiseExpr(expr) {
+  // Handle 'and' continuations
+  return expr.replace(/([\w.]+)\s+(contains|not contains|=|!=|~=)\s+"([^"]+)"/g, function(m, field, op, val) {
+    var ph = PLACEHOLDER_MAP[field];
+    if(!ph) return m; // don't replace unknown fields
+    // Don't replace ENUM values or things that look like fixed constants
+    if(val.indexOf('ENUM.') > -1 || val === 'PROTECTION_PAUSED' || val === '1') return m;
+    return field + ' ' + op + ' "' + ph + '"';
+  }).replace(/([\w.]+)\s+in\s+\(([^)]+)\)/g, function(m, field, vals) {
+    var ph = PLACEHOLDER_MAP[field];
+    if(!ph) return m;
+    return field + ' in ("' + ph + '")';
+  });
+}
+
 function renderSavedQueries() {
   var arr = getSavedQueries();
   var list = document.getElementById('saved-queries-list');
-  var empty = document.getElementById('saved-empty');
   if(!arr.length) {
-    if(empty) empty.style.display = 'block';
     if(list) list.innerHTML = '<div class="saved-empty">No saved queries yet — build a query in the blank query builder and hit Save.</div>';
+    updateSavedCount();
     return;
   }
   list.innerHTML = arr.map(function(q) {
+    // Detect placeholders in query
+    var placeholders = extractPlaceholders(q.query);
+    var inputsHtml = '';
+    if(placeholders.length) {
+      inputsHtml = '<div class="saved-vars">'
+        + '<div class="saved-vars-label">Fill in variables then copy</div>'
+        + placeholders.map(function(ph) {
+            return '<div class="saved-var-row">'
+              + '<span class="saved-var-name">'+ph+'</span>'
+              + '<input type="text" class="saved-var-input" id="sv-'+q.id+'-'+ph+'" placeholder="'+ph+'" oninput="updateSavedPreview('+q.id+')">'
+              + '</div>';
+          }).join('')
+        + '</div>';
+    }
     return '<div class="saved-card" id="sq-'+q.id+'">'
       + '<div class="saved-card-header">'
       + '<div>'
@@ -4024,10 +4096,10 @@ function renderSavedQueries() {
       + '</div>'
       + '<span style="font-size:10px;color:var(--text3);flex-shrink:0;">'+q.saved+'</span>'
       + '</div>'
-      + '<div class="saved-card-query">'+hl(q.query)+'</div>'
+      + inputsHtml
+      + '<div class="saved-card-query" id="sq-preview-'+q.id+'">'+hl(q.query)+'</div>'
       + '<div class="saved-card-actions">'
       + '<button class="btn btn-primary" style="font-size:11px;padding:4px 10px;" onclick="copySavedQuery('+q.id+')">&#8669; Copy</button>'
-      + '<button class="saved-load-btn" onclick="loadSavedQuery('+q.id+')">&#8617; Load into composer</button>'
       + '<button class="saved-delete-btn" onclick="deleteSavedQuery('+q.id+')">&#128465; Delete</button>'
       + '</div>'
       + '</div>';
@@ -4035,17 +4107,45 @@ function renderSavedQueries() {
   updateSavedCount();
 }
 
-function escHtml(s) {
-  return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+function extractPlaceholders(q) {
+  var found = [];
+  var re = /"([A-Z][A-Z0-9_]+)"/g;
+  var m;
+  while((m = re.exec(q)) !== null) {
+    if(found.indexOf(m[1]) === -1) found.push(m[1]);
+  }
+  return found;
+}
+
+function updateSavedPreview(id) {
+  var arr = getSavedQueries();
+  var q = arr.find(function(x){return x.id===id;});
+  if(!q) return;
+  var placeholders = extractPlaceholders(q.query);
+  var filled = q.query;
+  placeholders.forEach(function(ph) {
+    var inp = document.getElementById('sv-'+id+'-'+ph);
+    var val = inp && inp.value.trim() ? inp.value.trim() : ph;
+    filled = filled.split('"'+ph+'"').join('"'+val+'"');
+  });
+  var preview = document.getElementById('sq-preview-'+id);
+  if(preview) preview.innerHTML = hl(filled);
 }
 
 function copySavedQuery(id) {
   var arr = getSavedQueries();
   var q = arr.find(function(x){return x.id===id;});
   if(!q) return;
-  navigator.clipboard.writeText(q.query).then(function(){
+  var placeholders = extractPlaceholders(q.query);
+  var filled = q.query;
+  placeholders.forEach(function(ph) {
+    var inp = document.getElementById('sv-'+id+'-'+ph);
+    var val = inp && inp.value.trim() ? inp.value.trim() : ph;
+    filled = filled.split('"'+ph+'"').join('"'+val+'"');
+  });
+  navigator.clipboard.writeText(filled).then(function(){
     showToast('Copied: '+q.name);
-    saveToRecent(q.name, q.query);
+    saveToRecent(q.name, filled);
   });
 }
 
@@ -4235,6 +4335,10 @@ function loadSavedQuery(id) {
   showToast('Query loaded — fields repopulated');
 }
 
+function escHtml(s) {
+  return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
 function deleteSavedQuery(id) {
   var arr = getSavedQueries().filter(function(x){return x.id!==id;});
   putSavedQueries(arr);
@@ -4285,7 +4389,7 @@ window.cmpRender=cmpRender;window.cmpCopy=cmpCopy;window.composerReset=composerR
 window.openSaveModal=openSaveModal;window.closeSaveModal=closeSaveModal;
 window.confirmSaveQuery=confirmSaveQuery;
 window.copySavedQuery=copySavedQuery;window.loadSavedQuery=loadSavedQuery;
-window.deleteSavedQuery=deleteSavedQuery;
+window.deleteSavedQuery=deleteSavedQuery;window.updateSavedPreview=updateSavedPreview;
 window.openHowTo=openHowTo;window.closeHowTo=closeHowTo;
 </script>
 </body>
