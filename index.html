@@ -3489,61 +3489,63 @@ var cmpAlterCount = 0;
 // All known fields grouped by dataset
 var CMP_FIELDS = {
   xdr_data: [
-    // time & host
-    '_time','agent_hostname','agent_id','agent_ip_addresses',
-    // user
+    '_time','agent_hostname','agent_id','agent_ip_addresses','mac',
     'actor_effective_username','actor_effective_user_sid',
-    // process (actor = the process that caused the event)
     'actor_process_image_name','actor_process_image_path',
     'actor_process_command_line',
     'actor_process_image_sha256','actor_process_instance_id',
     'actor_process_os_pid','actor_process_signature_vendor',
-    // parent / causality
+    'actor_process_signature_status',
     'causality_actor_process_image_name','causality_actor_process_image_path',
     'causality_actor_process_command_line','causality_actor_process_image_sha256',
+    'causality_actor_process_os_pid',
+    'causality_actor_process_signature_vendor','causality_actor_process_signature_status',
+    'causality_actor_type',
     'os_actor_process_image_name','os_actor_process_image_path',
-    // child / action process
+    'os_actor_process_command_line','os_actor_process_os_pid',
     'action_process_image_name','action_process_image_path',
-    'action_process_cmd_line','action_process_image_command_line',
-    'action_process_image_sha256','action_process_instance_id',
-    // file
+    'action_process_image_command_line',
+    'action_process_image_sha256','action_remote_process_image_sha256',
     'action_file_name','action_file_path','action_file_extension',
-    'action_file_sha256','action_file_size',
-    'action_file_wildfire_verdict','action_file_macro_sha256',
-    // network
+    'action_file_sha256','action_file_size','action_file_wildfire_verdict',
     'action_remote_ip','action_remote_port',
     'action_local_ip','action_local_port',
     'action_external_hostname','dns_query_name',
     'action_network_protocol','action_pkts_sent','action_pkts_received',
-    // registry
-    'action_registry_key_name','action_registry_value_name',
-    'action_registry_data','action_registry_full_key',
-    // DLL / module
-    'action_file_name','action_module_sha256',
-    // event classification
+    'action_registry_key_name','action_registry_value_name','action_registry_data',
+    'action_module_sha256',
     'event_type','event_sub_type',
-    // Windows event log
     'action_evtlog_event_id','action_evtlog_data_fields',
     'action_evtlog_source','action_evtlog_description',
-    // alert linkage
-    'alert_id','alert_name','alert_category','alert_action_status'
+    'alert_id','alert_name','alert_category','alert_action_status',
+    '_vendor','_product','agent_install_type'
   ],
   endpoints: [
     'endpoint_name','endpoint_id','endpoint_type','endpoint_status',
     'ip_address','ipv6_address','mac_address',
     'operating_system','os_version',
-    'domain','alias',
+    'domain','endpoint_alias',
     'agent_version','content_version','install_date','last_seen',
     'manual_protection_pause','assigned_prevention_policy',
-    'group_name','scan_status','is_isolated'
+    'group_names','scan_status','isolated_date','endpoint_isolated'
   ],
   panw_ngfw_traffic_raw: [
     '_time','source_ip','dest_ip','source_port','dest_port',
     'app','action','protocol','session_end_reason',
     'bytes_sent','bytes_received','packets_sent','packets_received',
-    'rule_matched','nat_source_ip','nat_dest_ip',
-    'source_user','dest_user','source_zone','dest_zone',
-    '_reporting_device_name','log_subtype'
+    'rule_matched',
+    'nat_dest','nat_dest_port','nat_source','nat_source_port','is_nat',
+    'source_user','dest_user',
+    'source_device_category','source_device_mac','source_device_model',
+    'source_device_osfamily','source_device_osversion','source_device_profile',
+    'source_device_vendor','source_dynamic_address_group','source_edl',
+    'source_ip','source_location','source_port',
+    'dest_device_category','dest_device_mac','dest_device_model',
+    'dest_device_osfamily','dest_device_osversion','dest_device_profile',
+    'dest_device_vendor','dest_dynamic_address_group','dest_edl',
+    'dest_ip','dest_location','dest_port',
+    'log_set','log_source','log_source_id','log_source_name','log_time','log_type',
+    '_reporting_device_name'
   ],
   panw_ngfw_threat_raw: [
     '_time','file_name','sub_type','verdict',
@@ -3551,33 +3553,63 @@ var CMP_FIELDS = {
     'source_user','dest_user',
     'app','protocol','rule_matched',
     'partial_hash','threat_category','threat_name_firewall',
-    'severity','action','url','filedigest',
+    'severity','action','url','url_category',
     '_reporting_device_name'
   ],
   alerts: [
-    '_time','alert_id','alert_name','severity','category',
-    'host_name','source_ip','dest_ip','username',
+    '_time','alert_id','alert_name','severity','alert_action_status',
+    'host_name','host_ip','host_fqdn','host_mac_address',
+    'source_ip','dest_ip','username','domain',
     'actor_process_image_name','causality_actor_process_image_name',
-    'action_file_name','action_file_sha256',
+    'actor_process_image_sha256',
+    'file_name','file_path','file_sha256','file_md5',
+    'dns_query_name','fw_name','fw_rule_name','fw_rule_id','fw_serial_number',
     'mitre_tactic','mitre_technique','mitre_tactic_id','mitre_technique_id',
-    'detection_timestamp','alert_action_status','starred',
-    'end_match_attempt_ts','case_id'
+    'detection_timestamp','case_id','starred',
+    'cloud_provider','cloud_project','cloud_resource_type','cloud_resource_sub_type',
+    'country','initiated_by','image_name','cluster_name','container_id'
   ],
   management_auditing: [
-    '_time','description','audit_owner_name','audit_owner_email',
-    'resource','sub_type','result','timestamp',
-    'audit_session_id','request_data'
+    '_time','description','subtype','host_name','id','timestamp',
+    'email','user_name','reason','source_ip','user_agent',
+    'user_roles','management_auditing_type','management_auditing_result',
+    'management_auditing_severity'
   ],
   pan_dss_raw: [
-    'name','domain_name','type','sam_account_name',
-    'admin_count','member_of','distinguished_name',
-    'last_logon','last_logon_timestamp','password_last_set',
-    'user_account_control','object_sid','manager','department',
-    'email','display_name'
+    'name','display_name','sam_account_name','type','domain_name','netbios',
+    'guid','dn','ou','upn','sid','sid_history','primary_group_id',
+    'user_account_control','user_type',
+    'last_logon_timestamp','last_modified','pwd_last_change',
+    'os','os_ver','os_sp','dns_host_name',
+    'email','other_mails','proxy_addresses',
+    'location','department','company_name','title','country','preferred_language',
+    'member_of','security_groups','admin_count','agent_id',
+    'manager_sam_account_name','manager_domain','manager_ou',
+    'on_prem_last_sync','on_prem_sync_enabled','on_prem_sam_account_name',
+    'on_prem_sid','on_prem_dn_cn','on_prem_dn_domain','on_prem_dn_ou',
+    'service_principal_names','msds_allowed_to_delegate_to',
+    'msds_allowed_to_act_on_behalf_of_other_identity',
+    'msds_supported_encryption_types','source','netbios_and_sam_account_name',
+    'sign_in_sessions_valid_from','on_prem_extension_attributes','generatedTime'
   ]
 };
-// email is xdr_data fields
-CMP_FIELDS['xdr_data /* email */'] = CMP_FIELDS.xdr_data;
+CMP_FIELDS['xdr_data /* email */'] = [
+  '_time','agent_hostname','agent_ip_addresses','mac',
+  'actor_effective_username',
+  'actor_process_image_name','actor_process_image_path',
+  'actor_process_command_line','actor_process_os_pid',
+  'actor_process_image_sha256','actor_process_signature_vendor',
+  'actor_process_signature_status',
+  'causality_actor_process_image_name','causality_actor_process_image_path',
+  'causality_actor_process_command_line','causality_actor_process_os_pid',
+  'causality_actor_process_image_sha256',
+  'causality_actor_process_signature_vendor','causality_actor_process_signature_status',
+  'causality_actor_type',
+  'os_actor_process_image_name','os_actor_process_image_path',
+  'os_actor_process_command_line','os_actor_process_os_pid',
+  'action_remote_process_image_sha256',
+  '_vendor','_product','agent_install_type'
+];
 
 var CMP_FILTER_FIELDS = {
   xdr_data: [
@@ -3589,7 +3621,7 @@ var CMP_FILTER_FIELDS = {
     {v:'actor_process_image_sha256', l:'actor_process_image_sha256 (hash)'},
     {v:'action_process_image_name', l:'action_process_image_name (child proc)'},
     {v:'action_process_image_path', l:'action_process_image_path'},
-    {v:'action_process_cmd_line', l:'action_process_cmd_line'},
+    {v:'action_process_image_command_line', l:'action_process_image_command_line'},
     {v:'causality_actor_process_image_name', l:'causality_actor_process_image_name (parent)'},
     {v:'os_actor_process_image_name', l:'os_actor_process_image_name'},
     {v:'action_file_name', l:'action_file_name'},
@@ -3619,51 +3651,98 @@ var CMP_FILTER_FIELDS = {
     {v:'ip_address', l:'ip_address'},
     {v:'operating_system', l:'operating_system'},
     {v:'domain', l:'domain'},
+    {v:'endpoint_alias', l:'endpoint_alias'},
     {v:'manual_protection_pause', l:'manual_protection_pause'},
     {v:'agent_version', l:'agent_version'},
-    {v:'assigned_prevention_policy', l:'assigned_prevention_policy'}
+    {v:'assigned_prevention_policy', l:'assigned_prevention_policy'},
+    {v:'group_names', l:'group_names'},
+    {v:'isolated_date', l:'isolated_date'},
+    {v:'endpoint_isolated', l:'endpoint_isolated'}
   ],
   panw_ngfw_traffic_raw: [
     {v:'source_ip', l:'source_ip'},
     {v:'dest_ip', l:'dest_ip'},
+    {v:'source_port', l:'source_port'},
     {v:'dest_port', l:'dest_port'},
     {v:'app', l:'app'},
     {v:'action', l:'action (allow/deny)'},
     {v:'protocol', l:'protocol'},
     {v:'session_end_reason', l:'session_end_reason'},
+    {v:'nat_dest', l:'nat_dest'},
+    {v:'nat_source', l:'nat_source'},
+    {v:'nat_dest_port', l:'nat_dest_port'},
+    {v:'nat_source_port', l:'nat_source_port'},
+    {v:'is_nat', l:'is_nat'},
+    {v:'source_user', l:'source_user'},
+    {v:'dest_user', l:'dest_user'},
+    {v:'log_type', l:'log_type'},
+    {v:'log_source_name', l:'log_source_name'},
     {v:'_reporting_device_name', l:'_reporting_device_name'}
   ],
   panw_ngfw_threat_raw: [
     {v:'file_name', l:'file_name'},
+    {v:'sub_type', l:'sub_type'},
     {v:'verdict', l:'verdict'},
     {v:'source_ip', l:'source_ip'},
     {v:'dest_ip', l:'dest_ip'},
     {v:'source_user', l:'source_user'},
+    {v:'dest_user', l:'dest_user'},
     {v:'partial_hash', l:'partial_hash'},
     {v:'threat_category', l:'threat_category'},
-    {v:'threat_name_firewall', l:'threat_name_firewall'}
+    {v:'threat_name_firewall', l:'threat_name_firewall'},
+    {v:'severity', l:'severity'},
+    {v:'action', l:'action'},
+    {v:'url', l:'url'},
+    {v:'url_category', l:'url_category'},
+    {v:'app', l:'app'},
+    {v:'rule_matched', l:'rule_matched'},
+    {v:'_reporting_device_name', l:'_reporting_device_name'}
   ],
   alerts: [
     {v:'host_name', l:'host_name'},
     {v:'alert_name', l:'alert_name'},
     {v:'severity', l:'severity'},
-    {v:'category', l:'category'},
+    {v:'alert_action_status', l:'alert_action_status'},
+    {v:'source_ip', l:'source_ip'},
+    {v:'dest_ip', l:'dest_ip'},
+    {v:'username', l:'username'},
+    {v:'domain', l:'domain'},
     {v:'mitre_tactic', l:'mitre_tactic'},
-    {v:'actor_process_image_name', l:'actor_process_image_name'}
+    {v:'mitre_technique', l:'mitre_technique'},
+    {v:'actor_process_image_name', l:'actor_process_image_name'},
+    {v:'file_sha256', l:'file_sha256 (hash)'},
+    {v:'dns_query_name', l:'dns_query_name'},
+    {v:'cloud_provider', l:'cloud_provider'},
+    {v:'country', l:'country'}
   ],
   management_auditing: [
     {v:'description', l:'description'},
-    {v:'audit_owner_name', l:'audit_owner_name'},
-    {v:'resource', l:'resource'},
-    {v:'sub_type', l:'sub_type'},
-    {v:'result', l:'result'}
+    {v:'subtype', l:'subtype'},
+    {v:'host_name', l:'host_name'},
+    {v:'user_name', l:'user_name'},
+    {v:'email', l:'email'},
+    {v:'source_ip', l:'source_ip'},
+    {v:'management_auditing_type', l:'management_auditing_type'},
+    {v:'management_auditing_result', l:'management_auditing_result'},
+    {v:'management_auditing_severity', l:'management_auditing_severity'},
+    {v:'reason', l:'reason'}
   ],
   pan_dss_raw: [
-    {v:'name', l:'name (computer name)'},
-    {v:'domain_name', l:'domain_name'},
-    {v:'type', l:'type (computer/user)'},
+    {v:'name', l:'name'},
     {v:'sam_account_name', l:'sam_account_name'},
-    {v:'admin_count', l:'admin_count'}
+    {v:'type', l:'type (computer/user)'},
+    {v:'domain_name', l:'domain_name'},
+    {v:'netbios', l:'netbios'},
+    {v:'ou', l:'ou'},
+    {v:'sid', l:'sid'},
+    {v:'user_type', l:'user_type'},
+    {v:'department', l:'department'},
+    {v:'company_name', l:'company_name'},
+    {v:'admin_count', l:'admin_count'},
+    {v:'member_of', l:'member_of'},
+    {v:'security_groups', l:'security_groups'},
+    {v:'on_prem_sync_enabled', l:'on_prem_sync_enabled'},
+    {v:'source', l:'source'}
   ]
 };
 CMP_FILTER_FIELDS['xdr_data /* email */'] = CMP_FILTER_FIELDS.xdr_data;
