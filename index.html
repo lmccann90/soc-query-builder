@@ -357,6 +357,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
 .filter-val-input{flex:1;min-width:120px;}
 .filter-remove{width:26px;height:26px;border-radius:4px;border:1px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.1s;line-height:1;}
 .filter-remove:hover{background:rgba(224,82,82,0.1);color:var(--red);border-color:rgba(224,82,82,0.3);}
+.filter-ci-btn{width:26px;height:26px;border-radius:4px;border:1px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;font-size:11px;font-style:italic;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.1s;font-family:Georgia,serif;}
+.filter-ci-btn:hover{border-color:var(--amber);color:var(--amber);}
+.filter-ci-btn.active{border-color:var(--amber);color:var(--amber);background:rgba(245,166,35,0.1);}
 .add-filter-btn{font-size:11.5px;padding:5px 12px;border-radius:6px;border:1px solid rgba(79,142,247,0.3);background:rgba(79,142,247,0.06);color:var(--accent);cursor:pointer;font-family:var(--sans);transition:all 0.12s;margin-top:4px;display:inline-flex;align-items:center;gap:5px;}
 .add-filter-btn:hover{background:rgba(79,142,247,0.12);}
 .fields-grid{display:flex;flex-wrap:wrap;gap:6px;}
@@ -2543,7 +2546,7 @@ var B={
   'iso0':function(){
     var hosts=gvMulti('iso0-host','HOSTNAME');
     var hf=hosts.length>1?'| filter agent_hostname in ('+hosts.map(function(v){return'\"'+v+'\"';}).join(', ')+')':'| filter agent_hostname = \"'+hosts[0]+'\"';
-    return 'dataset = xdr_data\n'+hf+'\n| filter event_type = ENUM.PROCESS\n| filter (actor_process_image_path ~= \"^[D-Fd-f]:\\\\\"\n   or action_process_image_path ~= \"^[D-Fd-f]:\\\\\"  )\n| fields _time, agent_hostname, actor_process_image_name,\n         actor_process_image_path, action_process_image_name,\n         action_process_image_path, actor_process_cmd_line,\n         action_process_image_sha256\n| sort _time asc\n| limit '+gv('iso0-limit','100');},
+    return 'dataset = xdr_data\n'+hf+'\n| filter event_type = ENUM.PROCESS\n| filter (actor_process_image_path ~= \"^[D-Fd-f]:\\\\\"\n   or action_process_image_path ~= \"^[D-Fd-f]:\\\\\"  )\n| fields _time, agent_hostname, actor_process_image_name,\n         actor_process_image_path, action_process_image_name,\n         action_process_image_path, actor_process_command_line,\n         action_process_image_sha256\n| sort _time asc\n| limit '+gv('iso0-limit','100');},
   'net0':function(){
     var hosts=gvMulti('net0-host','HOSTNAME');
     var procs=gvMulti('net0-proc','PROCESS-NAME.exe');
@@ -2555,7 +2558,7 @@ var B={
     var procs=gvMulti('cmd0-proc','PROCESS-NAME.exe');
     var hf=hosts.length>1?'| filter agent_hostname in ('+hosts.map(function(v){return'\"'+v+'\"';}).join(', ')+')':'| filter agent_hostname = \"'+hosts[0]+'\"';
     var pf=procs.length>1?'| filter actor_process_image_name in ('+procs.map(function(v){return'\"'+v+'\"';}).join(', ')+')':'| filter actor_process_image_name = \"'+procs[0]+'\"';
-    return 'dataset = xdr_data\n'+hf+'\n'+pf+'\n| filter event_type = ENUM.PROCESS\n| fields _time, agent_hostname, actor_process_image_name,\n         actor_process_cmd_line, action_process_image_name,\n         action_process_cmd_line, actor_process_image_sha256,\n         os_actor_process_image_name\n| sort _time asc\n| limit '+gv('cmd0-limit','100');},
+    return 'dataset = xdr_data\n'+hf+'\n'+pf+'\n| filter event_type = ENUM.PROCESS\n| fields _time, agent_hostname, actor_process_image_name,\n         actor_process_command_line, action_process_image_name,\n         action_process_image_command_line, actor_process_image_sha256,\n         os_actor_process_image_name\n| sort _time asc\n| limit '+gv('cmd0-limit','100');},
   'a0':function(){return 'dataset = pan_dss_raw\n| filter admin_count = "1"\n| dedup sam_account_name\n| view column order = populated';},
   'fw0':function(){var _h=gvMulti('fw0-fname','FILENAME');var _f=_h.length>1?'| filter action_file_name in ('+_h.map(function(v){return'"'+v+'"';}).join(', ')+')':'| filter action_file_name = "'+_h[0]+'"';return 'dataset = xdr_data\n'+_f+'\n| fields _time, agent_hostname, actor_process_image_name,\n         action_file_name, action_file_path,\n         action_file_sha256\n| dedup agent_hostname\n| sort desc _time\n| limit '+gv('fw0-limit','100');},
   'fw1':function(){var _h=gvMulti('fw1-fname','FILENAME');var _fline=_h.length>1?'| filter action_file_name in ('+_h.map(function(v){return'"'+v+'"';}).join(', ')+')\n    or actor_process_image_name in ('+_h.map(function(v){return'"'+v+'"';}).join(', ')+')':'| filter action_file_name = "'+_h[0]+'"\n    or actor_process_image_name = "'+_h[0]+'"';return 'dataset = xdr_data\n'+_fline+'\n| fields _time, agent_hostname, actor_process_image_name,\n         action_process_image_name,\n         action_process_image_command_line,\n         action_file_name, action_file_path\n| sort desc _time\n| limit 200';},
@@ -3497,7 +3500,7 @@ var CMP_FIELDS = {
     'actor_effective_username','actor_effective_user_sid',
     // process (actor = the process that caused the event)
     'actor_process_image_name','actor_process_image_path',
-    'actor_process_command_line','actor_process_cmd_line',
+    'actor_process_command_line',
     'actor_process_image_sha256','actor_process_instance_id',
     'actor_process_os_pid','actor_process_signature_vendor',
     // parent / causality
@@ -3587,7 +3590,6 @@ var CMP_FILTER_FIELDS = {
     {v:'actor_effective_username', l:'actor_effective_username'},
     {v:'actor_process_image_name', l:'actor_process_image_name'},
     {v:'actor_process_command_line', l:'actor_process_command_line'},
-    {v:'actor_process_cmd_line', l:'actor_process_cmd_line'},
     {v:'actor_process_image_path', l:'actor_process_image_path'},
     {v:'actor_process_image_sha256', l:'actor_process_image_sha256 (hash)'},
     {v:'action_process_image_name', l:'action_process_image_name (child proc)'},
@@ -3775,7 +3777,6 @@ function cmpAddFilter() {
   if(!ds) { showToast('Pick a dataset first'); return; }
   var id = 'cmpf' + (cmpFilterCount++);
   var list = document.getElementById('cmp-filter-list');
-  // Clear placeholder
   var placeholder = list.querySelector('div[style]');
   if(placeholder) placeholder.remove();
   var row = document.createElement('div');
@@ -3786,13 +3787,21 @@ function cmpAddFilter() {
     + '<option value="__custom__">— custom field —</option>'
     + '</select>';
   var opSel = '<select class="filter-op-select" id="'+id+'-op" onchange="cmpRender()">'
-    + ['contains','=','!=','~=','in()','not contains'].map(function(o){return '<option>'+o+'</option>';}).join('')
+    + ['contains','=','!=','in()','not contains'].map(function(o){return '<option>'+o+'</option>';}).join('')
     + '</select>';
   row.innerHTML = fieldSel + opSel
     + '<input class="filter-val-input" type="text" id="'+id+'-val" placeholder="value" oninput="cmpRender()"/>'
+    + '<button class="filter-ci-btn" id="'+id+'-ci" onclick="cmpToggleCI(\''+id+'\')" title="Case insensitive">i</button>'
     + '<button class="filter-remove" onclick="document.getElementById(\''+id+'\').remove();cmpRender();" title="Remove">&#215;</button>';
   list.appendChild(row);
   cmpState.filters.push(id);
+  cmpRender();
+}
+
+function cmpToggleCI(id) {
+  var btn = document.getElementById(id+'-ci');
+  if(!btn) return;
+  btn.classList.toggle('active');
   cmpRender();
 }
 
@@ -3872,22 +3881,27 @@ function cmpRender() {
     var fieldEl = document.getElementById(fid+'-field');
     var opEl = document.getElementById(fid+'-op');
     var valEl = document.getElementById(fid+'-val');
+    var ciBtn = document.getElementById(fid+'-ci');
     if(!fieldEl||!opEl||!valEl) return;
     var field = fieldEl.value==='__custom__' ? valEl.getAttribute('data-custom')||'FIELD' : fieldEl.value;
     var op = opEl.value;
     var val = valEl.value || 'VALUE';
+    var ci = ciBtn && ciBtn.classList.contains('active');
     var line;
     if(op === 'in()') {
-      var parts = val.split(',').map(function(v){return '"'+v.trim()+'"';});
+      var parts = val.split(',').map(function(v){return '"'+(ci?'(?i)':'')+v.trim()+'"';});
       line = '| filter '+field+' in ('+parts.join(', ')+')';
     } else if(op === 'contains' || op === 'not contains') {
-      line = '| filter '+field+' '+op+' "'+val+'"';
-    } else if(op === '~=') {
-      line = '| filter '+field+' ~= "(?i)'+val+'"';
-    } else {
-      // = or !=
+      line = ci
+        ? '| filter '+field+' ~= "(?i)'+val+'"'
+        : '| filter '+field+' '+op+' "'+val+'"';
+    } else if(op === '=' || op === '!=') {
       var numVal = !isNaN(val) && val !== '';
-      line = '| filter '+field+' '+op+' '+(numVal ? val : '"'+val+'"');
+      line = ci
+        ? '| filter '+field+' ~= "(?i)'+val+'"'
+        : '| filter '+field+' '+op+' '+(numVal ? val : '"'+val+'"');
+    } else {
+      line = '| filter '+field+' '+op+' "'+val+'"';
     }
     lines.push(line);
   });
@@ -4397,7 +4411,7 @@ window.clearFQP=clearFQP;window.closeFQP=closeFQP;
 window.saveStepFinding=saveStepFinding;window.compileFindings=compileFindings;
 window.cmpSetDataset=cmpSetDataset;window.cmpToggleField=cmpToggleField;
 window.cmpFieldsAll=cmpFieldsAll;window.cmpFieldsPreset=cmpFieldsPreset;
-window.cmpToggle=cmpToggle;window.cmpAddFilter=cmpAddFilter;
+window.cmpToggle=cmpToggle;window.cmpAddFilter=cmpAddFilter;window.cmpToggleCI=cmpToggleCI;
 window.cmpAddAlter=cmpAddAlter;window.cmpSortDir=cmpSortDir;
 window.cmpRender=cmpRender;window.cmpCopy=cmpCopy;window.composerReset=composerReset;
 window.openSaveModal=openSaveModal;window.closeSaveModal=closeSaveModal;
