@@ -1046,12 +1046,12 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
       <div class="section" id="xql-sec-jsonext">
         <div class="section-header">
           <h2>&#123;&#125; JSON field extractor</h2>
-          <p>For log sources where useful data is nested inside a <code>parsed_fields</code> JSON column. Add the fields you want to extract and the query builds automatically.</p>
+          <p>Paste a sample JSON row from your log source — the keys are detected automatically. Tick the ones you want to extract and the query builds itself.</p>
         </div>
         <div class="card">
           <div class="card-meta"><span class="card-tag" style="background:rgba(245,158,11,0.15);color:#f59e0b;">json</span></div>
           <div class="card-title">JSON nested field extractor</div>
-          <div class="card-desc">Builds an XQL query using <code>json_extract_scalar</code> to pull fields out of a JSON column (e.g. <code>parsed_fields</code>). Add each field you want — tick Numeric to cast it with <code>to_number()</code> and use it for sort.</div>
+          <div class="card-desc">Paste a sample JSON row to detect available fields. Tick each field to include it in the query — mark numeric fields to enable <code>to_number()</code> casting and sorting.</div>
           <div class="card-fields">
             <div class="field-group">
               <span class="field-label">Dataset</span>
@@ -1066,9 +1066,13 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
               <input type="text" id="jx-rawfilter" placeholder="e.g. NotificationsGrid" oninput="rcJX()"/>
             </div>
             <div class="field-group wide">
-              <span class="field-label">Fields to extract</span>
-              <div id="jx-field-list" style="display:flex;flex-direction:column;gap:6px;margin-top:4px;"></div>
-              <button class="multi-add-btn" onclick="jxAddField()" style="margin-top:6px;">+ Add field</button>
+              <span class="field-label">Paste a sample JSON row to detect fields</span>
+              <textarea id="jx-sample" rows="3" placeholder='{"c_ip":"1.2.3.4","cs_username":"jsmith","time_taken":"1823","sc_status":"200"}' oninput="jxParseSample()" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--mono);font-size:11px;padding:8px;outline:none;resize:vertical;line-height:1.5;margin-top:4px;box-sizing:border-box;"></textarea>
+              <button class="multi-add-btn" onclick="jxParseSample()" style="margin-top:6px;">&#8635; Detect fields</button>
+            </div>
+            <div class="field-group wide" id="jx-fields-wrap" style="display:none;">
+              <span class="field-label">Fields detected — tick to include, check Numeric to cast with to_number()</span>
+              <div id="jx-field-list" style="display:flex;flex-direction:column;gap:5px;margin-top:6px;"></div>
             </div>
             <div class="field-group">
               <span class="field-label">Sort by (numeric field)</span>
@@ -1085,6 +1089,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:1
           <div class="card-footer">
             <button class="btn" onclick="ccJX()">&#8669; Copy query</button>
             <span class="copy-status" id="cs-jx">Copied</span>
+            <button class="btn" onclick="jxReset()" style="margin-left:6px;">&#10005; Clear</button>
           </div>
         </div>
       </div>
@@ -2736,19 +2741,30 @@ function renderAll(){Object.keys(B).forEach(rc);}
 /* =========================================================
    JSON FIELD EXTRACTOR
    ========================================================= */
-var jxFieldCount = 0;
+var jxDetectedKeys = [];
 
-function jxAddField() {
-  var id = 'jxf' + (jxFieldCount++);
+function jxParseSample() {
+  var raw = document.getElementById('jx-sample').value.trim();
+  if(!raw) return;
+  var obj;
+  try { obj = JSON.parse(raw); } catch(e) {
+    showToast('Invalid JSON — check the sample row');
+    return;
+  }
+  jxDetectedKeys = Object.keys(obj);
   var list = document.getElementById('jx-field-list');
-  var row = document.createElement('div');
-  row.id = id;
-  row.style.cssText = 'display:flex;align-items:center;gap:8px;flex-wrap:wrap;';
-  row.innerHTML = '<input type="text" id="'+id+'-name" placeholder="field_name" oninput="rcJX()" style="background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--mono);font-size:11.5px;height:30px;padding:0 8px;outline:none;width:180px;">'
-    + '<label style="display:flex;align-items:center;gap:5px;font-size:11.5px;color:var(--text2);cursor:pointer;user-select:none;">'
-    + '<input type="checkbox" id="'+id+'-num" onchange="rcJX()" style="accent-color:var(--accent);"> Numeric</label>'
-    + '<button class="filter-remove" onclick="document.getElementById(\''+id+'\').remove();rcJX();" title="Remove">&#215;</button>';
-  list.appendChild(row);
+  list.innerHTML = jxDetectedKeys.map(function(k) {
+    var sampleVal = String(obj[k]);
+    var looksNumeric = !isNaN(sampleVal) && sampleVal.trim() !== '';
+    return '<label style="display:flex;align-items:center;gap:10px;font-size:12px;color:var(--text2);cursor:pointer;padding:3px 0;">'
+      + '<input type="checkbox" id="jxc-'+k+'" checked onchange="rcJX()" style="accent-color:var(--accent);width:13px;height:13px;flex-shrink:0;">'
+      + '<span style="font-family:var(--mono);font-size:11.5px;color:var(--text);min-width:160px;">'+k+'</span>'
+      + '<span style="font-size:10.5px;color:var(--text3);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="'+sampleVal+'">= "'+sampleVal+'"</span>'
+      + '<label style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text3);cursor:pointer;flex-shrink:0;white-space:nowrap;">'
+      + '<input type="checkbox" id="jxn-'+k+'" '+(looksNumeric?'checked':'')+' onchange="rcJX()" style="accent-color:var(--amber);width:12px;height:12px;"> Numeric</label>'
+      + '</label>';
+  }).join('');
+  document.getElementById('jx-fields-wrap').style.display = 'block';
   rcJX();
 }
 
@@ -2756,75 +2772,91 @@ function rcJX() {
   var dataset = (document.getElementById('jx-dataset').value.trim()) || 'DATASET';
   var jsoncol = (document.getElementById('jx-jsoncol').value.trim()) || 'parsed_fields';
   var rawfilter = document.getElementById('jx-rawfilter').value.trim();
-  var sortField = document.getElementById('jx-sortfield').value;
   var limit = document.getElementById('jx-limit').value.trim();
 
-  // Collect fields
-  var fields = [];
-  document.getElementById('jx-field-list').querySelectorAll('[id^="jxf"]').forEach(function(row) {
-    if(!row.id.match(/^jxf\d+$/)) return;
-    var nameEl = document.getElementById(row.id+'-name');
-    var numEl = document.getElementById(row.id+'-num');
-    if(!nameEl) return;
-    var name = nameEl.value.trim();
-    if(!name) return;
-    fields.push({ name: name, numeric: numEl && numEl.checked });
+  // Collect selected fields
+  var fields = jxDetectedKeys.filter(function(k) {
+    var chk = document.getElementById('jxc-'+k);
+    return chk && chk.checked;
+  }).map(function(k) {
+    var numChk = document.getElementById('jxn-'+k);
+    return { name: k, numeric: numChk && numChk.checked };
   });
 
-  // Update sort dropdown with numeric fields only
+  // Update sort dropdown
   var sortSel = document.getElementById('jx-sortfield');
   var prevSort = sortSel.value;
   sortSel.innerHTML = '<option value="">— none —</option>'
     + fields.filter(function(f){return f.numeric;}).map(function(f){
         return '<option value="'+f.name+'"'+(f.name===prevSort?' selected':'')+'>'+f.name+'</option>';
       }).join('');
-  sortField = sortSel.value;
+
+  if(!fields.length) {
+    document.getElementById('out-jx').textContent = '// Select at least one field above';
+    return;
+  }
 
   var lines = [];
   lines.push('dataset = ' + dataset);
   if(rawfilter) lines.push('| filter _raw_log ~= "' + rawfilter + '"');
-  if(fields.length) {
-    var alterLines = fields.map(function(f) {
-      return '        ' + f.name + ' = json_extract_scalar(' + jsoncol + ', "$.' + f.name + '")';
-    });
-    lines.push('| alter ' + alterLines[0].trim());
-    for(var i=1;i<alterLines.length;i++) lines.push(alterLines[i].replace(/^        /,'        '));
-    // Cast numeric fields
-    var numFields = fields.filter(function(f){return f.numeric;});
-    if(numFields.length) {
-      numFields.forEach(function(f) {
-        lines.push('| alter ' + f.name + '_num = to_number(' + f.name + ')');
-      });
-    }
-    // Fields line
-    var allFields = ['_time'].concat(fields.map(function(f){
-      return f.numeric ? f.name + '_num' : f.name;
-    }));
-    if(allFields.length <= 4) {
-      lines.push('| fields ' + allFields.join(', '));
-    } else {
-      lines.push('| fields ' + allFields[0] + ',');
-      for(var j=1;j<allFields.length;j++) {
-        lines.push('         ' + allFields[j] + (j<allFields.length-1 ? ',' : ''));
-      }
+
+  // Alter — extract all selected fields
+  lines.push('| alter ' + fields[0].name + ' = json_extract_scalar(' + jsoncol + ', "$.' + fields[0].name + '")');
+  for(var i=1;i<fields.length;i++) {
+    lines.push('       , ' + fields[i].name + ' = json_extract_scalar(' + jsoncol + ', "$.' + fields[i].name + '")');
+  }
+
+  // Numeric casts
+  var numFields = fields.filter(function(f){return f.numeric;});
+  if(numFields.length) {
+    lines.push('| alter ' + numFields.map(function(f){
+      return f.name + '_num = to_number(' + f.name + ')';
+    }).join('\n       , '));
+  }
+
+  // Fields output
+  var outFields = ['_time'].concat(fields.map(function(f){
+    return f.numeric ? f.name + '_num' : f.name;
+  }));
+  if(outFields.length <= 4) {
+    lines.push('| fields ' + outFields.join(', '));
+  } else {
+    lines.push('| fields ' + outFields[0] + ',');
+    for(var j=1;j<outFields.length;j++) {
+      lines.push('         ' + outFields[j] + (j < outFields.length-1 ? ',' : ''));
     }
   }
+
+  // Sort
+  var sortField = document.getElementById('jx-sortfield').value;
   if(sortField) lines.push('| sort desc ' + sortField + '_num');
   if(limit) lines.push('| limit ' + limit);
 
-  var q = lines.join('\n');
-  document.getElementById('out-jx').textContent = q;
+  document.getElementById('out-jx').textContent = lines.join('\n');
 }
 
 function ccJX() {
   var q = document.getElementById('out-jx').textContent;
-  if(!q) return;
+  if(!q || q.startsWith('//')) return;
   navigator.clipboard.writeText(q).then(function(){
     var cs = document.getElementById('cs-jx');
     if(cs){cs.classList.add('show');setTimeout(function(){cs.classList.remove('show');},1500);}
     showToast('Query copied');
     saveToRecent('JSON field extractor', q);
   });
+}
+
+function jxReset() {
+  document.getElementById('jx-dataset').value = '';
+  document.getElementById('jx-jsoncol').value = '';
+  document.getElementById('jx-rawfilter').value = '';
+  document.getElementById('jx-sample').value = '';
+  document.getElementById('jx-limit').value = '';
+  document.getElementById('jx-field-list').innerHTML = '';
+  document.getElementById('jx-fields-wrap').style.display = 'none';
+  document.getElementById('jx-sortfield').innerHTML = '<option value="">— none —</option>';
+  document.getElementById('out-jx').textContent = '';
+  jxDetectedKeys = [];
 }
 
 function renderAQL(){
@@ -4611,7 +4643,7 @@ window.gv=gv;window.rc=rc;window.cc=cc;
 window.f0ModeChange=f0ModeChange;window.t0ModeChange=t0ModeChange;
 window.addProc=addProc;window.removeProc=removeProc;
 window.renderAll=renderAll;window.renderAQL=renderAQL;
-window.jxAddField=jxAddField;window.rcJX=rcJX;window.ccJX=ccJX;
+window.jxAddField=jxAddField;window.rcJX=rcJX;window.ccJX=ccJX;window.jxParseSample=jxParseSample;window.jxReset=jxReset;
 window.showToast=showToast;window.showPlatform=showPlatform;window.showSection=showSection;
 window.resetAll=resetAll;window.resetFindings=resetFindings;
 window.exportHTML=exportHTML;window.toggleSettings=toggleSettings;
